@@ -1,0 +1,26 @@
+spring:
+  application:
+    name:
+      quick-recipe-system
+
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+    
+  thymeleaf:
+    prefix: classpath:/templates/ # 視圖前綴
+    suffix: .html # 視圖後綴
+    cache: false # 開發時關閉快取
+    encoding: UTF-8
+
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true # 啟用HiddenHttpMethodFilter,支援 PUT/DELETE 表單請求
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+server:
+  port: 8080
