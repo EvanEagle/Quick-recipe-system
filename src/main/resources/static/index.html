@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickCook 快速料理小幫手</title>
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=1">
+    <link rel="stylesheet" href="/css/QuickCook.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+</head>
+<body>
+    <!--header標題區塊-->
+    <header class="navbar">
+        <div class="logo">  <!--div表示一個區塊-->
+            <img src="/images/logo.png" alt="網頁logo" class="logo-img-placeholder">  <!--img表示圖片-->
+            <div class="logo-text"> <!--另一個區塊-->
+                <span class="brand-en">QuickCook</span>  <!--span表示行內元素-->
+                <span class="brand-zh">快速料理小幫手</span>   <!--span表示行內元素-->
+            </div>
+        </div>
+
+        <!--nav導航列 & 表單連結集合,在header裡-->
+        <nav>
+            <ul class="nav-ul">  <!--ul表示無序列表-->
+                <li><a href="#" class="nav-link">探索食譜</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                <li><a href="#" class="nav-link">我的收藏</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                <li><a href="#" class="nav-link">DIY食譜管理</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+            </ul>
+        </nav>
+        <a href="#" class="user-area">  <!--a 超連結,點擊會進入另一個網頁-->
+            <img src="/images/user.png" alt="登入小人頭圖示" class="user-img"> 
+            <span class="user-text">登錄 / 註冊</span>  <!--span表示行內元素-->
+        </a>
+    </header>
+
+    <!--main主要內容-->
+    <main class="main-wrapper">
+        <section class="search-section">  <!--section有主題的內容區塊-->
+            <div class="search-bar-container">  <!--div一個區塊-->
+                <input type="text" class="search-bar-input" placeholder="搜尋食譜">  <!--input type="text"文字輸入框-->
+                <button class="search-btn">  <!--button按鈕-->
+                    <span class="material-symbols-outlined">🔍</span>  <!--span表示行內元素-->
+                </button>
+            </div>
+            <div class="filter-tags"> <!--另一個區塊-->
+                <select name="cookingtime" class="tag-btn">  <!--select下拉選單-->
+                    <option value="time" class="tag-btn">烹調時間</option>  <!--option定義選項-->
+                    <option value="10mins">10分鐘</option>
+                    <option value="15mins">15分鐘</option>
+                    <option value="20mins">20分鐘</option>
+                    <option value="30mins">30分鐘</option>
+                    <option value="30mins up">30分鐘以上</option>
+                    </select>
+                
+                <select name="keyword" class="tag-btn"> <!--select下拉選單-->
+                    <option>關鍵字</option> <!--option定義選項-->
+                    <option>炸物</option>
+                    <option>麵食</option>
+                    <option>簡單方便</option>
+                    <option>蛋料理</option>
+                </select>
+                
+                <span style="font-weight: bold;">料理類型</span>  <!--span行內元素-->
+                <button class="tag-btn">中式料理</button>  <!--button按鈕-->
+                <button class="tag-btn">日式料理</button> 
+                <button class="tag-btn">西式料理</button>
+            </div>
+        </section>
+
+        <div class="content-area">   <!--卡片一個大區塊-->
+            <section class="recipe-grid">  <!--section有主題的內容區塊-->
+                <a href="#" class="recipe-card">  <!--a點擊卡片會進入另一個網頁-->
+                    <div class="card-img-container"> <!--圖片一個區塊-->
+                        <img src="/images/food1.jpg" alt="美食圖片" class="card-img">
+                    </div>
+                    <div class="card-info"> <!--文字一個區塊-->
+                            <h3 class="recipe-title">Avocado Salmon Salad</h3>
+                            <p class="recipe-desc">酪梨鮭魚沙拉，人氣必點清爽健康美味...</p>
+                        <div class="card-actions"> <!--按鈕的區塊-->
+                            <button class="btn-detail">查看詳情</button> <!--button 查看詳情 按鈕-->
+                            <button class="btn-collect">加入收藏</button> <!--button 加入收藏 按鈕-->
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#" class="recipe-card">
+                    <div class="card-img-container">
+                        <img src="/images/food1.jpg" alt="美食圖片" class="card-img">
+                    </div>
+                    <div class="card-info">
+                        <div>
+                            <h3 class="recipe-title">Avocado Salmon Salad</h3>
+                            <p class="recipe-desc">酪梨鮭魚沙拉，人氣必點清爽健康美味...</p>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-detail">查看詳情</button>
+                            <button class="btn-collect">加入收藏</button>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#" class="recipe-card">
+                    <div class="card-img-container">
+                        <img src="/images/food1.jpg" alt="美食圖片" class="card-img">
+                    </div>
+                    <div class="card-info">
+                        <div>
+                            <h3 class="recipe-title">Avocado Salmon Salad</h3>
+                            <p class="recipe-desc">酪梨鮭魚沙拉，人氣必點清爽健康美味...</p>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-detail">查看詳情</button>
+                            <button class="btn-collect">加入收藏</button>
+                        </div>
+                    </div>
+                </a>
+
+                <a href="#" class="recipe-card">
+                    <div class="card-img-container">
+                        <img src="/images/food1.jpg" alt="美食圖片" class="card-img">
+                    </div>
+                    <div class="card-info">
+                        <div>
+                            <h3 class="recipe-title">Avocado Salmon Salad</h3>
+                            <p class="recipe-desc">酪梨鮭魚沙拉，人氣必點清爽健康美味...</p>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-detail">查看詳情</button>
+                            <button class="btn-collect">加入收藏</button>
+                        </div>
+                    </div>
+                </a>
+                </section>
+
+            <aside class="diy-sidebar">  <!--aside側標-->
+                <div>
+                    <h2 class="diy-item">我的DIY食譜</h2> <!--h2標題-->
+                    <ul>  <!--ul無序列表-->
+                        <li class="diy-item"> 
+                            <span>奶油培根義大利麵</span> <!--使用span把文字包起來,方便單獨修改文字樣式-->
+                            <div class="span-group">
+                                <div class="btn-edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    <span>修改</span>
+                                </div>
+                                <div class="btn-delete">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>刪除</span>
+                                 </div>
+                            </div>
+                        </li>
+
+                        <li class="diy-item">
+                            <span>香煎牛小排</span>
+                            <div class="span-group">
+                                <div class="btn-edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    <span>修改</span>
+                                </div>
+                                <div class="btn-delete">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>刪除</span>
+                                 </div>
+                            </div>
+                        </li>
+
+                        <li class="diy-item">
+                            <span>番茄炒蛋</span>
+                            <div class="span-group">
+                                <div class="btn-edit">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    <span>修改</span>
+                                </div>
+                                <div class="btn-delete">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>刪除</span>
+                                 </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="diy-add-container">
+                    <span class="diy-add-text">新增食譜</span>
+                    <button class="btn-diy-add">+</button>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p class="footer-text">© copyright info - QuickCook | ✨ 贊助作者</p>
+    </footer>
+
+</body>
+</html>

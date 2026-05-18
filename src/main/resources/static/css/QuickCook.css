@@ -1,0 +1,415 @@
+/* ==============================
+   1. 通用設定 & 變數
+   ============================== */
+:root {
+    /* 定義全域變數，方便之後統一修改顏色 */
+    --bg-gradient: linear-gradient(135deg, #c3eee2, #c0eaee); /* 背景漸層色 */
+    --nav-bg: #f2f5da;        /* 導覽列淺黃色 */
+    --footer-bg: #bcc986;     /* 頁尾草綠色 */
+    --primary-color: #4a5d4a; /* 文字主要深綠色 */
+    --accent-color: #a4c639;  /* 互動時的嫩綠色 */
+    --accent-orange: #ff7f50; /* 按鈕用的珊瑚橘 */
+    --text-color: #333;       /* 一般內文深灰色 */
+    --card-bg: #fff;          /* 卡片背景白色 */
+    --shadow: 0 4px 15px rgba(0,0,0,0.1); /* 卡片陰影 */
+}
+
+* {
+    /* 讓 padding 與 border 不會撐大元素的寬度，方便排版 */
+    box-sizing: border-box; 
+}
+
+/*背景*/
+body {
+    background: var(--bg-gradient); /* 套用背景漸層 */
+    font-family: "Microsoft JhengHei", sans-serif; /* 設定微軟正黑體 */
+    margin: 0;                     /* 移除瀏覽器預設邊界 */
+    color: var(--text-color);      /* 設定預設文字顏色 */
+    display: flex;                 /* 啟用彈性佈局 */
+    flex-direction: column;        /* 內容由上而下排列 */
+    min-height: 100vh;             /* 讓身體高度至少等於螢幕高度 */
+}
+
+/* ==============================
+   2. 頂部導覽列 (Navbar)
+   ============================== */
+.navbar {
+    background-color: var(--nav-bg);
+    padding: 10px 50px;
+    display: flex;                 /* 橫向排列 */
+    justify-content: space-between;/* Logo、選單、登入各自靠兩邊與中間 */
+    align-items: center;           /* 垂直居中 */
+    box-shadow: 0 5px 5px rgba(0,0,0,0.1);
+    position: sticky;              /* 滑動時固定在頂部 */
+    top: 0;
+    z-index: 100;                  /* 確保不會被食譜卡片遮住 */
+}
+
+.logo {
+    display: flex;                 /* 開啟Flexbox佈局 */
+    align-items: center;           /* 控制垂直軸:垂直置中 */
+    gap: 12px;                     /* 圖案與文字的間距 */
+}
+
+/*logo的照片*/
+.logo-img-placeholder {
+    width: 30px;
+    height: auto;
+    
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;        /* 讓中英文標題垂直排 */
+}
+
+.brand-en {
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--primary-color);
+    line-height: 1.1;              /* 縮小行高讓上下排更緊湊 */
+}
+
+.brand-zh {
+    font-size: 13px;
+    color: #666;
+    letter-spacing: 2px;           /* 增加字距增加質感 */
+}
+
+.nav-ul {
+    list-style-type: none;         /* 移除列表圓點 */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 100px;                     /* 選單項目間距 */
+}
+
+.nav-link {
+    text-decoration: none;         /* 移除超連結底線 */
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 20px;
+    transition: color 0.3s;        /* 變色平滑效果 */
+}
+
+.nav-link:hover {
+    color: var(--accent-color);    /* 滑鼠移上去變嫩綠 */
+    text-decoration: underline;
+}
+
+.nav-link.active {
+    position: relative;            /* 為了定位底部的橫線 */
+}
+
+.nav-link.active::after {
+    content: '';                   /* 產生一個偽元素底線 */
+    position: absolute;
+    bottom: -15px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+/*登入註冊*/
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: color 0.3s; 
+}
+
+.user-img {
+    width: 25px;            /* 依照圖片比例調整大小 */
+    height: auto;
+
+}
+
+.user-area:hover {
+    color:  #a3a0a0;  /* 滑鼠移上去變嫩綠色 */
+}
+
+/* ==============================
+   3. 搜尋與篩選區
+   ============================== */
+.main-wrapper {
+    flex: 1;                       /* 佔滿剩餘高度，把 footer 推到底部 */
+    padding: 40px 50px;
+}
+
+.search-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;           /* 整個搜尋區塊置中 */
+    margin-bottom: 40px;
+}
+
+.search-bar-container {
+    display: flex;
+    align-items: center;
+    background-color: white;   /* 搜尋框底色 */
+    border-radius: 50px;      /* 讓兩端呈現膠囊狀圓角 */
+    overflow: hidden;         /* 關鍵：讓按鈕的背景色不會超出圓角邊界 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 淡淡的陰影增加質感 */
+    width: 100%;
+    max-width: 600px;         /* 限制最大寬度 */
+}
+
+.search-bar-input {
+    flex: 1;                  /* 讓輸入框佔滿剩餘空間 */
+    border: none;             /* 去掉輸入框預設邊框 */
+    padding: 12px 20px;
+    outline: none;            /* 去掉點擊時的藍色外框 */
+    font-size: 16px;
+}
+
+.search-btn {
+    background-color: #8b9662; /* 你的森林深綠色 */
+    border: none;             /* 去掉按鈕預設邊框 */
+    color: white;             /* 放大鏡圖示改為白色 */
+    padding: 0 20px;
+    height: 100%;             /* 高度撐滿 */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-btn:hover {
+    background-color: #6d774a; /* 滑鼠移上去稍微深一點點 */
+}
+
+/* 確保圖示大小合適 */
+.search-btn .material-symbols-outlined {
+    font-size: 33px;
+}
+
+.filter-tags {
+    display: flex;
+    gap: 10px;        /* 按鈕之間的間距 */
+    margin-top: 25px; /* 與上方搜尋框保持距離 */
+}
+
+.tag-btn {
+    background-color: #F1F4E8;     /* 淡淡的綠背景 */
+    border: 1px solid #E2E8D5;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;               /* 讓滑鼠變成手指形狀 */
+    font-size: 14px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+    transition: 0.3s;
+}
+
+.tag-btn:hover {
+    background-color: #E2E8D5; /* 滑鼠移上去有一點深色回饋 */
+}
+
+/* ==============================
+   4. 主內容區佈局
+   ============================== */
+.content-area {
+    display: grid;
+    grid-template-columns: 7fr 3fr; /* 左側食譜佔 7 份寬，右側 DIY 佔 3 份 */
+    gap: 30px;
+}
+
+.recipe-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 食譜列表改為平分兩欄 */
+    gap: 25px;
+}
+
+.recipe-card {
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    display: flex;                 /* 讓圖片跟文字左右排 */
+    overflow: hidden;              /* 超出的圖片會被切除（符合圓角） */
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;    /* 浮起特效的平滑感 */
+    text-decoration: none;
+    color: var(--text-color);
+}
+
+.recipe-card:hover {
+    transform: translateY(-5px);   /* 滑鼠移入稍微往上浮動 */
+}
+
+.card-img-container {
+    width: 180px;                  /* 固定圖片區域寬度 */
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;             /* 關鍵：圖片會自動充滿且不變形 */
+}
+
+.card-info {
+    flex: 1;                       /* 佔滿剩餘寬度 */
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;/* 讓標題在上，按鈕在下 */
+}
+
+.recipe-title {
+    font-size: 18px;
+    margin: 0 0 5px 0;
+}
+
+.recipe-desc {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+}
+
+.card-actions {
+    display: flex;
+    gap: 8px;                      /* 兩個按鈕間的間距 */
+}
+
+.btn-detail {
+    background-color: transparent;
+    border: 1.5px solid #ccc;
+    border-radius: 20px;
+    padding: 8px;
+    flex: 1;                       /* 兩按鈕等寬 */
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-detail:hover {
+    background-color: #ccc;
+    border: none;
+    
+}
+
+.btn-collect {
+    background-color: var(--accent-orange);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px;
+    flex: 1;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-collect:hover {
+    background-color: white;
+    border: 1px solid var(--accent-orange);
+    color: var(--accent-orange) ;
+}
+
+/* ==============================
+   5. 側邊欄與頁尾
+   ============================== */
+.diy-sidebar {
+    background-color: var(--nav-bg);
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.diy-item{
+    padding: 10px 0; /* 稍微增加間距，視覺更舒服 */
+    border-bottom: 1px solid #c6d8a7;
+    display: flex;
+    justify-content: space-between; /* 這行現在會把文字推向左，按鈕推向右 */
+    align-items: center; /* 讓文字跟按鈕垂直對齊，不會歪一邊 */
+}
+
+.diy-item ul {
+    list-style: none; 
+    padding: 0;
+}
+
+/* 讓兩個按鈕之間有點呼吸空間 */
+.span-group {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-edit{
+    color: var(--primary-color);
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-delete {
+    color: #ba714d;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-edit:hover {
+    color: #96bb96;
+}
+
+.btn-delete:hover {
+    color: #deb49f;
+}
+
+/* 既然你喜歡清新感，可以順便修飾一下按鈕 */
+.button-group button {
+    background-color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 2px 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.button-group button:hover {
+    background-color:rgba(207, 206, 206, 0.768); /* 滑鼠移上去有一點淺綠色回饋 */
+}
+
+.diy-add-container {
+    display: flex; 
+    align-items: flex-end; 
+    justify-content: flex-end; 
+    gap: 5px;
+}
+
+.diy-add-text {
+    font-size: 12px; 
+    color: #888;
+}
+
+.btn-diy-add {
+    width: 40px;
+    height: 40px;
+    background-color: var(--primary-color);
+    border-radius: 50%;            /* 圓形按鈕 */
+    color: white;
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.btn-diy-add:hover {
+    background-color: white;
+    color: var(--primary-color);
+}
+
+.footer {
+    background-color: var(--footer-bg);
+    padding: 10px 0;
+}
+
+.footer-text {
+    text-align: center;
+    margin: 0;
+}
