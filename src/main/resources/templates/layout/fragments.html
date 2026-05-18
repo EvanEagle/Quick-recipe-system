@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 定義標題及導覽列 Fragment -->
+    <!--header標題區塊-->
+    <header th:fragment="header" class="navbar">
+        <div class="logo">  <!--div表示一個區塊-->
+            <img src="/images/logo.png" alt="網頁logo" class="logo-img-placeholder">  <!--img表示圖片-->
+            <div class="logo-text"> <!--另一個區塊-->
+                <span class="brand-en">QuickCook</span>  <!--span表示行內元素-->
+                <span class="brand-zh">快速料理小幫手</span>   <!--span表示行內元素-->
+            </div>
+        </div>
+
+        <!--nav導航列 & 表單連結集合,在header裡-->
+        <nav>
+            <ul name="navbar" class="nav-ul">  <!--ul表示無序列表-->
+                <li><a href="#" class="nav-link">探索食譜</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                <li><a href="#" class="nav-link">我的收藏</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                <li><a href="#" class="nav-link">DIY食譜管理</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+            </ul>
+        </nav>
+        <a href="#" class="user-area">  <!--a 超連結,點擊會進入另一個網頁-->
+            <img src="/images/user.png" alt="登入小人頭圖示" class="user-img"> 
+            <span class="user-text">登錄 / 註冊</span>  <!--span表示行內元素-->
+        </a>
+    </header>
+
+    <!-- 定義頁尾 Fragment -->
+    <footer th:fragment="footer" class="footer">
+        <p class="footer-text">© 2026 快速料理小幫手 - 版權所有 ©</p>
+    </footer>
+</body>
+</html>

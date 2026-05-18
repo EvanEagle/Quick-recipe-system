@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" xmlns:th="http://www.thymeleaf.org">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuickCook 快速料理小幫手</title>
 
@@ -10,29 +10,8 @@
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
 </head>
 <body>
-    <!--header標題區塊-->
-    <header class="navbar">
-        <div class="logo">  <!--div表示一個區塊-->
-            <img src="/images/logo.png" alt="網頁logo" class="logo-img-placeholder">  <!--img表示圖片-->
-            <div class="logo-text"> <!--另一個區塊-->
-                <span class="brand-en">QuickCook</span>  <!--span表示行內元素-->
-                <span class="brand-zh">快速料理小幫手</span>   <!--span表示行內元素-->
-            </div>
-        </div>
-
-        <!--nav導航列 & 表單連結集合,在header裡-->
-        <nav>
-            <ul class="nav-ul">  <!--ul表示無序列表-->
-                <li><a href="#" class="nav-link">探索食譜</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
-                <li><a href="#" class="nav-link">我的收藏</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
-                <li><a href="#" class="nav-link">DIY食譜管理</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
-            </ul>
-        </nav>
-        <a href="#" class="user-area">  <!--a 超連結,點擊會進入另一個網頁-->
-            <img src="/images/user.png" alt="登入小人頭圖示" class="user-img"> 
-            <span class="user-text">登錄 / 註冊</span>  <!--span表示行內元素-->
-        </a>
-    </header>
+    <!-- 引入標題及導覽列 -->
+    <div th:replace="~{layout/fragments :: header}"></div>
 
     <!--main主要內容-->
     <main class="main-wrapper">
@@ -189,9 +168,8 @@
         </div>
     </main>
 
-    <footer class="footer">
-        <p class="footer-text">© copyright info - QuickCook | ✨ 贊助作者</p>
-    </footer>
+    <!-- 引入頁尾 -->
+    <div th:replace="~{layout/fragments :: footer}"></div>
 
 </body>
 </html>
