@@ -9,8 +9,8 @@
     <!-- 定義標題及導覽列 Fragment -->
     <!--header標題區塊-->
     <header th:fragment="header" class="navbar">
-        <div class="logo">  <!--div表示一個區塊-->
-            <img src="/images/logo.png" alt="網頁logo" class="logo-img-placeholder">  <!--img表示圖片-->
+        <a th:href="@{/home}" class="logo" style="text-decoration: none; color: inherit">  <!--div表示一個區塊-->
+            <img th:src="@{/images/logo.png}" alt="網頁logo" class="logo-img-placeholder">  <!--img表示圖片-->
             <div class="logo-text"> <!--另一個區塊-->
                 <span class="brand-en">QuickCook</span>  <!--span表示行內元素-->
                 <span class="brand-zh">快速料理小幫手</span>   <!--span表示行內元素-->
@@ -20,13 +20,23 @@
         <!--nav導航列 & 表單連結集合,在header裡-->
         <nav>
             <ul name="navbar" class="nav-ul">  <!--ul表示無序列表-->
-                <li><a href="#" class="nav-link">探索食譜</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
-                <li><a href="#" class="nav-link">我的收藏</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
-                <li><a href="#" class="nav-link">DIY食譜管理</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                <li><a th:href="@{/recipes}" class="nav-link">探索食譜</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                <th:block th:if="${session.loggedInUser} == null">
+                    <li><a href="#" onclick="alert('哈囉！請先登入才能查看「我的收藏」喔！'); return false;" class="nav-link">我的收藏</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                </th:block>
+                <th:block th:if="${session.loggedInUser} != null">
+                    <li><a th:href="@{/favorite}" class="nav-link">我的收藏</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                </th:block>
+                <th:brock th:if="${session.loggedInUser} == null">
+                    <li><a href="#" onclick="alert('哈囉！請先登入才能使用「DIY食譜管理」喔！'); return false;" class="nav-link">DIY食譜管理</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                </th:brock>
+                <th:brock th:if="${session.loggedInUser} != null" >
+                    <li><a th:href="@{/diy}" class="nav-link">DIY食譜管理</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+                </th:brock>
             </ul>
         </nav>
-        <a href="#" class="user-area">  <!--a 超連結,點擊會進入另一個網頁-->
-            <img src="/images/user.png" alt="登入小人頭圖示" class="user-img"> 
+        <a th:href="@{/login}" class="user-area">  <!--a 超連結,點擊會進入另一個網頁-->
+            <img th:src="@{/images/user.png}" alt="登入小人頭圖示" class="user-img"> 
             <span class="user-text">登錄 / 註冊</span>  <!--span表示行內元素-->
         </a>
     </header>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探索食譜 - 快速料理小幫手</title>
+    
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/recipe-list.css}">
+    
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+</head>
+<body>
+    <header th:replace="~{layout/fragments :: header}"></header>
+
+    <main class="recipe-list-container">
+        <h1 class="page-title">探索美味食譜</h1>
+        
+        <div th:each="type : ${types}" class="cuisine-section">
+          
+            <h2 class="cuisine-title" th:text="|🎌 ${type.cuisineName}|">分類名稱</h2>
+            
+            <div th:each="recipe : ${type.recipes}" class="recipe-detail-card">
+                
+                <div class="recipe-header">
+                    <h3 th:text="${recipe.name}">食譜名稱</h3>
+                    <span class="cooking-time">⏱️ 烹調時間：<span th:text="${recipe.cookingTime}"></span> 分鐘</span>
+                </div>
+
+                <div th:if="${recipe.videoUrl != null}" class="video-container">
+                    <iframe width="100%" height="315" 
+                            th:src="${recipe.videoUrl}" 
+                            title="YouTube video player" frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+
+                <div class="recipe-content">
+                    <h4>🛒 食材：</h4>
+                    <ul>
+                        <li th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}"></li>
+                    </ul>
+
+                    <h4>🧂 調味料：</h4>
+                    <ul>
+                        <li th:each="seasoning : ${recipe.seasonings}" th:text="${seasoning}"></li>
+                    </ul>
+
+                    <h4>🍳 步驟：</h4>
+                    <ol>
+                        <li th:each="step : ${recipe.steps}" th:text="${step}"></li>
+                    </ol>
+                </div>
+                
+                <div class="tags-container">
+                    <span th:each="keyword : ${recipe.keywords}" 
+                          class="keyword-tag" 
+                          th:text="|# ${keyword}|">
+                    </span>
+                </div>
+
+            </div>
+            </div>
+        </main>
+
+    <footer th:replace="~{layout/fragments :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>會員登入 - 快速料理小幫手</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+
+</head>
+<body>
+
+    <div th:replace="~{layout/fragments :: header}"></div>
+
+    <main class="login-container">
+        <div class="login-card">
+            <h2 style="color: var(--primary-color); margin-top: 0; margin-bottom: 25px;">會員登入</h2>
+
+            <div th:if="${errorMsg}" th:text="${errorMsg}" class="error-msg"></div>
+
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label for="username">帳號</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="請輸入帳號" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密碼</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="請輸入密碼" required>
+                </div>
+
+                <button type="submit" class="btn-login">登入</button>
+            </form>
+            
+            <p style="margin-top: 20px; font-size: 14px; color: #666;">
+                還沒有帳號嗎？ <a th:href="@{/register}" style="color: var(--accent-orange); text-decoration: none; font-weight: bold;">立即註冊</a>
+            </p>
+        </div>
+    </main>
+
+    <div th:replace="~{layout/fragments :: footer}"></div>
+
+</body>
+</html>

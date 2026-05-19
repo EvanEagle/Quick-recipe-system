@@ -5,9 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuickCook 快速料理小幫手</title>
 
-    <link rel="icon" type="image/x-icon" href="/favicon.ico?v=1">
-    <link rel="stylesheet" href="/css/QuickCook.css">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"> -->
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+    <link rel="stylesheet" th:href="@{/css/home.css}">
 </head>
 <body>
     <!-- 引入標題及導覽列 -->
@@ -51,7 +50,7 @@
             <section class="recipe-grid">  <!--section有主題的內容區塊-->
                 <a href="#" class="recipe-card">  <!--a點擊卡片會進入另一個網頁-->
                     <div class="card-img-container"> <!--圖片一個區塊-->
-                        <img src="/images/food1.jpg" alt="美食圖片" class="card-img">
+                        <img th:src="@{/images/food1.jpg}" alt="美食圖片" class="card-img">
                     </div>
                     <div class="card-info"> <!--文字一個區塊-->
                             <h3 class="recipe-title">Avocado Salmon Salad</h3>
@@ -65,7 +64,7 @@
 
                 <a href="#" class="recipe-card">
                     <div class="card-img-container">
-                        <img src="/images/food1.jpg" alt="美食圖片" class="card-img">
+                        <img th:src="@{/images/food1.jpg}" alt="美食圖片" class="card-img">
                     </div>
                     <div class="card-info">
                         <div>
@@ -81,7 +80,7 @@
 
                 <a href="#" class="recipe-card">
                     <div class="card-img-container">
-                        <img src="/images/food1.jpg" alt="美食圖片" class="card-img">
+                        <img th:src="@{/images/food1.jpg}" alt="美食圖片" class="card-img">
                     </div>
                     <div class="card-info">
                         <div>
@@ -97,7 +96,7 @@
 
                 <a href="#" class="recipe-card">
                     <div class="card-img-container">
-                        <img src="/images/food1.jpg" alt="美食圖片" class="card-img">
+                        <img th:src="@{/images/food1.jpg}" alt="美食圖片" class="card-img">
                     </div>
                     <div class="card-info">
                         <div>

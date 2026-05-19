@@ -5,8 +5,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import com.example.quick_recipe_system.cuisine.AbstractCuisine;
 import com.example.quick_recipe_system.model.Recipe;
+import com.example.quick_recipe_system.model.cuisine.AbstractCuisine;
 
 public class RecipeSearcher {
 

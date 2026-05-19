@@ -1,0 +1,110 @@
+/* ==============================
+   探索食譜頁面專屬樣式 (完美融合 home.css 變數)
+   ============================== */
+
+.recipe-list-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1; /* 讓 footer 可以被推到底部 */
+}
+
+.page-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    font-size: 28px;
+}
+
+.cuisine-section {
+    margin-bottom: 50px;
+}
+
+.cuisine-title {
+    color: var(--primary-color);
+    border-bottom: 3px solid var(--accent-color); /* 使用嫩綠色做底線分隔 */
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.recipe-detail-card {
+    background-color: var(--card-bg); /* 白色卡片背景 */
+    border-radius: 20px;
+    box-shadow: var(--shadow); /* 繼承你設定的陰影 */
+    padding: 30px;
+    margin-bottom: 30px;
+    transition: transform 0.3s;
+}
+
+.recipe-detail-card:hover {
+    transform: translateY(-3px); /* 輕微上浮的互動感 */
+}
+
+.recipe-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed #ddd;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.recipe-header h3 {
+    color: var(--primary-color);
+    font-size: 22px;
+    margin: 0;
+}
+
+.cooking-time {
+    color: var(--primary-color);
+    font-size: 14px;
+    background-color: var(--nav-bg); /* 使用導覽列的淺黃色當標籤底色 */
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.video-container {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.recipe-content h4 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.recipe-content ul, .recipe-content ol {
+    line-height: 1.8;
+    color: var(--text-color);
+    margin-bottom: 20px;
+    padding-left: 25px;
+}
+
+.tags-container {
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px dashed #ddd;
+}
+
+.keyword-tag {
+    background-color: #F1F4E8; /* 呼應你首頁的淡淡綠背景 */
+    color: var(--primary-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+    margin-right: 8px;
+    font-size: 0.9em;
+    display: inline-block;
+    margin-bottom: 8px;
+    transition: 0.3s;
+    border: 1px solid #E2E8D5;
+}
+
+.keyword-tag:hover {
+    background-color: var(--accent-color);
+    color: white;
+}

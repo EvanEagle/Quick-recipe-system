@@ -1,4 +1,4 @@
-package com.example.quick_recipe_system.cuisine;
+package com.example.quick_recipe_system.model.cuisine;
 
 import java.util.List;
 

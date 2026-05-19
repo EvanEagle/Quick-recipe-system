@@ -1,0 +1,59 @@
+ /* 針對登入表單的專屬排版 */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1; /* 讓內容自動撐滿上下空間 */
+            padding: 40px;
+        }
+        .login-card {
+            background-color: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px 50px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 400px; /* 限制登入卡片的寬度 */
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        .form-input {
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 16px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .form-input:focus {
+            border-color: var(--accent-color); /* 點擊輸入框時亮起嫩綠色 */
+        }
+        .btn-login {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .btn-login:hover {
+            background-color: var(--accent-color); /* 呼應你導覽列的互動設定 */
+        }
+        .error-msg {
+            color: #ba714d; /* 使用你 DIY 側邊欄刪除按鈕的深橘紅，保持風格一致 */
+            margin-bottom: 15px;
+            font-weight: bold;
+        }

@@ -1,11 +1,17 @@
-package com.example.quick_recipe_system.user;
+package com.example.quick_recipe_system.service.user;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class UserManager {
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
     private Map<String, String> userDatabase = new HashMap<>();
-    private String currentUser = null;
+
+    public UserService() {
+        userDatabase.put("arden123", "a12345");
+    }
 
     // 註冊功能
     public boolean register(String username, String password) throws IllegalArgumentException {
@@ -22,6 +28,7 @@ public class UserManager {
         return true;
     }
 
+    //檢查方法
     private void validateFormat(String input, String label) throws IllegalArgumentException {
         // 檢查長度是否 >= 5
         if (input == null || input.length() < 5) {
@@ -46,27 +53,24 @@ public class UserManager {
         if (!userDatabase.get(username).equals(password)) {
             throw new IllegalArgumentException("密碼輸入錯誤，請重新確認。");
         }
-
-        // 3. 都對了，設定當前使用者
-        this.currentUser = username;
     }
 
 
-    // 登出
-    public void logout() {
-        this.currentUser = null;
-    }
+    // // 登出
+    // public void logout() {
+    //     this.currentUser = null;
+    // }
 
-    // 檢查是否已登入
-    public boolean isLoggedIn() {
-        return currentUser != null;
-    }
+    // // 檢查是否已登入
+    // public boolean isLoggedIn() {
+    //     return currentUser != null;
+    // }
 
-    public String getCurrentUser() {
-        return currentUser;
-    }
+    // public String getCurrentUser() {
+    //     return currentUser;
+    // }
 
-    public Map<String, String> getUserDatabase() {
-        return userDatabase;
-    }
+    // public Map<String, String> getUserDatabase() {
+    //     return userDatabase;
+    // }
 }
