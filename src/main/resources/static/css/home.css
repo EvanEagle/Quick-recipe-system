@@ -46,8 +46,10 @@ body {
 }
 
 .logo {
+    flex: 1;
     display: flex;                 /* 開啟Flexbox佈局 */
     align-items: center;           /* 控制垂直軸:垂直置中 */
+    justify-content: flex-start;   /* 內容靠左 */
     gap: 12px;                     /* 圖案與文字的間距 */
 }
 
@@ -81,7 +83,8 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    gap: 100px;                     /* 選單項目間距 */
+    justify-content: center; 
+    gap: 70px;
 }
 
 .nav-link {
@@ -112,23 +115,53 @@ body {
 }
 
 /*登入註冊*/
+/* 這是外層容器：只負責排版 */
 .user-area {
+    flex: 1;                    
     display: flex;
     align-items: center;
+    justify-content: flex-end;  
     gap: 8px;
-    text-decoration: none;
     color: var(--text-color);
-    transition: color 0.3s; 
 }
 
 .user-img {
-    width: 25px;            /* 依照圖片比例調整大小 */
+    width: 25px;            
     height: auto;
-
 }
 
-.user-area:hover {
-    color:  #a3a0a0;  /* 滑鼠移上去變嫩綠色 */
+/* 登入連結 */
+.user-login {
+    color: inherit; 
+    font-weight: bold; 
+    text-decoration: none; 
+    transition: color 0.3s; 
+}
+
+/* 滑鼠移到登入字樣上才變色 */
+.user-login:hover {
+    color: #a3a0a0; 
+}
+
+/* 新增：已登入時的問候語樣式 */
+.user-greeting {
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* 登出連結 */
+.user-logout {
+    color: #ba714d; 
+    text-decoration: none; 
+    font-weight: bold; 
+    margin-left: 15px; 
+    padding-left: 15px; 
+    border-left: 2px solid #ccc; 
+    transition: color 0.3s; /* 小訣竅：明確指定 transition 的屬性(color)效能會更好 */
+}
+
+.user-logout:hover {
+    color: #d5a691;
 }
 
 /* ==============================

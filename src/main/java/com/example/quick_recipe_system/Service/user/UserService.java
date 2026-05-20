@@ -37,7 +37,7 @@ public class UserService {
         // 檢查是否包含英文與數字 (使用正規表示法)
         // ^(?=.*[A-Za-z])(?=.*\d) 代表必須包含字母與數字
         if (!input.matches("^(?=.*[A-Za-z])(?=.*\\d).+$")) {
-            throw new IllegalArgumentException(label + "格式錯誤！必須同時包含英文與數字！");
+            throw new IllegalArgumentException(label + "格式錯誤！必須包含英文與數字！");
         }
     }
 
@@ -54,23 +54,4 @@ public class UserService {
             throw new IllegalArgumentException("密碼輸入錯誤，請重新確認。");
         }
     }
-
-
-    // // 登出
-    // public void logout() {
-    //     this.currentUser = null;
-    // }
-
-    // // 檢查是否已登入
-    // public boolean isLoggedIn() {
-    //     return currentUser != null;
-    // }
-
-    // public String getCurrentUser() {
-    //     return currentUser;
-    // }
-
-    // public Map<String, String> getUserDatabase() {
-    //     return userDatabase;
-    // }
 }

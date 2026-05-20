@@ -35,10 +35,19 @@
                 </th:brock>
             </ul>
         </nav>
-        <a th:href="@{/login}" class="user-area">  <!--a 超連結,點擊會進入另一個網頁-->
-            <img th:src="@{/images/user.png}" alt="登入小人頭圖示" class="user-img"> 
-            <span class="user-text">登錄 / 註冊</span>  <!--span表示行內元素-->
-        </a>
+
+        <div class="user-area">
+            <th:block th:if="${session.loggedInUser == null}">
+                <img th:src="@{/images/user.png}" alt="登入小人頭圖示" class="user-img"> 
+                <a th:href="@{/login}" class="user-login">登錄 / 註冊</a> 
+            </th:block>
+
+            <th:block th:unless="${session.loggedInUser == null}">
+                <span class="user-greeting" th:text="|嗨！${session.loggedInUser}|">嗨！使用者</span>
+                <a th:href="@{/logout}" class="user-logout" onclick="return confirm('請確認是否登出網頁？');">登出</a>
+            </th:block>
+        </div>
+
     </header>
 
     <!-- 定義頁尾 Fragment -->

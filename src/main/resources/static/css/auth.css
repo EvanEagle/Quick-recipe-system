@@ -15,6 +15,11 @@
             max-width: 400px; /* 限制登入卡片的寬度 */
             text-align: center;
         }
+        .user-lonin-h2 .user-register-h2{
+            color: var(--primary-color); 
+            margin-top: 0; 
+            margin-bottom: 25px;
+        }
         .form-group {
             margin-bottom: 20px;
             text-align: left;
@@ -57,3 +62,22 @@
             margin-bottom: 15px;
             font-weight: bold;
         }
+        .succsee-msg {
+            color: #2E8B57; 
+            margin-bottom: 15px; 
+            font-weight: bold;
+        }
+        .register-now {
+            color: var(--accent-orange); 
+            text-decoration: none; 
+            font-weight: bold;
+        }
+        .no-account .have-account{
+            margin-top: 20px; 
+            font-size: 14px; 
+            color: #666;
+        }
+        .register-now:hover {
+            color: #d5a691;
+        }
+

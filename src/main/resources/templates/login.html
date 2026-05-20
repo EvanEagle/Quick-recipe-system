@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>會員登入 - 快速料理小幫手</title>
     <link rel="stylesheet" th:href="@{/css/home.css}">
-    <link rel="stylesheet" th:href="@{/css/login.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
 
 </head>
@@ -14,9 +14,10 @@
 
     <main class="login-container">
         <div class="login-card">
-            <h2 style="color: var(--primary-color); margin-top: 0; margin-bottom: 25px;">會員登入</h2>
+            <h2 class="user-lonin-h2">會員登入</h2>
 
             <div th:if="${errorMsg}" th:text="${errorMsg}" class="error-msg"></div>
+            <div th:if="${successMsg}" th:text="${successMsg}" class="succsee-msg"></div>
 
             <form th:action="@{/login}" method="post">
                 <div class="form-group">
@@ -32,8 +33,8 @@
                 <button type="submit" class="btn-login">登入</button>
             </form>
             
-            <p style="margin-top: 20px; font-size: 14px; color: #666;">
-                還沒有帳號嗎？ <a th:href="@{/register}" style="color: var(--accent-orange); text-decoration: none; font-weight: bold;">立即註冊</a>
+            <p class="no-account">還沒有帳號嗎？ 
+                <a th:href="@{/register}" class="register-now">立即註冊</a>
             </p>
         </div>
     </main>

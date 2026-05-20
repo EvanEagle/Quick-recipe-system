@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>會員註冊 - 快速料理小幫手</title>
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+</head>
+<body>
+
+    <header th:replace="~{layout/fragments :: header}"></header>
+
+    <main class="login-container">
+        <div class="login-card">
+            <h2 class="user-register-h2">會員註冊</h2>
+
+            <div th:if="${errorMsg}" th:text="${errorMsg}" class="error-msg"></div>
+
+            <form th:action="@{/register}" method="post">
+                <div class="form-group">
+                    <label for="username">設定帳號</label>
+                    <input type="text" id="username" name="username" class="form-input" placeholder="請輸入 5 碼以上英數字" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">設定密碼</label>
+                    <input type="password" id="password" name="password" class="form-input" placeholder="請輸入 5 碼以上英數字" required>
+                </div>
+
+                <button type="submit" class="btn-login">立即註冊</button>
+            </form>
+            
+            <p class="have-account">
+                已經有帳號了嗎？ <a th:href="@{/login}" class="register-now">立即登入</a>
+            </p>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout/fragments :: footer}"></footer>
+
+</body>
+</html>
