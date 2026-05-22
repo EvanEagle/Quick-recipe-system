@@ -3,30 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>探索食譜 - 快速料理小幫手</title>
+    <title>我的收藏 - 快速料理小幫手</title>
     
     <link rel="stylesheet" th:href="@{/css/home.css}">
-    <link rel="stylesheet" th:href="@{/css/recipe-list.css}">
-    
+    <link rel="stylesheet" th:href="@{/css/recipe-list.css}"> 
+    <link rel="stylesheet" th:href="@{/css/favorite.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
 </head>
 <body>
     <header th:replace="~{layout/fragments :: header}"></header>
 
-    <main class="recipe-list-container">
-
-        <div style="text-align: center; margin-bottom: 20px;">
-            <span th:if="${successMsg}" th:text="${successMsg}" style="color: #2E8B57; font-weight: bold; background-color: #e6f4ea; padding: 10px 20px; border-radius: 8px; display: inline-block;"></span>
-            <span th:if="${errorMsg}" th:text="${errorMsg}" style="color: #ba714d; font-weight: bold; background-color: #fbe9e7; padding: 10px 20px; border-radius: 8px; display: inline-block;"></span>
+    <main class="favorite-container">
+        
+        <div class="message-block">
+            <span th:if="${successMsg}" th:text="${successMsg}" class="msg-success"></span>
         </div>
 
-        <h1 class="page-title">探索美味食譜</h1>
+        <h1 class="page-title">❤️ 我收藏的美味食譜</h1>
         
-        <div th:each="type : ${types}" class="cuisine-section">
-          
-            <h2 class="cuisine-title" th:text="|🎌 ${type.cuisineName}|">分類名稱</h2>
+        <div th:if="${#lists.isEmpty(favorites)}" class="empty-state-card">
+            <div class="empty-state-icon">🍳</div>
+            <p class="empty-state-text">目前的收藏清單空空如也喔！</p>
+            <a th:href="@{/recipe}" class="btn-go-explore">🔍 馬上去探索食譜</a>
+        </div>
+        
+        <div th:unless="${#lists.isEmpty(favorites)}">
             
-            <div th:each="recipe : ${type.recipes}" class="recipe-detail-card">
+            <div th:each="recipe : ${favorites}" class="recipe-detail-card">
                 
                 <div class="recipe-header">
                     <h3 th:text="${recipe.name}">食譜名稱</h3>
@@ -66,11 +69,15 @@
                     </span>
                 </div>
 
-                <div class="favorite-actions" style="margin-top: 25px; text-align: right; border-top: 1px dashed #ddd; padding-top: 20px;">
-                    <form th:action="@{/favorite/add}" method="post">
+                <div class="favorite-actions">
+                    <form th:action="@{/favorite/remove}" method="post">
                         <input type="hidden" name="recipeId" th:value="${recipe.id}" />
                         
-                        <button type="submit" class="btn-collect">❤️ 加入收藏</button>
+                        <button type="submit" class="btn-remove" 
+                                th:data-name="${recipe.name}"
+                                onclick="return confirm('確定要將「' + this.getAttribute('data-name') + '」從收藏中移除嗎？');">
+                            💔 取消收藏
+                        </button>
                     </form>
                 </div>
 
@@ -78,8 +85,6 @@
         </div>
     </main>
 
-    <footer th:replace="~{layout/fragments :: footer}"></footer>
-
-    
+    <footer th:replace="~{layout/fragments :: footer}"></header>
 </body>
 </html>

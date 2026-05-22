@@ -108,3 +108,61 @@
     background-color: var(--accent-color);
     color: white;
 }
+
+/* 加入收藏按鈕 */
+.btn-collect {
+    background-color: #ba714d; /* 使用你喜歡的橘紅色 */
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-collect:hover {
+    background-color: #d5a691;
+    transform: translateY(-2px); /* 滑鼠移過去會有輕微上浮的互動感 */
+}
+
+/* ==============================
+   Toast 滑動提示視窗 (AJAX 專用)
+   ============================== */
+.toast-container {
+    position: fixed;
+    top: 80px;      /* 距離上方一點距離，避免擋到導覽列 */
+    right: 20px;    /* 靠右對齊 */
+    z-index: 9999;  /* 確保它在畫面的最上層 */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.toast-msg {
+    min-width: 250px;
+    padding: 16px 24px;
+    background-color: var(--card-bg, #fff);
+    color: var(--text-color, #333);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    border-left: 6px solid #2E8B57; /* 預設為成功的綠色側邊條 */
+    font-weight: bold;
+    font-size: 15px;
+    
+    /* 動畫魔法：一開始先躲在畫面右邊 120% 的位置 */
+    transform: translateX(120%);
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 帶有 Q 彈感的滑入 */
+}
+
+/* 當加上 .show 類別時，滑回到原來的位置 */
+.toast-msg.show {
+    transform: translateX(0);
+}
+
+/* 重複收藏時的警告樣式 (橘紅色) */
+.toast-msg.warning {
+    border-left-color: #ba714d;
+}

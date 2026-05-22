@@ -1,0 +1,103 @@
+/* ==============================
+   我的收藏頁面專屬樣式 (完美銜接 home.css)
+   ============================== */
+
+.favorite-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1; /* 確保頁尾乖乖待在底部 */
+}
+
+.page-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 40px;
+    font-size: 28px;
+}
+
+/* 提示訊息外框 */
+.message-block {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.msg-success {
+    color: #2E8B57;
+    font-weight: bold;
+    background-color: #e6f4ea;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+/* ==============================
+   空白狀態 (當使用者還沒有收藏任何食譜時)
+   ============================= */
+.empty-state-card {
+    background-color: var(--card-bg);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 50px 30px;
+    text-align: center;
+    border: 2px dashed var(--accent-color); /* 嫩綠色虛線外框 */
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.empty-state-text {
+    color: #666;
+    font-size: 18px;
+    margin-bottom: 25px;
+}
+
+.btn-go-explore {
+    background-color: var(--primary-color);
+    color: white;
+    text-decoration: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-weight: bold;
+    font-size: 16px;
+    display: inline-block;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-go-explore:hover {
+    background-color: #246b43; /* 稍微深一點的綠色 */
+    transform: translateY(-2px);
+}
+
+/* ==============================
+   收藏食譜卡片排版 (延續探索食譜風格)
+   ============================= */
+/* 這裡可以直接複用大部分的卡片樣式，並針對底部按鈕做微調 */
+.favorite-actions {
+    margin-top: 25px;
+    text-align: right;
+    border-top: 1px dashed #ddd;
+    padding-top: 20px;
+}
+
+/* 取消收藏按鈕：帶有警示意味的優雅深橘紅 */
+.btn-remove {
+    background-color: #ba714d;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-remove:hover {
+    background-color: #d5a691;
+    transform: translateY(-2px);
+}

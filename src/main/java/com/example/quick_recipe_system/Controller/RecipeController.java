@@ -18,7 +18,7 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
-    @GetMapping("/recipes")
+    @GetMapping("/recipe")
     public String showRecipeType(Model model) {
         List<CuisineType> types = recipeService.getAllCuisineTypes();
 
