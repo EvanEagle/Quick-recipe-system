@@ -2,6 +2,7 @@ package com.example.quick_recipe_system.controller;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +24,7 @@ public class FavoriteController {
 
     /**
      * 注入 FavoriteService favoriteService 撈資料
-     * 注意:@RequiredArgsConstructor 會自動將 final 物件注入
+     * 注意: @RequiredArgsConstructor 會自動將 final 物件注入, 不用再寫 @Autowired
      */
     private final FavoriteService favoriteService;
     private final RecipeService recipeService;

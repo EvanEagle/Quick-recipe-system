@@ -2,6 +2,7 @@ package com.example.quick_recipe_system.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import com.example.quick_recipe_system.model.cuisine.WesternCuisine;
 public class RecipeService {
 
     private List<CuisineType> cuisineTypes = new ArrayList<>();
+    private final AtomicInteger idGenerator = new AtomicInteger(16);
 
     private RecipeService() {
         CuisineType chinese = new ChineseCuisine();
@@ -48,9 +50,9 @@ public class RecipeService {
 
     // 根據 ID 尋找特定的食譜
     public Recipe findById(Integer id) {
-        
+
         // 遍歷你的 15 道食譜清單 (請確認你的清單變數名稱，這裡是假設為 allRecipes)
-        for (Recipe recipe :  getAllRecipes()) {
+        for (Recipe recipe : getAllRecipes()) {
             // 如果找到 ID 一樣的食譜
             if (recipe.getId().equals(id)) {
                 return recipe; // 找到了！立刻把這道食譜交出去
@@ -59,4 +61,43 @@ public class RecipeService {
         return null; // 如果整圈找完都沒找到 (例如傳入一個不存在的 ID)，就回傳 null
     }
 
+    public List<Recipe> findRecipesByAuthor(String username) {
+        List<Recipe> myRecipes = new ArrayList<>();
+
+        for (Recipe recipe : getAllRecipes()) {
+            if (recipe != null && recipe.getAuthor().equals(username)) {
+                myRecipes.add(recipe);
+            }
+        }
+        return myRecipes;
+    }
+
+    /**
+     * 新增食譜
+     * 
+     * @param newRecipe  由 Controller 傳來，已經裝滿使用者填寫資料的食譜物件 (唯獨沒有 id)
+     * @param typeString 前端表單傳來的分類字串 (例如："Chinese", "Japanese", "Western")
+     */
+    public void addRecipe(Recipe newRecipe, String typeString) {
+
+        // 步驟 1：賦予這道新食譜一個唯一的 ID
+        newRecipe.setId(idGenerator.getAndIncrement());
+
+        // 步驟 2：遍歷我們現有的分類，尋找對應的 CuisineType
+        for (CuisineType type : cuisineTypes) {
+
+            // 這裡使用類別名稱來比對。
+            // 例如 type.getClass().getSimpleName() 會得到 "ChineseCuisine"
+            // 如果前端傳來的 typeString 是 "Chinese"，就代表找到了
+            if (type.getClass().getSimpleName().contains(typeString)) {
+
+                // 步驟 3：找到正確的分類後，將這道新食譜加入該分類的清單中
+                type.addRecipe(newRecipe);
+                return; // 新增成功，結束這個方法
+            }
+        }
+
+        // 防呆機制：如果前端傳來一個不存在的分類名稱，可以拋出例外，或是預設加到中式料理
+        throw new IllegalArgumentException("找不到對應的食譜分類：" + typeString);
+    }
 }

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新增食譜 - 快速料理小幫手</title>
+    
+    <!-- 引入共用樣式與專屬樣式 -->
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/recipe-add.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+</head>
+<body>
+    <!-- 引入共用導覽列 -->
+    <header th:replace="~{layout/fragments :: header}"></header>
+
+    <main class="recipe-add-container">
+        
+        <!-- 系統錯誤提示區塊 -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <span th:if="${errorMsg}" th:text="${errorMsg}" style="color: #ba714d; font-weight: bold; background-color: #fbe9e7; padding: 10px 20px; border-radius: 8px; display: inline-block;"></span>
+        </div>
+
+        <h1 class="page-title">📝 新增專屬食譜</h1>
+
+        <!-- 表單卡片區塊，綁定 recipe 物件 -->
+        <div class="recipe-form-card">
+            <form th:action="@{/recipe/add}" method="post" th:object="${recipe}">
+                
+                <!-- 1. 分類選擇 (不屬於 Recipe 物件，使用 name 屬性) -->
+                <div class="form-group">
+                    <label for="typeString">🎌 食譜分類：</label>
+                    <select id="typeString" name="typeString" class="form-control" required>
+                        <option value="" disabled selected>請選擇料理分類...</option>
+                        <option value="Chinese">中式料理</option>
+                        <option value="Japanese">日式料理</option>
+                        <option value="Western">西式料理</option>
+                    </select>
+                </div>
+
+                <!-- 2. 食譜名稱與時間 (使用 th:field 自動綁定) -->
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label for="name">📌 食譜名稱：</label>
+                        <input type="text" id="name" th:field="*{name}" class="form-control" placeholder="例如：台式三杯雞" required />
+                    </div>
+                    
+                    <div class="form-group half-width">
+                        <label for="cookingTime">⏱️ 烹調時間 (分鐘)：</label>
+                        <input type="number" id="cookingTime" th:field="*{cookingTime}" class="form-control" placeholder="例如：30" required min="1" />
+                    </div>
+                </div>
+
+                <!-- 3. YouTube 影片連結 -->
+                <div class="form-group">
+                    <label for="videoUrl">🎬 教學影片連結 (選填)：</label>
+                    <input type="url" id="videoUrl" th:field="*{videoUrl}" class="form-control" placeholder="請貼上 YouTube 嵌入網址 (Embed URL)" />
+                </div>
+
+                <!-- 4. List 型態資料區 (引導使用者用半形逗號分隔) -->
+                <div class="form-group">
+                    <label for="ingredients">🛒 主食材 (請用半形逗號 , 分隔)：</label>
+                    <textarea id="ingredients" th:field="*{ingredients}" class="form-control" rows="3" placeholder="例如：去骨雞腿肉 2隻, 九層塔 1把, 蒜頭 5顆" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="seasonings">🧂 調味料 (請用半形逗號 , 分隔)：</label>
+                    <textarea id="seasonings" th:field="*{seasonings}" class="form-control" rows="3" placeholder="例如：醬油 2大匙, 麻油 1大匙, 米酒 1大匙" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="steps">🍳 烹調步驟 (請用半形逗號 , 分隔)：</label>
+                    <textarea id="steps" th:field="*{steps}" class="form-control" rows="4" placeholder="例如：1. 雞肉切塊備用, 2. 熱鍋下麻油爆香薑片, 3. 放入雞肉拌炒至表面微焦" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="keywords">🏷️ 搜尋關鍵字 (請用半形逗號 , 分隔)：</label>
+                    <input type="text" id="keywords" th:field="*{keywords}" class="form-control" placeholder="例如：家常菜, 下飯, 快炒" />
+                </div>
+
+                <div class="form-group">
+                    <label for="author">作者：</label>
+                    <input type="text" id="author" th:field="*{author}" class="form-control" placeholder="例如：彭余彥,  ArdenLin" />
+                </div>
+
+                <!-- 送出按鈕 -->
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">💾 儲存食譜</button>
+                    <a th:href="@{/recipe}" class="btn-cancel">取消返回</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <!-- 引入共用頁尾 -->
+    <footer th:replace="~{layout/fragments :: footer}"></footer>
+</body>
+</html>

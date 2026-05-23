@@ -18,4 +18,5 @@ public class Recipe {
     private List<String> steps; // 作法
     private List<String> keywords; // 關鍵字(加了這個之後可以用任何關鍵字去搜尋食譜)
     private String videoUrl; // 【新增】YouTube 影片連結
+    private String author; // 記錄建立此食譜的使用者帳號 (與 session.loggedInUser 對應)
 }

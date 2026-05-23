@@ -1,0 +1,126 @@
+/* ==============================
+   新增食譜頁面專屬樣式
+   ============================== */
+
+.recipe-add-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1;
+}
+
+/* 延續你探索頁面的標題樣式 */
+.page-title {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+/* 延續你卡片的設計語彙 */
+.recipe-form-card {
+    background-color: var(--card-bg, #ffffff);
+    border-radius: 20px;
+    box-shadow: var(--shadow, 0 4px 15px rgba(0,0,0,0.1));
+    padding: 40px;
+}
+
+/* 表單排版：Flexbox 應用 */
+.form-group {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.half-width {
+    flex: 1;
+}
+
+/* 標籤與輸入框樣式 */
+.form-group label {
+    color: var(--primary-color);
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    font-family: inherit;
+    font-size: 16px;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background-color: #fcfdfa; /* 非常淡的綠底，呼應整體風格 */
+    color: var(--text-color, #333);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.2); /* 假設 primary color 是海綠色 */
+    background-color: #fff;
+}
+
+textarea.form-control {
+    resize: vertical; /* 允許垂直拉伸，禁止水平拉伸破壞版面 */
+}
+
+/* 按鈕區域 */
+.form-actions {
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 1px dashed #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+/* 儲存按鈕 (延續 btn-collect 橘紅色的設計感) */
+.btn-submit {
+    background-color: #ba714d; 
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-submit:hover {
+    background-color: #d5a691;
+    transform: translateY(-2px);
+}
+
+/* 取消按鈕 */
+.btn-cancel {
+    color: #666;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-cancel:hover {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+/* 響應式設計：手機版時兩欄變一欄 */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}

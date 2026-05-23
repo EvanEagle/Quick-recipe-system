@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DIY食譜管理 - 快速料理小幫手</title>
+    
+    <!-- 引入共用樣式與專屬樣式 -->
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/diy-page.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+</head>
+<body>
+    <!-- 引入共用導覽列 -->
+    <header th:replace="~{layout/fragments :: header}"></header>
+
+    <main class="diy-dashboard-container">
+        
+        <!-- 系統提示區塊 (處理刪除成功或失敗的訊息) -->
+        <div style="text-align: center; margin-bottom: 20px;">
+            <span th:if="${successMsg}" th:text="${successMsg}" style="color: #2E8B57; font-weight: bold; background-color: #e6f4ea; padding: 10px 20px; border-radius: 8px; display: inline-block;"></span>
+            <span th:if="${errorMsg}" th:text="${errorMsg}" style="color: #ba714d; font-weight: bold; background-color: #fbe9e7; padding: 10px 20px; border-radius: 8px; display: inline-block;"></span>
+        </div>
+
+        <!-- 對應設計圖的米黃色管理卡片 -->
+        <div class="diy-card">
+            <h2 class="diy-title">我的DIY食譜</h2>
+            
+            <div class="recipe-list">
+                <!-- 情境 1：如果清單是空的，給予友善提示 -->
+                <div th:if="${#lists.isEmpty(diyRecipes)}" class="empty-state">
+                    <p>目前還沒有您的專屬食譜喔！趕快點擊右下方按鈕新增吧！</p>
+                </div>
+
+                <!-- 情境 2：迴圈印出專屬食譜清單 -->
+                <div class="recipe-item" th:each="recipe : ${diyRecipes}">
+                    <!-- 食譜名稱 -->
+                    <span class="recipe-name" th:text="${recipe.name}"></span>
+                    
+                    <!-- 動作按鈕區 (修改與刪除) -->
+                    <div class="recipe-actions">
+                        <!-- 修改按鈕 (GET 請求，導向修改頁面) -->
+                        <a th:href="@{/recipe/edit/{id}(id=${recipe.id})}" class="action-link edit-link">修改</a>
+                        
+                        <!-- 刪除按鈕 (POST 請求，純 HTML 表單遞交) -->
+                        <form th:action="@{/recipe/delete/{id}(id=${recipe.id})}" method="post" class="delete-form">
+                            <button type="submit" class="action-btn delete-btn">刪除</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右下角的新增食譜懸浮按鈕區 -->
+            <div class="add-btn-wrapper">
+                <span class="add-label">新增食譜</span>
+                <a th:href="@{/recipe/add}" class="btn-fab" title="新增食譜">+</a>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- 引入共用頁尾 -->
+    <footer th:replace="~{layout/fragments :: footer}"></footer>
+</body>
+</html>
