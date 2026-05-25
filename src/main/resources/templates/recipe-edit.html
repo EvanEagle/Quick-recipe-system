@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修改食譜 - 快速料理小幫手</title>
+    
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/recipe-edit.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+</head>
+<body>
+    <header th:replace="~{layout/fragments :: header}"></header>
+
+    <main class="recipe-edit-container">
+        
+        <div class="message-block">
+            <span th:if="${errorMsg}" th:text="${errorMsg}" class="msg-error"></span>
+        </div>
+
+        <h1 class="page-title">✏️ 修改專屬食譜</h1>
+
+        <div class="recipe-form-card">
+            <form th:action="@{/recipe/edit/{id}(id=${recipe.id})}" method="post" th:object="${recipe}">
+                
+                <div class="form-row">
+                    <div class="form-group half-width">
+                        <label for="name">📌 食譜名稱：</label>
+                        <input type="text" id="name" th:field="*{name}" class="form-control" required />
+                    </div>
+                    
+                    <div class="form-group half-width">
+                        <label for="cookingTime">⏱️ 烹調時間 (分鐘)：</label>
+                        <input type="number" id="cookingTime" th:field="*{cookingTime}" class="form-control" required min="1" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="videoUrl">🎬 教學影片連結 (選填)：</label>
+                    <input type="url" id="videoUrl" th:field="*{videoUrl}" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="ingredients">🛒 主食材 (請用半形逗號 , 分隔)：</label>
+                    <textarea id="ingredients" th:field="*{ingredients}" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="seasonings">🧂 調味料 (請用半形逗號 , 分隔)：</label>
+                    <textarea id="seasonings" th:field="*{seasonings}" class="form-control" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="steps">🍳 烹調步驟 (請用半形逗號 , 分隔)：</label>
+                    <textarea id="steps" th:field="*{steps}" class="form-control" rows="4" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="keywords">🏷️ 搜尋關鍵字 (請用半形逗號 , 分隔)：</label>
+                    <input type="text" id="keywords" th:field="*{keywords}" class="form-control" />
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">💾 完成修改</button>
+                    <a th:href="@{/diy}" class="btn-cancel">放棄修改</a>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer th:replace="~{layout/fragments :: footer}"></footer>
+</body>
+</html>

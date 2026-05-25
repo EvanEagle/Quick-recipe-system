@@ -100,4 +100,19 @@ public class RecipeService {
         // 防呆機制：如果前端傳來一個不存在的分類名稱，可以拋出例外，或是預設加到中式料理
         throw new IllegalArgumentException("找不到對應的食譜分類：" + typeString);
     }
+
+    public void updateRecipe(Integer id, Recipe newRecipe) {
+
+        Recipe oldRecipe = findById(id);
+
+        if (oldRecipe != null) {
+            oldRecipe.setName(newRecipe.getName());
+            oldRecipe.setCookingTime(newRecipe.getCookingTime());
+            oldRecipe.setIngredients(newRecipe.getIngredients());
+            oldRecipe.setSeasonings(newRecipe.getSeasonings());
+            oldRecipe.setSteps(newRecipe.getSteps());
+            oldRecipe.setKeywords(newRecipe.getKeywords());
+            oldRecipe.setVideoUrl(newRecipe.getVideoUrl());
+        }
+    }
 }

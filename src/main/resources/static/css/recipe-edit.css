@@ -1,0 +1,133 @@
+/* ==============================
+   修改食譜頁面專屬樣式
+   ============================== */
+
+.recipe-edit-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1;
+}
+
+.message-block {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.msg-error {
+    color: #ba714d;
+    font-weight: bold;
+    background-color: #fbe9e7;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.page-title {
+    text-align: center;
+    color: var(--primary-color, #4A5D23);
+    margin-bottom: 30px;
+    font-size: 28px;
+}
+
+.recipe-form-card {
+    background-color: var(--card-bg, #ffffff);
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    padding: 40px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.half-width {
+    flex: 1;
+}
+
+.form-group label {
+    color: var(--primary-color, #4A5D23);
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-control {
+    font-family: inherit;
+    font-size: 16px;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    background-color: #fcfdfa;
+    color: var(--text-color, #333);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #4A5D23;
+    box-shadow: 0 0 0 3px rgba(74, 93, 35, 0.2);
+    background-color: #fff;
+}
+
+textarea.form-control {
+    resize: vertical;
+}
+
+/* 按鈕區域 */
+.form-actions {
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 1px dashed #ddd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-submit {
+    background-color: #6B705C; /* 修改按鈕使用沉穩的灰綠色 */
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-submit:hover {
+    background-color: #4A5D23;
+    transform: translateY(-2px);
+}
+
+.btn-cancel {
+    color: #888;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border-radius: 25px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.btn-cancel:hover {
+    background-color: #f1f1f1;
+    color: #333;
+}
+
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
