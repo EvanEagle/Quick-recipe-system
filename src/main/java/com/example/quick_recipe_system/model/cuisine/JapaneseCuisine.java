@@ -22,7 +22,7 @@ public class JapaneseCuisine extends AbstractCuisine {
                                                 "放入烏龍麵，蓋鍋中火悶煮軟爛數分鐘，讓麵條吸附醬汁",
                                                 "加入小白菜拌勻",
                                                 "煮到湯濃稠即可起鍋"),
-                                List.of("麵料理", "主食"), "123","ArdenLin"));
+                                List.of("麵料理", "主食"), "123","arden123"));
                 // 2.
                 this.addRecipe(new Recipe(7, "日式炸豬排", 25,
                                 List.of("豬里肌", "低筋麵粉", "麵包粉"),
@@ -32,7 +32,7 @@ public class JapaneseCuisine extends AbstractCuisine {
                                                 "起150度油鍋，放入豬里肌炸熟",
                                                 "豬里肌炸熟後，取出切條",
                                                 "淋上日式豬排醬即可"),
-                                List.of("炸物", "家常菜"), "123","ArdenLin"));
+                                List.of("炸物", "家常菜"), "123","arden123"));
                 // 3.
                 this.addRecipe(new Recipe(8, "玉子燒",
                                 10,
@@ -46,7 +46,7 @@ public class JapaneseCuisine extends AbstractCuisine {
                                                 "將玉子燒稍微壓平，放在砧板上切成六等份",
                                                 "放涼後可放入冰箱冷藏",
                                                 "也可以在步驟五的時候加入餡料，例如：皮蛋、海苔、起司（餡料不要放到最前方，防止翻動的時候餡料溢出"),
-                                List.of("蛋料理", "家常菜"), "123","ArdenLin"));
+                                List.of("蛋料理", "家常菜"), "123","arden123"));
                 // 4.
                 this.addRecipe(new Recipe(9, "日式咖哩", 180,
                                 List.of("馬鈴薯", "紅蘿蔔", "洋蔥", "咖哩塊一盒", "牛肋條", "大蒜"),
@@ -61,7 +61,7 @@ public class JapaneseCuisine extends AbstractCuisine {
                                                 "加入水至醃過材料，滾了之後轉小火燉煮，蓋鍋悶煮1小時，關火靜置1.5小時",
                                                 "開火煮15分鐘，試試肉的口感，下咖哩塊，一直攪拌",
                                                 "最後再加入洋蔥碎攪一攪"),
-                                List.of("家常菜", "濃郁"), "123","ArdenLin"));
+                                List.of("家常菜", "濃郁"), "123","arden123"));
                 // 5.
                 this.addRecipe(new Recipe(10, "親子丼", 40,
                                 List.of("雞胸肉", "洋蔥", "蛋", "蔥花"),
@@ -72,7 +72,7 @@ public class JapaneseCuisine extends AbstractCuisine {
                                                 "加入太白粉水勾芡拌勻，蛋打散備用",
                                                 "將蛋液均勻倒入鍋中，蓋上鍋蓋不時攪拌一下",
                                                 "以中小火悶煮約3分鐘，至蛋液半熟，撒蔥花點綴即可拌飯食用"),
-                                List.of("主食"), "123","ArdenLin"));
+                                List.of("主食"), "123","arden123"));
         }
 
 }

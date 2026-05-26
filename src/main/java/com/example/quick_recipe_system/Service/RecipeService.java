@@ -115,4 +115,38 @@ public class RecipeService {
             oldRecipe.setVideoUrl(newRecipe.getVideoUrl());
         }
     }
+
+    /*
+     * --- Service 層 ---
+     * 方法名稱：deleteRecipe(傳入變數：要刪除的 Integer id, 傳入變數：當前登入者 String username)
+     * 
+     * 1. 尋找目標：
+     * 呼叫 findById(id) 找出那道準備被刪除的食譜 (假設命名為 targetRecipe)
+     * 
+     * 2. 權限防護罩：
+     * IF (targetRecipe 確實存在 AND targetRecipe 的作者名稱 和 username 一模一樣) {
+     * 
+     * // 3. 執行移除動作
+     * 使用迴圈把 cuisineTypes (中、日、西式分類) 一個一個拿出來
+     * 把每個分類裡面的 Recipe 清單叫出來
+     * 從清單中，把「ID 等於我們傳入的 id」的那道食譜給剔除掉
+     * 
+     * } ELSE {
+     * // 4. 越權處理
+     * 拋出一個新的例外 (例如 SecurityException)
+     * 例外訊息設定為："您沒有權限刪除此食譜！"
+     * }
+     */
+    public void deleteRecipe(Integer id, String username) {
+
+        Recipe targetRecipe = findById(id);
+
+        if (targetRecipe != null && targetRecipe.getAuthor().equals(username)) {
+            for (CuisineType cuisineType : cuisineTypes) {
+                cuisineType.getRecipes().removeIf(recipe -> recipe.getId().equals(id));
+            }
+        } else {
+            throw new SecurityException("您沒有權限刪除此食譜！");
+        }
+    }
 }

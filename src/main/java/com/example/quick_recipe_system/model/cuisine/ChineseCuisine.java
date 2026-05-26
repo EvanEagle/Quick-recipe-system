@@ -25,7 +25,7 @@ public class ChineseCuisine extends AbstractCuisine {
                                                 "將番茄悶至熟軟熟透",
                                                 "將蛋加入炒拌至入味並撒上蔥花即可上桌"),
                                 List.of("蛋料理", "家常菜"),
-                                "https://www.youtube.com/embed/frFPrY8upmw","ArdenLin"));
+                                "https://www.youtube.com/embed/frFPrY8upmw","arden123"));
                 // 2.
                 this.addRecipe(new Recipe(2, "麻婆豆腐", 15,
                                 List.of("盒裝豆腐", "豬絞肉", "蔥", "蒜末", "薑末"),
@@ -36,7 +36,7 @@ public class ChineseCuisine extends AbstractCuisine {
                                                 "煮滾後開小火，邊慢慢淋入太白粉水，邊搖晃鍋子，使太白粉水，邊搖晃鍋子，使太白粉水均勻散布",
                                                 "以鍋鏟輕推，勿使豆腐破爛，加入香油即可裝盤，再灑上蔥花及花椒粉即可"),
                                 List.of("豆腐料理", "家常菜"),
-                                "https://www.youtube.com/embed/PnCWCnozwvc","ArdenLin"));
+                                "https://www.youtube.com/embed/PnCWCnozwvc","arden123"));
                 // 3.
                 this.addRecipe(new Recipe(3, "紅燒豆腐", 10,
                                 List.of("板豆腐", "香菇", "紅蘿蔔絲", "芹菜段"),
@@ -45,7 +45,7 @@ public class ChineseCuisine extends AbstractCuisine {
                                                 "熱鍋，加入２大匙油，再將板豆腐片放入鍋中，煎至兩面微焦後加入香菇絲炒香，再放入紅蘿蔔絲炒香",
                                                 "鍋中續放入所有調味料、水拌勻，煮約１分鐘後再加入芹菜鍛燒煮至所有食材入味即可起鍋"),
                                 List.of("素食", "家常菜"),
-                                "https://www.youtube.com/embed/n4W022W8d3c","ArdenLin"));
+                                "https://www.youtube.com/embed/n4W022W8d3c","arden123"));
                 // 4.
                 this.addRecipe(new Recipe(4, "洋蔥煎肉餅", 10,
                                 List.of("豬絞肉", "洋蔥末", "蔥花", "薑末"),
@@ -56,7 +56,7 @@ public class ChineseCuisine extends AbstractCuisine {
                                                 "平底鍋中倒入２大匙的沙拉油，將肉餅排入鍋中，蓋上鍋蓋，以小火煎至兩面微焦香",
                                                 "煎熟後取出盛盤，沾番茄醬食用即可"),
                                 List.of("早餐"),
-                                "https://www.youtube.com/embed/bI70ShwVtEk","ArdenLin"));
+                                "https://www.youtube.com/embed/bI70ShwVtEk","arden123"));
                 // 5.
                 this.addRecipe(new Recipe(5, "香蔥煎蛋", 8,
                                 List.of("蛋", "蔥"),
@@ -67,7 +67,7 @@ public class ChineseCuisine extends AbstractCuisine {
                                                 "中火稍微搖晃煎在底部攪拌至定型(約３分鐘)",
                                                 "翻面煎，定型後再晃動煎１分鐘煎熟即可"),
                                 List.of("蛋料理", "家常菜"),
-                                "https://www.youtube.com/embed/oAg53uI8yJc","ArdenLin"));
+                                "https://www.youtube.com/embed/oAg53uI8yJc","arden123"));
         }
 
 }

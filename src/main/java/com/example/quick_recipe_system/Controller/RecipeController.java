@@ -43,7 +43,6 @@ public class RecipeController {
         return "diy-page";
     }
 
-
     @GetMapping("/recipe/add")
     public String showAddRecipe(HttpSession session, Model model) {
 
@@ -78,10 +77,11 @@ public class RecipeController {
     }
 
     @GetMapping("recipe/edit/{id}")
-    public String showEditRecipeForm(@PathVariable Integer id, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
-        
+    public String showEditRecipeForm(@PathVariable Integer id, HttpSession session, Model model,
+            RedirectAttributes redirectAttributes) {
+
         String username = (String) session.getAttribute("loggedInUser");
-        
+
         if (username == null) {
             return "redirect:/login";
         }
@@ -103,7 +103,8 @@ public class RecipeController {
     }
 
     @PostMapping("/recipe/edit/{id}")
-    public String updateRecipe(@PathVariable Integer id, Recipe updateRecipe, HttpSession session, RedirectAttributes redirectAttributes) {
+    public String updateRecipe(@PathVariable Integer id, Recipe updateRecipe, HttpSession session,
+            RedirectAttributes redirectAttributes) {
 
         String username = (String) session.getAttribute("loggedInUser");
 
@@ -114,6 +115,47 @@ public class RecipeController {
         recipeService.updateRecipe(id, updateRecipe);
 
         redirectAttributes.addFlashAttribute("successMsg", "食譜修改成功！");
+        return "redirect:/diy";
+    }
+
+    /*--- Controller 層 ---
+    對應網址：POST /recipe/delete/{id}
+    方法名稱：deleteRecipe(路徑變數 Integer id, HttpSession session, RedirectAttributes redirectAttributes)
+    
+    1. 登入驗證：
+    取得 session 裡的 "loggedInUser"
+    IF (沒登入) -> 直接 return "redirect:/login"
+    
+    2. 嘗試執行刪除 (使用 try-catch 包覆)：
+    TRY {
+        呼叫 Service.deleteRecipe(id, 剛剛取得的 username)
+         
+        // 如果上面那行沒報錯，代表刪除成功
+        用 redirectAttributes 加入成功提示 ("食譜已成功刪除！")
+         
+    } CATCH (捕捉 SecurityException e) {
+        // 如果觸發了防護罩拋出例外，就會跑到這裡
+        用 redirectAttributes 加入錯誤提示 (可以直接抓例外裡的文字：e.getMessage())
+    }
+    
+    3. 畫面跳轉：
+    無論是 TRY 成功還是 CATCH 失敗，最後一律導回 DIY 管理面板
+    return "redirect:/diy" */
+    @PostMapping("/recipe/delete/{id}")
+    public String deleteRecipe(@PathVariable Integer id, HttpSession session, RedirectAttributes redirectAttributes) {
+
+        String username = (String) session.getAttribute("loggedInUser");
+
+        if (username == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            recipeService.deleteRecipe(id, username);
+            redirectAttributes.addFlashAttribute("successMsg", "食譜已成功刪除！");
+        } catch (SecurityException e) {
+            redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
+        }
         return "redirect:/diy";
     }
 }
