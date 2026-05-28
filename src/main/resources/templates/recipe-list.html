@@ -22,11 +22,11 @@
 
         <h1 class="page-title">探索美味食譜</h1>
         
-        <div th:each="type : ${types}" class="cuisine-section">
+        <div th:each="entry : ${typeRecipes}" class="cuisine-section">
           
-            <h2 class="cuisine-title" th:text="|🎌 ${type.cuisineName}|">分類名稱</h2>
+            <h2 class="cuisine-title" th:text="|🎌 ${entry.key}料理|">分類名稱</h2>
             
-            <div th:each="recipe : ${type.recipes}" class="recipe-detail-card">
+            <div th:each="recipe : ${entry.value}" class="recipe-detail-card">
                 
                 <div class="recipe-header">
                     <h3 th:text="${recipe.name}">食譜名稱</h3>
@@ -69,7 +69,6 @@
                 <div class="favorite-actions" style="margin-top: 25px; text-align: right; border-top: 1px dashed #ddd; padding-top: 20px;">
                     <form th:action="@{/favorite/add}" method="post">
                         <input type="hidden" name="recipeId" th:value="${recipe.id}" />
-                        
                         <button type="submit" class="btn-collect">❤️ 加入收藏</button>
                     </form>
                 </div>

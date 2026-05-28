@@ -1,4 +1,4 @@
-package com.example.quick_recipe_system.service.user;
+package com.example.quick_recipe_system.service;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -2,7 +2,6 @@ package com.example.quick_recipe_system.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.quick_recipe_system.model.Recipe;
+import com.example.quick_recipe_system.entity.Recipe;
 import com.example.quick_recipe_system.service.FavoriteService;
 import com.example.quick_recipe_system.service.RecipeService;
 

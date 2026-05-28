@@ -2,7 +2,21 @@ spring:
   application:
     name:
       quick-recipe-system
+  datasource:
+    # 資料庫連線網址 (指派到本機的 recipe_db，並設定台北時區與 UTF-8 防亂碼)
+    url: jdbc:mysql://localhost:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8
+    username: root  # MySQL 帳號 (預設通常是 root)
+    password: P@ssword123  # MySQL 密碼 
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
+  jpa:
+    hibernate:
+      ddl-auto: update  # 【JPA 魔法核心】update 表示：如果資料表不存在就自動建立，如果有改欄位會自動更新
+    show-sql: true # 開發期神器：讓後台印出 JPA 幫你代寫的 SQL 語法
+    properties:
+      hibernate:
+        format_sql: true # 將印出來的 SQL 語法排版得漂漂亮亮，方便你學習與除錯
+        dialect: org.hibernate.dialect.MySQLDialect # 指定資料庫方言，讓 JPA 知道要翻譯成哪一種 MySQL 版本的語法
   servlet:
     encoding:
       charset: UTF-8

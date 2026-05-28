@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.example.quick_recipe_system.model.Recipe;
+import com.example.quick_recipe_system.entity.Recipe;
 
 @Service
 public class FavoriteService {

@@ -1,6 +1,7 @@
 package com.example.quick_recipe_system.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,8 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.quick_recipe_system.model.Recipe;
-import com.example.quick_recipe_system.model.cuisine.CuisineType;
+import com.example.quick_recipe_system.entity.Recipe;
 import com.example.quick_recipe_system.service.RecipeService;
 
 import jakarta.servlet.http.HttpSession;
@@ -24,9 +24,9 @@ public class RecipeController {
 
     @GetMapping("/recipe")
     public String showRecipeType(Model model) {
-        List<CuisineType> types = recipeService.getAllCuisineTypes();
+        Map<String, List<Recipe>> typeRecipes = recipeService.getRecipesByType();
 
-        model.addAttribute("types", types);
+        model.addAttribute("typeRecipes", typeRecipes);
 
         return "recipe-list";
     }
@@ -112,7 +112,7 @@ public class RecipeController {
             return "redirect:/login";
         }
 
-        recipeService.updateRecipe(id, updateRecipe);
+        recipeService.updateRecipe(updateRecipe, username);
 
         redirectAttributes.addFlashAttribute("successMsg", "食譜修改成功！");
         return "redirect:/diy";
