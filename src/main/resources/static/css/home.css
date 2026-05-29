@@ -349,92 +349,127 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    min-height: 320px; /* 給予一個基本高度，讓空籃子狀態也能保持漂亮的版面 */
 }
 
-.diy-item{
-    padding: 10px 0; /* 稍微增加間距，視覺更舒服 */
-    border-bottom: 1px solid #c6d8a7;
-    display: flex;
-    justify-content: space-between; /* 這行現在會把文字推向左，按鈕推向右 */
-    align-items: center; /* 讓文字跟按鈕垂直對齊，不會歪一邊 */
+.diy-title {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
 }
 
-.diy-item ul {
+.diy-list {
     list-style: none; 
     padding: 0;
+    margin: 0;
 }
 
-/* 讓兩個按鈕之間有點呼吸空間 */
-.span-group {
+.diy-item {
+    padding: 15px 0; 
+    border-bottom: 1px dashed #c6d8a7; /* 換成虛線，質感更精緻 */
     display: flex;
-    gap: 15px;
+    justify-content: space-between; 
+    align-items: center; 
 }
 
-.btn-edit{
+/* 消除最後一個項目的底線，保持畫面乾淨 */
+.diy-item:last-child {
+    border-bottom: none;
+}
+
+.recipe-name {
+    font-weight: bold;
+    color: #333;
+    flex: 1; /* 這是 Flexbox 魔法：讓菜名佔滿剩餘空間，自然把按鈕往右推 */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 菜名太長時自動顯示 "..." */
+    padding-right: 15px;
+}
+
+.action-group {
+    display: flex;
+    gap: 10px;
+}
+
+/* 統一設定操作按鈕的基底樣式 */
+.btn-action {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none; /* 去除 <a> 標籤預設的底線 */
+    font-size: 13px;
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 8px; /* 微微的圓角 */
+    transition: all 0.3s ease;
+}
+
+/* 修改按鈕：使用 rgba 創造微透明的背景質感 */
+.btn-action.edit {
     color: var(--primary-color);
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
+    background-color: rgba(139, 150, 98, 0.1); 
 }
 
-.btn-delete {
+.btn-action.edit:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 刪除按鈕 */
+.btn-action.delete {
     color: #ba714d;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
+    background-color: rgba(186, 113, 77, 0.1);
 }
 
-.btn-edit:hover {
-    color: #96bb96;
+.btn-action.delete:hover {
+    background-color: #ba714d;
+    color: white;
 }
 
-.btn-delete:hover {
-    color: #deb49f;
-}
-
-/* 既然你喜歡清新感，可以順便修飾一下按鈕 */
-.button-group button {
-    background-color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 2px 8px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.button-group button:hover {
-    background-color:rgba(207, 206, 206, 0.768); /* 滑鼠移上去有一點淺綠色回饋 */
+.empty-state {
+    text-align: center;
+    color: #888;
+    padding: 40px 0;
+    font-size: 14px;
+    line-height: 1.8;
 }
 
 .diy-add-container {
     display: flex; 
-    align-items: flex-end; 
+    align-items: center; /* 改為 center 讓文字與按鈕垂直置中對齊 */
     justify-content: flex-end; 
-    gap: 5px;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .diy-add-text {
-    font-size: 12px; 
-    color: #888;
+    font-size: 14px; 
+    color: #666;
+    font-weight: bold;
 }
 
 .btn-diy-add {
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     background-color: var(--primary-color);
-    border-radius: 50%;            /* 圓形按鈕 */
+    border-radius: 50%;
     color: white;
-    font-size: 24px;
+    font-size: 26px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: 0.3s;
-    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Q彈的動畫效果 */
+    box-shadow: 0 4px 8px rgba(139, 150, 98, 0.3);
 }
 
 .btn-diy-add:hover {
     background-color: white;
     color: var(--primary-color);
+    transform: scale(1.15); /* 滑鼠移入時放大一點點 */
 }
 
 .footer {

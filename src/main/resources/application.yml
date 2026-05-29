@@ -4,7 +4,7 @@ spring:
       quick-recipe-system
   datasource:
     # 資料庫連線網址 (指派到本機的 recipe_db，並設定台北時區與 UTF-8 防亂碼)
-    url: jdbc:mysql://localhost:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     username: root  # MySQL 帳號 (預設通常是 root)
     password: P@ssword123  # MySQL 密碼 
     driver-class-name: com.mysql.cj.jdbc.Driver

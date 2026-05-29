@@ -112,4 +112,81 @@ public class RecipeService {
             throw new SecurityException("您沒有權限刪除此食譜！");
         }
     }
+    /**
+     * 解析首頁的烹調時間字串，並呼叫對應的 JPA 查詢
+     */
+    public Map<String, List<Recipe>> searchByCookingTimeStr(String timeStr) {
+        List<Recipe> sortedRecipes;
+        String customLabel;
+
+        // 進行字串比對與翻譯
+        if ("10mins".equals(timeStr)) {
+            sortedRecipes = recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(10);
+            customLabel = "⏱️ 10分鐘快手";
+        } else if ("20mins".equals(timeStr)) {
+            sortedRecipes = recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(20);
+            customLabel = "⏱️ 20分鐘輕鬆上菜";
+        } else if ("30mins".equals(timeStr)) {
+            sortedRecipes = recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(30);
+            customLabel = "⏱️ 30分鐘經典";
+        } else if ("30mins up".equals(timeStr)) {
+            // 注意：這裡是呼叫 GreaterThan (大於)
+            sortedRecipes = recipeRepository.findByCookingTimeGreaterThanOrderByCookingTimeAsc(30);
+            customLabel = "🍳 30分鐘以上功夫菜";
+        } else {
+            // 如果選到 "time" 或是網址被亂打，預設回傳全部分類
+            return getRecipesByType(); 
+        }
+
+        // 把結果裝進 Map 回傳
+        Map<String, List<Recipe>> resultMap = new LinkedHashMap<>();
+        resultMap.put(customLabel, sortedRecipes);
+        return resultMap;
+    }
+
+    
+    public Map<String, List<Recipe>> masterSearch(String keyword, String cookingtime, String author, String typeString) {
+        
+        Map<String, List<Recipe>> resultMap = new LinkedHashMap<>();
+
+        // 優先權 1：關鍵字綜合搜尋 (菜名、食材、標籤)
+        if (keyword != null && !keyword.trim().isEmpty()) {
+            List<Recipe> recipes = recipeRepository.searchByComprehensiveKeyword(keyword);
+            resultMap.put("🔍 搜尋結果：'" + keyword + "'", recipes);
+            return resultMap;
+        }
+
+        // 優先權 2：烹調時間搜尋 (沿用昨天寫好的邏輯)
+        if (cookingtime != null && !cookingtime.isEmpty()) {
+            return searchByCookingTimeStr(cookingtime); 
+        }
+
+        // 優先權 3：料理類型搜尋
+        if (typeString != null && !typeString.isEmpty()) {
+            // 假設你有一個 findByTypeString 的 Repository 方法
+            List<Recipe> recipes = recipeRepository.findByTypeString(typeString);
+            resultMap.put(typeString , recipes);
+            return resultMap;
+        }
+        
+        // 優先權 4：作者搜尋
+        if (author != null && !author.isEmpty()) {
+            List<Recipe> recipes = recipeRepository.findByAuthor(author);
+            resultMap.put("👨‍🍳 " + author + " 的專屬食譜", recipes);
+            return resultMap;
+        }
+
+        // 預設：什麼都沒選，顯示中/日/西式大分類
+        return getRecipesByType(); 
+    }
+
+    /**
+     * 獲取使用者最新 5 筆 DIY 私房食譜
+     */
+    public List<Recipe> getTopLatestDiyRecipes(String username) {
+        if (username == null || username.trim().isEmpty()) {
+            return new ArrayList<>(); // 防呆：沒登入就給空籃子
+        }
+        return recipeRepository.findTop5ByAuthorOrderByIdDesc(username);
+    }
 }

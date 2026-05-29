@@ -15,40 +15,43 @@
     <!--main主要內容-->
     <main class="main-wrapper">
         <section class="search-section">  <!--section有主題的內容區塊-->
-            <div class="search-bar-container">  <!--div一個區塊-->
-                <input type="text" class="search-bar-input" placeholder="搜尋食譜">  <!--input type="text"文字輸入框-->
-                <button class="search-btn">  <!--button按鈕-->
-                    <span class="material-symbols-outlined">🔍</span>  <!--span表示行內元素-->
-                </button>
-            </div>
-            <div class="filter-tags"> <!--另一個區塊-->
-                <select name="cookingtime" class="tag-btn">  <!--select下拉選單-->
-                    <option value="time">烹調時間</option>  <!--option定義選項-->
-                    <option value="10mins">10分鐘</option>
-                    <option value="20mins">20分鐘</option>
-                    <option value="30mins">30分鐘</option>
-                    <option value="30mins up">30分鐘以上</option>
+           <form th:action="@{/recipe}" method="get" id="searchForm" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+                
+                <div class="search-bar-container">
+                    <input type="text" name="keyword" class="search-bar-input" placeholder="搜尋食譜(支援菜名、食材、標籤)" th:value="${selectedKeyword}">
+                    <button type="submit" class="search-btn">
+                        <span class="material-symbols-outlined">🔍</span>
+                    </button>
+                </div>
+                
+                <div class="filter-tags">
+                    <select name="cookingtime" class="tag-btn" onchange="this.form.submit()">
+                        <option value="">烹調時間</option>
+                        <option value="10mins" th:selected="${selectedTime == '10mins'}">10分鐘</option>
+                        <option value="20mins" th:selected="${selectedTime == '20mins'}">20分鐘</option>
+                        <option value="30mins" th:selected="${selectedTime == '30mins'}">30分鐘</option>
+                        <option value="30mins up" th:selected="${selectedTime == '30mins up'}">30分鐘以上</option>
                     </select>
-                
-                <select name="keyword" class="tag-btn"> <!--select下拉選單-->
-                    <option>關鍵字</option> <!--option定義選項-->
-                    <option>麵料理</option>
-                    <option>蛋料理</option>
-                    <option>豆腐料理</option>
-                    <option>家常菜</option>
-                    <option>主食</option>
-                    <option>素食</option>
-                    <option>海鮮</option>
-                    <option>早餐</option>
-                    <option>炸物</option>
-                    <option>濃郁</option>
-                </select>
-                
-                <span style="font-weight: bold;">料理類型</span>  <!--span行內元素-->
-                <button class="tag-btn">中式料理</button>  <!--button按鈕-->
-                <button class="tag-btn">日式料理</button> 
-                <button class="tag-btn">西式料理</button>
-            </div>
+                    
+                    <select name="author" class="tag-btn" onchange="this.form.submit()">
+                        <option value="">作者</option>
+                        <option value="QuickCook官方" th:selected="${selectedAuthor == 'QuickCook官方'}">官方嚴選</option>
+                        <option value="Arden" th:selected="${selectedAuthor == 'Arden'}">Arden</option>
+                    </select>
+                    
+                    
+                    
+                    <button type="submit" name="typeString" value="中式" class="tag-btn" 
+                            th:style="${selectedType == '中式' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">中式料理</button>
+                    <button type="submit" name="typeString" value="日式" class="tag-btn"
+                            th:style="${selectedType == '日式' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">日式料理</button>
+                    <button type="submit" name="typeString" value="西式" class="tag-btn"
+                            th:style="${selectedType == '西式' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">西式料理</button>
+                    
+                    <a th:href="@{/home}" class="tag-btn" style="text-decoration: none; color: #ba714d;" 
+                       th:if="${selectedKeyword != null or selectedTime != null or selectedType != null}">✖ 清除搜尋</a>
+                </div>
+            </form>
         </section>
 
         <div class="content-area">   <!--卡片一個大區塊-->
@@ -116,57 +119,52 @@
                 </a>
                 </section>
 
-            <aside class="diy-sidebar">  <!--aside側標-->
+            <aside class="diy-sidebar">
                 <div>
-                    <h2 class="diy-item">我的DIY食譜</h2> <!--h2標題-->
-                    <ul>  <!--ul無序列表-->
-                        <li class="diy-item"> 
-                            <span>奶油培根義大利麵</span> <!--使用span把文字包起來,方便單獨修改文字樣式-->
-                            <div class="span-group">
-                                <div class="btn-edit">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                    <span>修改</span>
-                                </div>
-                                <div class="btn-delete">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                    <span>刪除</span>
-                                 </div>
-                            </div>
-                        </li>
-
-                        <li class="diy-item">
-                            <span>香煎牛小排</span>
-                            <div class="span-group">
-                                <div class="btn-edit">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                    <span>修改</span>
-                                </div>
-                                <div class="btn-delete">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                    <span>刪除</span>
-                                 </div>
-                            </div>
-                        </li>
-
-                        <li class="diy-item">
-                            <span>番茄炒蛋</span>
-                            <div class="span-group">
-                                <div class="btn-edit">
-                                    <i class="fa-solid fa-pen-to-square"></i>
-                                    <span>修改</span>
-                                </div>
-                                <div class="btn-delete">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                    <span>刪除</span>
-                                 </div>
+                    <h2 class="diy-title">我的DIY食譜</h2> 
+                    
+                    <ul th:if="${not #lists.isEmpty(diyRecipes)}" class="diy-list">
+                        <li th:each="recipe : ${diyRecipes}" class="diy-item">
+                            
+                            <span class="recipe-name" th:text="${recipe.name}">動態食譜名稱</span>
+                            
+                            <div class="action-group">
+                                <a th:href="@{/recipe/edit/{id}(id=${recipe.id})}" class="btn-action edit">
+                                    <i class="fa-solid fa-pen-to-square"></i> 修改
+                                </a>
+                                
+                                <form th:action="@{/recipe/delete/{id}(id=${recipe.id})}" method="post" style="margin: 0; display: inline-flex;">
+    
+                                    <button type="submit" 
+                                            class="btn-action delete" 
+                                            th:data-name="${recipe.name}"
+                                            onclick="return confirm('警告：確定要將「' + this.getAttribute('data-name') + '」永久刪除嗎？此動作無法復原！');"
+                                            style="border: none; cursor: pointer; font-family: inherit;">
+                                        <i class="fa-solid fa-trash-can"></i> 刪除
+                                    </button>
+                                    
+                                </form>
                             </div>
                         </li>
                     </ul>
+
+                    <div th:if="${#lists.isEmpty(diyRecipes)}" class="empty-state">
+                        <p>目前還沒有創立食譜唷！</p>
+                        <p>點擊下方新增第一道私房菜吧 👇</p>
+                    </div>
                 </div>
                 
                 <div class="diy-add-container">
                     <span class="diy-add-text">新增食譜</span>
-                    <button class="btn-diy-add">+</button>
+                    
+                    <a th:if="${session.loggedInUser == null}" 
+                    href="#" 
+                    onclick="alert('哈囉！請先登入才能「新增食譜」喔！'); return false;" 
+                    class="btn-diy-add">+</a>
+                    
+                    <a th:unless="${session.loggedInUser == null}" 
+                    th:href="@{/recipe/add}" 
+                    class="btn-diy-add">+</a>
                 </div>
             </aside>
         </div>

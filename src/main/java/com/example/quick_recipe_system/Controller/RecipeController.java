@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.quick_recipe_system.entity.Recipe;
@@ -23,12 +24,23 @@ public class RecipeController {
     private final RecipeService recipeService;
 
     @GetMapping("/recipe")
-    public String showRecipeType(Model model) {
-        Map<String, List<Recipe>> typeRecipes = recipeService.getRecipesByType();
+    public String exploreRecipes(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "cookingtime", required = false) String cookingtime,
+            @RequestParam(value = "typeString", required = false) String typeString,
+            Model model) {
+
+        // 呼叫昨天與今天實作的綜合搜尋核心
+        Map<String, List<Recipe>> typeRecipes = recipeService.masterSearch(keyword, cookingtime, null, typeString);
 
         model.addAttribute("typeRecipes", typeRecipes);
 
-        return "recipe-list";
+        // 用來讓探索頁面的搜尋欄能維持住選取的狀態
+        model.addAttribute("selectedTime", cookingtime);
+        model.addAttribute("selectedKeyword", keyword);
+        model.addAttribute("selectedType", typeString);
+
+        return "recipe-list"; // 統一在這個完美的卡片頁面呈現結果！
     }
 
     @GetMapping("/diy")
