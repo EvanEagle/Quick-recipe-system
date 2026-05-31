@@ -39,14 +39,12 @@
                         <option value="Arden" th:selected="${selectedAuthor == 'Arden'}">Arden</option>
                     </select>
                     
-                    
-                    
-                    <button type="submit" name="typeString" value="中式" class="tag-btn" 
-                            th:style="${selectedType == '中式' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">中式料理</button>
-                    <button type="submit" name="typeString" value="日式" class="tag-btn"
-                            th:style="${selectedType == '日式' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">日式料理</button>
-                    <button type="submit" name="typeString" value="西式" class="tag-btn"
-                            th:style="${selectedType == '西式' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">西式料理</button>
+                    <button type="submit" name="typeString" value="chinese" class="tag-btn" 
+                            th:style="${selectedType == 'chinese' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">中式料理</button>
+                    <button type="submit" name="typeString" value="Japanese" class="tag-btn"
+                            th:style="${selectedType == 'Japanese' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">日式料理</button>
+                    <button type="submit" name="typeString" value="Western" class="tag-btn"
+                            th:style="${selectedType == 'Western' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">西式料理</button>
                     
                     <a th:href="@{/home}" class="tag-btn" style="text-decoration: none; color: #ba714d;" 
                        th:if="${selectedKeyword != null or selectedTime != null or selectedType != null}">✖ 清除搜尋</a>
@@ -55,69 +53,35 @@
         </section>
 
         <div class="content-area">   <!--卡片一個大區塊-->
-            <section class="recipe-grid">  <!--section有主題的內容區塊-->
-                <a href="#" class="recipe-card">  <!--a點擊卡片會進入另一個網頁-->
-                    <div class="card-img-container"> <!--圖片一個區塊-->
-                        <img th:src="@{/images/food1.jpg}" alt="美食圖片" class="card-img">
-                    </div>
-                    <div class="card-info"> <!--文字一個區塊-->
-                            <h3 class="recipe-title">Avocado Salmon Salad</h3>
-                            <p class="recipe-desc">酪梨鮭魚沙拉，人氣必點清爽健康美味...</p>
-                        <div class="card-actions"> <!--按鈕的區塊-->
-                            <button class="btn-detail">查看詳情</button> <!--button 查看詳情 按鈕-->
-                            <button class="btn-collect">加入收藏</button> <!--button 加入收藏 按鈕-->
-                        </div>
-                    </div>
-                </a>
-
-                <a href="#" class="recipe-card">
+            <section class="recipe-grid">
+    
+                <div th:each="recipe : ${randomRecipes}" class="recipe-card">
+                    
                     <div class="card-img-container">
-                        <img th:src="@{/images/food1.jpg}" alt="美食圖片" class="card-img">
+                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/food1.jpg'}}" alt="美食圖片" class="card-img">
                     </div>
+                    
                     <div class="card-info">
                         <div>
-                            <h3 class="recipe-title">Avocado Salmon Salad</h3>
-                            <p class="recipe-desc">酪梨鮭魚沙拉，人氣必點清爽健康美味...</p>
+                            <h3 class="recipe-title" th:text="${recipe.name}">動態食譜名稱</h3>
                         </div>
+                        
                         <div class="card-actions">
-                            <button class="btn-detail">查看詳情</button>
-                            <button class="btn-collect">加入收藏</button>
+                            <form th:action="@{/recipe/detail/{id}(id=${recipe.id})}" method="get"
+                            class="btn-detail" 
+                            style="text-align: center; text-decoration: none; box-sizing: border-box; font-weight: bold;">
+                            查看詳情
+                            </form>
+                            
+                            <form th:action="@{/recipe/collect/{id}(id=${recipe.id})}" method="post" style="margin: 0; flex: 1; display: flex;">
+                                <button type="submit" class="btn-collect" style="width: 100%;">加入收藏</button>
+                            </form>
                         </div>
                     </div>
-                </a>
-
-                <a href="#" class="recipe-card">
-                    <div class="card-img-container">
-                        <img th:src="@{/images/food1.jpg}" alt="美食圖片" class="card-img">
-                    </div>
-                    <div class="card-info">
-                        <div>
-                            <h3 class="recipe-title">Avocado Salmon Salad</h3>
-                            <p class="recipe-desc">酪梨鮭魚沙拉，人氣必點清爽健康美味...</p>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn-detail">查看詳情</button>
-                            <button class="btn-collect">加入收藏</button>
-                        </div>
-                    </div>
-                </a>
-
-                <a href="#" class="recipe-card">
-                    <div class="card-img-container">
-                        <img th:src="@{/images/food1.jpg}" alt="美食圖片" class="card-img">
-                    </div>
-                    <div class="card-info">
-                        <div>
-                            <h3 class="recipe-title">Avocado Salmon Salad</h3>
-                            <p class="recipe-desc">酪梨鮭魚沙拉，人氣必點清爽健康美味...</p>
-                        </div>
-                        <div class="card-actions">
-                            <button class="btn-detail">查看詳情</button>
-                            <button class="btn-collect">加入收藏</button>
-                        </div>
-                    </div>
-                </a>
-                </section>
+                    
+                </div>
+                
+            </section>
 
             <aside class="diy-sidebar">
                 <div>

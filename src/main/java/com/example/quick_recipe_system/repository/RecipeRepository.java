@@ -43,7 +43,11 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
             "WHERE r.name LIKE %:keyword% OR i LIKE %:keyword% OR k LIKE %:keyword%")
     List<Recipe> searchByComprehensiveKeyword(@Param("keyword") String keyword);
 
-
+    
     List<Recipe> findTop5ByAuthorOrderByIdDesc(String author);
+
+
+    @Query(value = "SELECT * FROM recipe ORDER BY RAND() LIMIT 4", nativeQuery = true)
+    List<Recipe> findRandom4Recipes();
 
 }

@@ -21,14 +21,21 @@ public class HomeController {
     @GetMapping("/home")
     public String home(HttpSession session, Model model) {
         // 1. 從 Session 安全撈取目前登入的使用者帳號
-        String currentUsername = (String) session.getAttribute("loggedInUser"); 
-        
-        // 2. 嚴格透過 Service 層拿資料，絕不越權呼叫 Repository
-        List<Recipe> diyRecipes = recipeService.getTopLatestDiyRecipes(currentUsername);
-        
-        // 3. 投遞給前端畫面
-        model.addAttribute("diyRecipes", diyRecipes);
-        
+        String currentUsername = (String) session.getAttribute("loggedInUser");
+
+        if (currentUsername != null) {
+
+            // 2. 嚴格透過 Service 層拿資料，絕不越權呼叫 Repository
+            List<Recipe> diyRecipes = recipeService.getTopLatestDiyRecipes(currentUsername);
+
+            // 3. 投遞給前端畫面
+            model.addAttribute("diyRecipes", diyRecipes);
+        }
+
+        List<Recipe> randomRecipes = recipeService.getRandomRecipesForHome();
+
+        model.addAttribute("randomRecipes", randomRecipes);
+
         return "home";
     }
 }

@@ -60,6 +60,9 @@ public class Recipe {
     @Column(name = "video_url")
     private String videoUrl;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "author", nullable = false)
     private String author;
 

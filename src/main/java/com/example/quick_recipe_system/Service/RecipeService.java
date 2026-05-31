@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.example.quick_recipe_system.entity.Recipe;
@@ -37,11 +38,11 @@ public class RecipeService {
 
         // 4. 依照你指定的順序放入，同時把英文 Key 換成中文 Key
         // 使用 getOrDefault 是為了防呆：如果資料庫目前剛好沒有某類的菜，就給它一個空清單，畫面就不會出錯
-        orderedMap.put("中式", rawMap.getOrDefault("chinese",
+        orderedMap.put("中式", rawMap.getOrDefault("Chinese",
                 rawMap.getOrDefault("Chinese", rawMap.getOrDefault("中式", new ArrayList<>()))));
-        orderedMap.put("日式", rawMap.getOrDefault("japanese",
+        orderedMap.put("日式", rawMap.getOrDefault("Japanese",
                 rawMap.getOrDefault("Japanese", rawMap.getOrDefault("日式", new ArrayList<>()))));
-        orderedMap.put("西式", rawMap.getOrDefault("western",
+        orderedMap.put("西式", rawMap.getOrDefault("Western",
                 rawMap.getOrDefault("Western", rawMap.getOrDefault("西式", new ArrayList<>()))));
 
         return orderedMap;
@@ -112,6 +113,7 @@ public class RecipeService {
             throw new SecurityException("您沒有權限刪除此食譜！");
         }
     }
+
     /**
      * 解析首頁的烹調時間字串，並呼叫對應的 JPA 查詢
      */
@@ -135,7 +137,7 @@ public class RecipeService {
             customLabel = "🍳 30分鐘以上功夫菜";
         } else {
             // 如果選到 "time" 或是網址被亂打，預設回傳全部分類
-            return getRecipesByType(); 
+            return getRecipesByType();
         }
 
         // 把結果裝進 Map 回傳
@@ -144,9 +146,9 @@ public class RecipeService {
         return resultMap;
     }
 
-    
-    public Map<String, List<Recipe>> masterSearch(String keyword, String cookingtime, String author, String typeString) {
-        
+    public Map<String, List<Recipe>> masterSearch(String keyword, String cookingtime, String author,
+            String typeString) {
+
         Map<String, List<Recipe>> resultMap = new LinkedHashMap<>();
 
         // 優先權 1：關鍵字綜合搜尋 (菜名、食材、標籤)
@@ -158,17 +160,17 @@ public class RecipeService {
 
         // 優先權 2：烹調時間搜尋 (沿用昨天寫好的邏輯)
         if (cookingtime != null && !cookingtime.isEmpty()) {
-            return searchByCookingTimeStr(cookingtime); 
+            return searchByCookingTimeStr(cookingtime);
         }
 
         // 優先權 3：料理類型搜尋
         if (typeString != null && !typeString.isEmpty()) {
             // 假設你有一個 findByTypeString 的 Repository 方法
             List<Recipe> recipes = recipeRepository.findByTypeString(typeString);
-            resultMap.put(typeString , recipes);
+            resultMap.put(typeString, recipes);
             return resultMap;
         }
-        
+
         // 優先權 4：作者搜尋
         if (author != null && !author.isEmpty()) {
             List<Recipe> recipes = recipeRepository.findByAuthor(author);
@@ -177,7 +179,7 @@ public class RecipeService {
         }
 
         // 預設：什麼都沒選，顯示中/日/西式大分類
-        return getRecipesByType(); 
+        return getRecipesByType();
     }
 
     /**
@@ -188,5 +190,9 @@ public class RecipeService {
             return new ArrayList<>(); // 防呆：沒登入就給空籃子
         }
         return recipeRepository.findTop5ByAuthorOrderByIdDesc(username);
+    }
+
+    public List<Recipe> getRandomRecipesForHome() {
+        return recipeRepository.findRandom4Recipes();
     }
 }

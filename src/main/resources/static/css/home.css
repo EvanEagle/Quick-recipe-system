@@ -244,6 +244,7 @@ body {
 /* ==============================
    4. 主內容區佈局
    ============================== */
+
 .content-area {
     display: grid;
     grid-template-columns: 7fr 3fr; /* 左側食譜佔 7 份寬，右側 DIY 佔 3 份 */
