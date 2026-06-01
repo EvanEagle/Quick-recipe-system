@@ -3,104 +3,167 @@ CSS
    DIY 食譜管理頁面專屬樣式
    ============================== */
 
-/* 系統提示區塊 */
-.diy-message-block {
-    text-align: center;
-    margin-bottom: 20px;
+/* 強迫撐開的寬廣容器 */
+.diy-container {
+    width: 100%; 
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    flex: 1; 
+    box-sizing: border-box;
 }
 
-.msg-success {
-    color: #2E8B57;
-    font-weight: bold;
-    background-color: #e6f4ea;
-    padding: 10px 20px;
-    border-radius: 8px;
-    display: inline-block;
-}
-
-.msg-error {
-    color: #ba714d;
-    font-weight: bold;
-    background-color: #fbe9e7;
-    padding: 10px 20px;
-    border-radius: 8px;
-    display: inline-block;
-}
-
-/* 標題與新增按鈕區塊 (置中排版) */
-.diy-header {
-    text-align: center;
+/* 標題與新增按鈕的並排佈局 */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 40px;
+    border-bottom: 3px solid var(--accent-color);
+    padding-bottom: 15px;
 }
 
-.diy-header .page-title {
-    margin-bottom: 20px; /* 讓標題與下方的按鈕保持適當間距 */
+.page-title {
+    color: var(--primary-color);
+    font-size: 28px;
+    margin: 0;
 }
 
-/* 新增食譜按鈕 */
-.btn-add-recipe {
-    background-color: #4A5D23;
+.btn-add-new {
+    background-color: var(--accent-orange, #ba714d);
     color: white;
-    padding: 12px 25px; /* 稍微放大增加點擊範圍 */
-    border-radius: 25px;
     text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 20px;
     font-weight: bold;
-    display: inline-block; /* 必須設定為 inline-block 才能正確套用 text-align: center */
+    font-size: 16px;
+    transition: 0.3s;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: transform 0.3s, background-color 0.3s;
 }
 
-.btn-add-recipe:hover {
-    background-color: #5B722C;
+.btn-add-new:hover {
+    background-color: #d5a691;
     transform: translateY(-2px);
 }
 
-/* 空白狀態提示區塊 */
-.diy-empty-state {
-    text-align: center;
-    padding: 50px;
-    background-color: #ffffff;
+/* 提示訊息外框 */
+.message-block { text-align: center; margin-bottom: 25px; }
+.msg-success { color: #2E8B57; background-color: #e6f4ea; padding: 10px 20px; border-radius: 8px; font-weight: bold; display: inline-block; }
+.msg-error { color: #ba714d; background-color: #fbe9e7; padding: 10px 20px; border-radius: 8px; font-weight: bold; display: inline-block; }
+
+/* 空白狀態 */
+.empty-state-card {
+    background-color: var(--card-bg, #fff);
     border-radius: 20px;
+    box-shadow: var(--shadow);
+    padding: 60px 30px;
+    text-align: center;
+    border: 2px dashed #ccc;
+    max-width: 600px; 
+    margin: 40px auto;
+}
+.empty-state-icon { font-size: 50px; margin-bottom: 15px; }
+.empty-state-text { color: #666; font-size: 18px; margin-bottom: 25px; }
+
+/* ==============================
+   DIY 卡片牆網格系統
+   ============================= */
+.diy-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 30px;
 }
 
-.diy-empty-icon {
-    font-size: 50px;
-    margin-bottom: 15px;
-}
-
-.diy-empty-text {
-    font-size: 18px;
-    color: #666666;
-    margin-bottom: 20px;
-}
-
-/* 卡片底部的動作區 */
-.diy-actions {
+.diy-summary-card {
+    background-color: var(--card-bg, #fff);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
     display: flex;
-    gap: 15px;
-    justify-content: flex-end;
-    margin-top: 20px;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.diy-summary-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+}
+
+.card-img-wrapper {
+    width: 100%;
+    height: 180px;
+    background-color: #f5f5f5;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.recipe-title {
+    color: var(--primary-color);
+    font-size: 20px;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.recipe-meta {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 8px 0;
+}
+
+.tags-container { margin-top: 5px; margin-bottom: 15px; }
+.keyword-tag { background-color: #F1F4E8; color: var(--primary-color); padding: 4px 10px; border-radius: 12px; margin-right: 5px; font-size: 12px; display: inline-block; border: 1px solid #E2E8D5; margin-bottom: 5px; }
+
+/* ==============================
+   DIY 專屬三等分操作按鈕
+   ============================= */
+.card-actions {
+    margin-top: auto;
+    display: flex;
+    gap: 8px; /* 三個按鈕的間距 */
+    border-top: 1px dashed #eee;
     padding-top: 15px;
-    border-top: 1px dashed #ddd;
 }
 
-/* 修改按鈕 */
-.btn-edit {
-    background-color: #6B705C;
-    color: white;
-    padding: 8px 16px;
-    border-radius: 15px;
+.btn-action {
+    flex: 1; /* 三個按鈕平分空間 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 8px 0;
+    border-radius: 12px; /* 稍微方正一點的按鈕 */
+    font-size: 16px;
     text-decoration: none;
-    font-weight: bold;
-    transition: background-color 0.3s;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
 }
 
-.btn-edit:hover {
-    background-color: #4A5D23;
+/* 個別按鈕顏色設定 */
+.btn-detail {
+    background-color: #F1F4E8;
+    color: var(--primary-color);
 }
+.btn-detail:hover { background-color: #E2E8D5; }
 
-/* 消除刪除表單的預設間距 */
-.delete-form {
-    margin: 0;
-    padding: 0;
+.btn-edit {
+    background-color: #e3f2fd;
+    color: #1976d2;
 }
+.btn-edit:hover { background-color: #bbdefb; }
+
+.btn-delete {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+.btn-delete:hover { background-color: #ffcdd2; }

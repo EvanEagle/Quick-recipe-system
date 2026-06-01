@@ -58,12 +58,16 @@
                 <div th:each="recipe : ${randomRecipes}" class="recipe-card">
                     
                     <div class="card-img-container">
-                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/food1.jpg'}}" alt="美食圖片" class="card-img">
+                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/Notuploaded.jpg'}}" alt="美食圖片" class="card-img">
                     </div>
                     
                     <div class="card-info">
                         <div>
                             <h3 class="recipe-title" th:text="${recipe.name}">動態食譜名稱</h3>
+                            <p class="recipe-author" th:text="|👨‍🍳 作者：${recipe.author}|">作者名稱</p>
+                        <p class="recipe-time">⏱️ 烹調時間：<span th:text="${recipe.cookingTime}"></span> 分鐘</p>
+                        
+                        
                         </div>
                         
                         <div class="card-actions">

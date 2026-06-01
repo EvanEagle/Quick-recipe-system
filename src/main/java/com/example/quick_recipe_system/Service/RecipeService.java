@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.example.quick_recipe_system.entity.Recipe;
@@ -69,7 +68,10 @@ public class RecipeService {
         recipeRepository.save(recipe);
     }
 
-    public void updateRecipe(Recipe updateRecipe, String username) {
+    /**
+     * 更新食譜
+     */
+   public void updateRecipe(Recipe updateRecipe, String username) {
 
         Recipe existingRecipe = findById(updateRecipe.getId());
 
@@ -77,6 +79,13 @@ public class RecipeService {
 
             updateRecipe.setAuthor(username); // 將食譜的作者設定為原本的作者
             updateRecipe.setTypeString(existingRecipe.getTypeString()); // 料理類型設定原本的類型
+            
+            // 核心防護線：如果這次修改沒有傳入新圖片（updateRecipe 裡的 imageUrl 為 null）
+            // 則自動將資料庫撈出來的舊圖片路徑補回去，避免原本的圖片不小心被抹除
+            if (updateRecipe.getImageUrl() == null) {
+                updateRecipe.setImageUrl(existingRecipe.getImageUrl());
+            }
+
             recipeRepository.save(updateRecipe);
 
         } else {
@@ -196,3 +205,4 @@ public class RecipeService {
         return recipeRepository.findRandom4Recipes();
     }
 }
+

@@ -6,7 +6,6 @@
     <title>我的收藏 - 快速料理小幫手</title>
     
     <link rel="stylesheet" th:href="@{/css/home.css}">
-    <link rel="stylesheet" th:href="@{/css/recipe-list.css}"> 
     <link rel="stylesheet" th:href="@{/css/favorite.css}">
     <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
 </head>
@@ -29,62 +28,39 @@
         
         <div th:unless="${#lists.isEmpty(favorites)}">
             
-            <div th:each="recipe : ${favorites}" class="recipe-detail-card">
+            <div class="favorite-grid-container">
                 
-                <div class="recipe-header">
-                    <h3 th:text="${recipe.name}">食譜名稱</h3>
-                    <span class="cooking-time">⏱️ 烹調時間：<span th:text="${recipe.cookingTime}"></span> 分鐘</span>
-                </div>
+                <div th:each="recipe : ${favorites}" class="favorite-summary-card">
+                    
+                    <div class="card-img-wrapper">
+                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/Notuploaded.jpg'}}" 
+                             alt="食譜圖片" class="card-img">
+                    </div>
 
-                <div th:if="${recipe.videoUrl != null}" class="video-container">
-                    <iframe width="100%" height="315" 
-                            th:src="${recipe.videoUrl}" 
-                            title="YouTube video player" frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
-                </div>
+                    <div class="card-info">
+                        <h3 class="recipe-title" th:text="${recipe.name}">食譜名稱</h3>
+                        <p class="recipe-time">⏱️ 烹調時間：<span th:text="${recipe.cookingTime}"></span> 分鐘</p>
 
-                <div class="recipe-content">
-                    <h4>🛒 食材：</h4>
-                    <ul>
-                        <li th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}"></li>
-                    </ul>
-
-                    <h4>🧂 調味料：</h4>
-                    <ul>
-                        <li th:each="seasoning : ${recipe.seasonings}" th:text="${seasoning}"></li>
-                    </ul>
-
-                    <h4>🍳 步驟：</h4>
-                    <ol>
-                        <li th:each="step : ${recipe.steps}" th:text="${step}"></li>
-                    </ol>
+                        <div class="card-actions">
+                            <a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" class="btn-detail">查看詳情</a>
+                            
+                            <form th:action="@{/favorite/remove}" method="post" style="margin: 0; display: flex; flex: 1;">
+                                <input type="hidden" name="recipeId" th:value="${recipe.id}" />
+                                <button type="submit" class="btn-remove" 
+                                        th:data-name="${recipe.name}"
+                                        onclick="return confirm('確定要將「' + this.getAttribute('data-name') + '」從收藏中移除嗎？');">
+                                    💔 移除
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="tags-container">
-                    <span th:each="keyword : ${recipe.keywords}" 
-                          class="keyword-tag" 
-                          th:text="|# ${keyword}|">
-                    </span>
-                </div>
-
-                <div class="favorite-actions">
-                    <form th:action="@{/favorite/remove}" method="post">
-                        <input type="hidden" name="recipeId" th:value="${recipe.id}" />
-                        
-                        <button type="submit" class="btn-remove" 
-                                th:data-name="${recipe.name}"
-                                onclick="return confirm('確定要將「' + this.getAttribute('data-name') + '」從收藏中移除嗎？');">
-                            💔 取消收藏
-                        </button>
-                    </form>
-                </div>
-
             </div>
+            
         </div>
     </main>
 
-    <footer th:replace="~{layout/fragments :: footer}"></header>
+    <footer th:replace="~{layout/fragments :: footer}"></footer>
 </body>
 </html>

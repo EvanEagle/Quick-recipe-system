@@ -28,6 +28,13 @@ body {
     display: flex;                 /* 啟用彈性佈局 */
     flex-direction: column;        /* 內容由上而下排列 */
     min-height: 100vh;             /* 讓身體高度至少等於螢幕高度 */
+    
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ==============================

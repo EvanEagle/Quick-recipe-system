@@ -57,9 +57,6 @@ public class Recipe {
     @Column(name = "keyword")
     private List<String> keywords;
 
-    @Column(name = "video_url")
-    private String videoUrl;
-
     @Column(name = "image_url")
     private String imageUrl;
 

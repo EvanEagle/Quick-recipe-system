@@ -3,88 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIY食譜管理 - 快速料理小幫手</title>
+    <title>DIY 食譜管理 - 快速料理小幫手</title>
     
     <link rel="stylesheet" th:href="@{/css/home.css}">
-    <link rel="stylesheet" th:href="@{/css/recipe-list.css}"> 
-    <link rel="stylesheet" th:href="@{/css/favorite.css}">
-    <link rel="stylesheet" th:href="@{/css/diy-page.css}">
-    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+    <link rel="stylesheet" th:href="@{/css/diy-page.css}"> <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
 </head>
 <body>
     <header th:replace="~{layout/fragments :: header}"></header>
 
-    <main class="favorite-container">
+    <main class="diy-container">
         
-        <div class="message-block diy-message-block">
+        <div class="message-block">
             <span th:if="${successMsg}" th:text="${successMsg}" class="msg-success"></span>
             <span th:if="${errorMsg}" th:text="${errorMsg}" class="msg-error"></span>
         </div>
 
-        <div class="diy-header">
-            <h1 class="page-title">📝 我的 DIY 食譜管理</h1>
-            <a th:href="@{/recipe/add}" class="btn-add-recipe">＋ 新增專屬食譜</a>
+        <div class="page-header">
+            <h1 class="page-title">📝 我的 DIY 食譜庫</h1>
+            <a th:href="@{/recipe/add}" class="btn-add-new">➕ 新增私房菜</a>
         </div>
         
-        <div th:if="${#lists.isEmpty(diyRecipes)}" class="empty-state-card diy-empty-state">
-            <div class="empty-state-icon diy-empty-icon">🍳</div>
-            <p class="empty-state-text diy-empty-text">目前還沒有您的專屬食譜喔！趕快動手新增吧！</p>
+        <div th:if="${#lists.isEmpty(diyRecipes)}" class="empty-state-card">
+            <div class="empty-state-icon">👨‍🍳</div>
+            <p class="empty-state-text">你還沒有建立過任何私房食譜喔！</p>
+            <a th:href="@{/recipe/add}" class="btn-add-new">馬上動手寫一篇</a>
         </div>
         
         <div th:unless="${#lists.isEmpty(diyRecipes)}">
             
-            <div th:each="recipe : ${diyRecipes}" class="recipe-detail-card">
+            <div class="diy-grid-container">
                 
-                <div class="recipe-header">
-                    <h3 th:text="${recipe.name}">食譜名稱</h3>
-                    <span class="cooking-time">⏱️ 烹調時間：<span th:text="${recipe.cookingTime}"></span> 分鐘</span>
-                </div>
-
-                <div th:if="${recipe.videoUrl != null and !recipe.videoUrl.isEmpty()}" class="video-container">
-                    <iframe width="100%" height="315" 
-                            th:src="${recipe.videoUrl}" 
-                            title="YouTube video player" frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen>
-                    </iframe>
-                </div>
-
-                <div class="recipe-content">
-                    <h4>🛒 食材：</h4>
-                    <ul>
-                        <li th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}"></li>
-                    </ul>
-
-                    <h4>🧂 調味料：</h4>
-                    <ul>
-                        <li th:each="seasoning : ${recipe.seasonings}" th:text="${seasoning}"></li>
-                    </ul>
-
-                    <h4>🍳 步驟：</h4>
-                    <ol>
-                        <li th:each="step : ${recipe.steps}" th:text="${step}"></li>
-                    </ol>
-                </div>
-                
-                <div class="tags-container">
-                    <span th:each="keyword : ${recipe.keywords}" 
-                          class="keyword-tag" 
-                          th:text="|# ${keyword}|">
-                    </span>
-                </div>
-
-                <div class="diy-actions">
-                    <a th:href="@{/recipe/edit/{id}(id=${recipe.id})}" class="btn-edit">✏️ 修改食譜</a>
+                <div th:each="recipe : ${diyRecipes}" class="diy-summary-card">
                     
-                    <form th:action="@{/recipe/delete/{id}(id=${recipe.id})}" method="post" class="delete-form">
-                        <button type="submit" class="btn-remove" 
-                                th:data-name="${recipe.name}"
-                                onclick="return confirm('警告：確定要將「' + this.getAttribute('data-name') + '」永久刪除嗎？此動作無法復原！');">
-                            🗑️ 刪除食譜
-                        </button>
-                    </form>
-                </div>
+                    <div class="card-img-wrapper">
+                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/Notuploaded.jpg'}}" 
+                             alt="食譜圖片" class="card-img">
+                    </div>
 
+                    <div class="card-info">
+                        <h3 class="recipe-title" th:text="${recipe.name}">食譜名稱</h3>
+                        <p class="recipe-meta">
+                            <span th:text="|🎌 分類：${recipe.typeString}|"></span> | 
+                            <span th:text="|⏱️ ${recipe.cookingTime} 分鐘|"></span>
+                        </p>
+                        
+                        <div class="tags-container" th:if="${not #lists.isEmpty(recipe.keywords)}">
+                            <span th:each="keyword : ${recipe.keywords}" class="keyword-tag" th:text="|#${keyword}|"></span>
+                        </div>
+
+                        <div class="card-actions">
+                            
+                            <a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" class="btn-action btn-detail" title="查看詳情">📄查看</a>
+                            
+                            <a th:href="@{/recipe/edit/{id}(id=${recipe.id})}" class="btn-action btn-edit" title="編輯食譜">✏️編輯</a>
+                            
+                            <form th:action="@{/recipe/delete/{id}(id=${recipe.id})}" method="post" style="margin: 0; display: flex;">
+                                <button type="submit" class="btn-action btn-delete" 
+                                        th:data-name="${recipe.name}"
+                                        onclick="return confirm('確定要刪除「' + this.getAttribute('data-name') + '」嗎？這將無法復原喔！');" 
+                                        title="刪除食譜">
+                                    🗑️刪除
+                                </button>
+                            </form>
+                            
+                        </div>
+                    </div>
+                </div>
+                
             </div>
         </div>
     </main>

@@ -2,11 +2,14 @@
    我的收藏頁面專屬樣式 (完美銜接 home.css)
    ============================== */
 
+/* 1. 放開外層容器的寬度封印，強迫撐開 */
 .favorite-container {
-    max-width: 800px;
+    width: 100%; 
+    max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
-    flex: 1; /* 確保頁尾乖乖待在底部 */
+    flex: 1; 
+    box-sizing: border-box;
 }
 
 .page-title {
@@ -35,16 +38,18 @@
    空白狀態 (當使用者還沒有收藏任何食譜時)
    ============================= */
 .empty-state-card {
-    background-color: var(--card-bg);
+    background-color: var(--card-bg, #fff);
     border-radius: 20px;
     box-shadow: var(--shadow);
-    padding: 50px 30px;
+    padding: 60px 30px;
     text-align: center;
-    border: 2px dashed var(--accent-color); /* 嫩綠色虛線外框 */
+    border: 2px dashed var(--accent-color);
+    max-width: 600px; /* 空白狀態卡片不需要太寬，這樣比較好看 */
+    margin: 0 auto;
 }
 
 .empty-state-icon {
-    font-size: 48px;
+    font-size: 50px;
     margin-bottom: 15px;
 }
 
@@ -63,41 +68,134 @@
     font-weight: bold;
     font-size: 16px;
     display: inline-block;
-    transition: background-color 0.3s, transform 0.2s;
+    transition: 0.3s;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .btn-go-explore:hover {
-    background-color: #246b43; /* 稍微深一點的綠色 */
+    background-color: #246b43; 
     transform: translateY(-2px);
 }
 
 /* ==============================
-   收藏食譜卡片排版 (延續探索食譜風格)
+   收藏卡片牆網格系統
    ============================= */
-/* 這裡可以直接複用大部分的卡片樣式，並針對底部按鈕做微調 */
-.favorite-actions {
-    margin-top: 25px;
-    text-align: right;
-    border-top: 1px dashed #ddd;
-    padding-top: 20px;
+.favorite-grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 30px;
 }
 
-/* 取消收藏按鈕：帶有警示意味的優雅深橘紅 */
+/* 卡片外觀設定 */
+.favorite-summary-card {
+    background-color: var(--card-bg, #fff);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.favorite-summary-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+}
+
+/* 圖片區塊 */
+.card-img-wrapper {
+    width: 100%;
+    height: 180px;
+    background-color: #f5f5f5;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 文字資訊區塊 */
+.card-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.recipe-title {
+    color: var(--primary-color);
+    font-size: 20px;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.recipe-author, .recipe-time {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 8px 0;
+}
+
+/* 標籤區塊 */
+.tags-container {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.keyword-tag {
+    background-color: #F1F4E8; 
+    color: var(--primary-color);
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-right: 5px;
+    font-size: 12px;
+    display: inline-block;
+    border: 1px solid #E2E8D5;
+}
+
+/* 按鈕區塊 */
+.card-actions {
+    margin-top: auto;
+    display: flex;
+    gap: 10px;
+    border-top: 1px dashed #eee;
+    padding-top: 15px;
+}
+
+.btn-detail {
+    flex: 1;
+    text-align: center;
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1.5px solid var(--primary-color);
+    padding: 8px 0;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-detail:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* 取消收藏按鈕 */
 .btn-remove {
+    flex: 1;
+    width: 100%;
     background-color: #ba714d;
     color: white;
     border: none;
-    padding: 10px 24px;
+    padding: 8px 0;
     border-radius: 20px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: 0.3s;
 }
 
 .btn-remove:hover {
     background-color: #d5a691;
-    transform: translateY(-2px);
 }

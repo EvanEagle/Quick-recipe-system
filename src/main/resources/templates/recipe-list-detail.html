@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${recipe.name} + ' - 快速料理小幫手'">食譜詳情</title>
+    
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/recipe-list-detail.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header th:replace="~{layout/fragments :: header}"></header>
+
+    <main class="detail-container">
+        <div class="message-area" th:if="${successMsg != null or errorMsg != null}">
+            <span th:if="${successMsg}" th:text="${successMsg}" class="msg success"></span>
+            <span th:if="${errorMsg}" th:text="${errorMsg}" class="msg error"></span>
+        </div>
+
+        <article class="detail-card">
+            
+            <div class="hero-image-wrapper">
+                <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/Notuploaded.jpg'}}" alt="食譜圖片" class="hero-image">
+            </div>
+
+            <div class="detail-header">
+                <h1 class="recipe-title" th:text="${recipe.name}">食譜名稱</h1>
+                
+                <div class="recipe-meta">
+                    <span class="meta-item"><i class="fa-solid fa-user"></i> 作者：<span th:text="${recipe.author}"></span></span>
+                    <span class="meta-item"><i class="fa-solid fa-clock"></i> 時間：<span th:text="${recipe.cookingTime}"></span> 分鐘</span>
+                    <span class="meta-item"><i class="fa-solid fa-utensils"></i> 分類：<span th:text="${recipe.typeString}"></span></span>
+                </div>
+                
+                <div class="tags-section" th:if="${not #lists.isEmpty(recipe.keywords)}">
+                    <span th:each="keyword : ${recipe.keywords}" class="keyword-tag" th:text="|# ${keyword}|"></span>
+                </div>
+            </div>
+
+            <div class="detail-actions">
+                <button onclick="history.back()" class="btn-action btn-back"><i class="fa-solid fa-arrow-left"></i> 返回列表</button>
+                
+                <form th:action="@{/favorite/add}" method="post" class="favorite-form">
+                    <input type="hidden" name="recipeId" th:value="${recipe.id}" />
+                    <button type="submit" class="btn-action btn-collect"><i class="fa-solid fa-heart"></i> 加入收藏</button>
+                </form>
+            </div>
+
+            <div class="detail-content">
+                
+                <aside class="ingredients-sidebar">
+                    <div class="info-box">
+                        <h3><i class="fa-solid fa-basket-shopping"></i> 食材準備</h3>
+                        <ul class="check-list">
+                            <li th:each="ingredient : ${recipe.ingredients}" th:text="${ingredient}"></li>
+                        </ul>
+                    </div>
+
+                    <div class="info-box" th:if="${not #lists.isEmpty(recipe.seasonings)}">
+                        <h3><i class="fa-solid fa-spoon"></i> 調味料</h3>
+                        <ul class="check-list">
+                            <li th:each="seasoning : ${recipe.seasonings}" th:text="${seasoning}"></li>
+                        </ul>
+                    </div>
+                </aside>
+
+                <section class="steps-main">
+                    <h3><i class="fa-solid fa-fire-burner"></i> 料理步驟</h3>
+                    <ol class="step-list">
+                        <li th:each="step : ${recipe.steps}">
+                            <p th:text="${step}"></p>
+                        </li>
+                    </ol>
+                </section>
+                
+            </div>
+        </article>
+    </main>
+
+    <footer th:replace="~{layout/fragments :: footer}"></footer>
+</body>
+</html>

@@ -2,11 +2,14 @@
    探索食譜頁面專屬樣式 (完美融合 home.css 變數)
    ============================== */
 
+/* 1. 強迫外層容器向左右撐開 */
 .recipe-list-container {
-    max-width: 800px;
+    width: 100%; /* 🌟 加上這行絕對指令，強迫容器長大 */
+    max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
-    flex: 1; /* 讓 footer 可以被推到底部 */
+    flex: 1; 
+    box-sizing: border-box; /* 確保 padding 不會破壞 100% 寬度 */
 }
 
 .page-title {
@@ -16,126 +19,149 @@
     font-size: 28px;
 }
 
+/* 2. 確保每個分類區塊也是 100% 寬度 */
 .cuisine-section {
+    width: 100%; /* 🌟 強迫區塊佔滿，綠色底線就會變長了 */
     margin-bottom: 50px;
 }
 
 .cuisine-title {
     color: var(--primary-color);
-    border-bottom: 3px solid var(--accent-color); /* 使用嫩綠色做底線分隔 */
+    border-bottom: 3px solid var(--accent-color);
     padding-bottom: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     font-size: 24px;
 }
 
-.recipe-detail-card {
-    background-color: var(--card-bg); /* 白色卡片背景 */
+/* 2. 微調網格系統，讓同一行能塞下更多卡片 */
+.recipe-grid-container {
+    display: grid;
+    /* 🌟 改用固定寬度 (260px)，這樣就算只有一張卡片，它也不會變形，也不會讓容器縮水 */
+    grid-template-columns: repeat(auto-fill, 260px);
+    gap: 30px;
+    /* 🌟 讓卡片乖乖從左邊開始排隊，不要全部擠在中間 */
+    justify-content: flex-start; 
+}
+
+/* 🌟 卡片外觀設定 */
+.recipe-summary-card {
+    background-color: var(--card-bg, #fff);
     border-radius: 20px;
-    box-shadow: var(--shadow); /* 繼承你設定的陰影 */
-    padding: 30px;
-    margin-bottom: 30px;
-    transition: transform 0.3s;
-}
-
-.recipe-detail-card:hover {
-    transform: translateY(-3px); /* 輕微上浮的互動感 */
-}
-
-.recipe-header {
+    box-shadow: var(--shadow);
+    overflow: hidden; /* 確保圖片不超出圓角 */
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px dashed #ddd;
-    padding-bottom: 15px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
 
-.recipe-header h3 {
-    color: var(--primary-color);
-    font-size: 22px;
-    margin: 0;
+.recipe-summary-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.15); /* 滑鼠懸停時陰影加深，更有立體感 */
 }
 
-.cooking-time {
+/* 圖片區塊 */
+.card-img-wrapper {
+    width: 100%;
+    height: 180px;
+    background-color: #f5f5f5;
+}
+
+.card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 讓不同比例的照片都能完美裁切不變形 */
+}
+
+/* 文字資訊區塊 */
+.card-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* 讓卡片內容能自動撐開，把按鈕推到最底下 */
+}
+
+.recipe-title {
     color: var(--primary-color);
+    font-size: 20px;
+    margin: 0 0 10px 0;
+    line-height: 1.4;
+}
+
+.recipe-author, .recipe-time {
+    color: #666;
     font-size: 14px;
-    background-color: var(--nav-bg); /* 使用導覽列的淺黃色當標籤底色 */
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-weight: bold;
+    margin: 0 0 8px 0;
 }
 
-.video-container {
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.recipe-content h4 {
-    color: var(--primary-color);
-    margin-bottom: 10px;
-    font-size: 18px;
-}
-
-.recipe-content ul, .recipe-content ol {
-    line-height: 1.8;
-    color: var(--text-color);
-    margin-bottom: 20px;
-    padding-left: 25px;
-}
-
+/* 標籤區塊微調 */
 .tags-container {
-    margin-top: 20px;
-    padding-top: 15px;
-    border-top: 1px dashed #ddd;
+    margin-top: 10px;
+    margin-bottom: 15px;
 }
 
 .keyword-tag {
-    background-color: #F1F4E8; /* 呼應你首頁的淡淡綠背景 */
+    background-color: #F1F4E8; 
     color: var(--primary-color);
-    padding: 6px 14px;
-    border-radius: 20px;
-    margin-right: 8px;
-    font-size: 0.9em;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-right: 5px;
+    font-size: 12px;
     display: inline-block;
-    margin-bottom: 8px;
-    transition: 0.3s;
     border: 1px solid #E2E8D5;
 }
 
-.keyword-tag:hover {
-    background-color: var(--accent-color);
+/* 按鈕區塊 */
+.card-actions {
+    margin-top: auto; /* 將按鈕永遠推到卡片最下方 */
+    display: flex;
+    gap: 10px;
+    border-top: 1px dashed #eee;
+    padding-top: 15px;
+}
+
+.btn-detail {
+    flex: 1;
+    text-align: center;
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1.5px solid var(--primary-color);
+    padding: 8px 0;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.btn-detail:hover {
+    background-color: var(--primary-color);
     color: white;
 }
 
-/* 加入收藏按鈕 */
 .btn-collect {
-    background-color: #ba714d; /* 使用你喜歡的橘紅色 */
+    flex: 1;
+    width: 100%;
+    background-color: #ba714d;
     color: white;
     border: none;
-    padding: 10px 24px;
+    padding: 8px 0;
     border-radius: 20px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: 0.3s;
 }
 
 .btn-collect:hover {
     background-color: #d5a691;
-    transform: translateY(-2px); /* 滑鼠移過去會有輕微上浮的互動感 */
 }
 
-/* ==============================
-   Toast 滑動提示視窗 (AJAX 專用)
-   ============================== */
+/* Toast 滑動提示視窗 (維持你原本的設計) */
 .toast-container {
     position: fixed;
-    top: 80px;      /* 距離上方一點距離，避免擋到導覽列 */
-    right: 20px;    /* 靠右對齊 */
-    z-index: 9999;  /* 確保它在畫面的最上層 */
+    top: 80px;      
+    right: 20px;    
+    z-index: 9999;  
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -148,21 +174,17 @@
     color: var(--text-color, #333);
     border-radius: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-    border-left: 6px solid #2E8B57; /* 預設為成功的綠色側邊條 */
+    border-left: 6px solid #2E8B57; 
     font-weight: bold;
     font-size: 15px;
-    
-    /* 動畫魔法：一開始先躲在畫面右邊 120% 的位置 */
     transform: translateX(120%);
-    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); /* 帶有 Q 彈感的滑入 */
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); 
 }
 
-/* 當加上 .show 類別時，滑回到原來的位置 */
 .toast-msg.show {
     transform: translateX(0);
 }
 
-/* 重複收藏時的警告樣式 (橘紅色) */
 .toast-msg.warning {
     border-left-color: #ba714d;
 }

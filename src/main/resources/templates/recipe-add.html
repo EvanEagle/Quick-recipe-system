@@ -25,7 +25,7 @@
 
         <!-- 表單卡片區塊，綁定 recipe 物件 -->
         <div class="recipe-form-card">
-            <form th:action="@{/recipe/add}" method="post" th:object="${recipe}">
+            <form th:action="@{/recipe/add}" method="post" th:object="${recipe}" enctype="multipart/form-data"> 
                 
                 <!-- 1. 分類選擇 (不屬於 Recipe 物件，使用 name 屬性) -->
                 <div class="form-group">
@@ -51,11 +51,12 @@
                     </div>
                 </div>
 
-                <!-- 3. YouTube 影片連結 -->
-                <div class="form-group">
-                    <label for="videoUrl">🎬 教學影片連結 (選填)：</label>
-                    <input type="url" id="videoUrl" th:field="*{videoUrl}" class="form-control" placeholder="請貼上 YouTube 嵌入網址 (Embed URL)" />
-                </div>
+                <!-- 3. 上傳照片 -->
+                    <div class="form-group">
+                        <label for="imageFile">📸 上傳食譜照片：</label>
+                        
+                        <input type="file" id="imageFile" name="imageFile" accept="image/*" class="form-control">
+                    </div>
 
                 <!-- 4. List 型態資料區 (引導使用者用半形逗號分隔) -->
                 <div class="form-group">

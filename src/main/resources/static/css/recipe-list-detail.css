@@ -1,0 +1,211 @@
+/* ==============================
+   食譜詳情頁面專屬樣式
+   ============================== */
+
+.detail-container {
+    max-width: 900px; /* 寬度稍微拉寬，讓左右分欄有空間呼吸 */
+    margin: 40px auto;
+    padding: 0 20px;
+    flex: 1;
+}
+
+.detail-card {
+    background-color: var(--card-bg, #fff);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    overflow: hidden; /* 確保主圖不會超出圓角 */
+}
+
+/* 1. 滿版主圖 */
+.hero-image-wrapper {
+    width: 100%;
+    height: 350px;
+    background-color: #f5f5f5;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* 2. 標題與資訊 */
+.detail-header {
+    padding: 30px 40px 10px;
+    text-align: center;
+}
+
+.recipe-title {
+    color: var(--primary-color);
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.recipe-meta {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    color: #666;
+    font-size: 15px;
+    margin-bottom: 15px;
+}
+
+.meta-item i {
+    color: var(--accent-orange, #ba714d); /* 小圖示點綴顏色 */
+    margin-right: 5px;
+}
+
+/* 3. 操作按鈕區塊 */
+.detail-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    border-bottom: 1px dashed #ddd;
+}
+
+.btn-action {
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-back {
+    background-color: transparent;
+    color: #666;
+    border: 1.5px solid #ccc;
+}
+
+.btn-back:hover {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.favorite-form {
+    margin: 0;
+}
+
+.btn-collect {
+    background-color: var(--accent-orange, #ba714d);
+    color: white;
+}
+
+.btn-collect:hover {
+    background-color: #d5a691;
+    transform: translateY(-2px);
+}
+
+/* 4. 核心內容區塊 (CSS Grid 左右切割魔法) */
+.detail-content {
+    display: grid;
+    /* 左側佔 1 份，右側佔 2 份。如果螢幕太小(手機)就變成上下排 */
+    grid-template-columns: 1fr 2fr;
+    gap: 40px;
+    padding: 40px;
+}
+
+/* 左側：食材清單設計 */
+.info-box {
+    background-color: #F9FBF5; /* 非常淡的綠色底 */
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 20px;
+}
+
+.info-box h3, .steps-main h3 {
+    color: var(--primary-color);
+    font-size: 20px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #E2E8D5;
+    padding-bottom: 10px;
+}
+
+.check-list {
+    list-style: none; /* 拿掉預設黑點 */
+    padding: 0;
+    margin: 0;
+}
+
+.check-list li {
+    padding: 12px 0;
+    border-bottom: 1px dashed #dcdcdc;
+    color: #444;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+.check-list li:last-child {
+    border-bottom: none;
+}
+
+.check-list li::before {
+    content: "🔸"; /* 加上可愛的小圖示當作項目符號 */
+    margin-right: 10px;
+    font-size: 12px;
+}
+
+/* 右側：料理步驟設計 */
+.step-list {
+    list-style: none; /* 拿掉預設數字，我們要自己畫更美的 */
+    padding: 0;
+    counter-reset: step-counter; /* 啟動計數器 */
+}
+
+.step-list li {
+    position: relative;
+    padding-left: 50px; /* 留空間給數字圈圈 */
+    margin-bottom: 30px;
+}
+
+.step-list li::before {
+    counter-increment: step-counter;
+    content: counter(step-counter);
+    position: absolute;
+    left: 0;
+    top: -2px;
+    width: 35px;
+    height: 35px;
+    background-color: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.step-list p {
+    margin: 0;
+    color: #333;
+    font-size: 17px;
+    line-height: 1.8;
+}
+
+/* 訊息與標籤微調 */
+.message-area { text-align: center; margin-bottom: 20px; }
+.msg { padding: 10px 20px; border-radius: 8px; font-weight: bold; display: inline-block; }
+.msg.success { color: #2E8B57; background-color: #e6f4ea; }
+.msg.error { color: #ba714d; background-color: #fbe9e7; }
+.tags-section { margin-top: 15px; }
+.keyword-tag { background-color: #F1F4E8; color: var(--primary-color); padding: 5px 12px; border-radius: 15px; margin: 0 5px; font-size: 13px; }
+
+/* 響應式設計 (RWD)：在手機螢幕上自動變成上下排列 */
+@media (max-width: 768px) {
+    .detail-content {
+        grid-template-columns: 1fr; /* 切換為單欄 */
+        padding: 20px;
+    }
+    .hero-image-wrapper { height: 250px; }
+    .detail-header { padding: 20px; }
+    .detail-actions { padding: 15px 20px; flex-direction: column; gap: 10px; }
+    .btn-action { justify-content: center; }
+}
