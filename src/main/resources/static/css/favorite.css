@@ -34,6 +34,14 @@
     display: inline-block;
 }
 
+.msg-error {
+    color: #ba714d;
+    font-weight: bold;
+    background-color: #e6f4ea;
+    padding: 10px 20px;
+    border-radius: 8px;
+    display: inline-block;
+}
 /* ==============================
    空白狀態 (當使用者還沒有收藏任何食譜時)
    ============================= */

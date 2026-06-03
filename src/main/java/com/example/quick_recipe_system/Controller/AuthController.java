@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuthController {
 
-    public final UserService userService;
+    private final UserService userService;
 
     // 1. 導向登入/註冊畫面
     @GetMapping("/login")
@@ -41,7 +41,7 @@ public class AuthController {
             return "redirect:/home";
 
         } catch (IllegalArgumentException e) {
-            // 捕捉到你在 Service 拋出的錯誤訊息，傳回前端顯示
+            // 捕捉到在 Service 拋出的錯誤訊息，傳回前端顯示
             model.addAttribute("errorMsg", e.getMessage());
             return "login"; // 停留在登入頁
         }
@@ -80,5 +80,4 @@ public class AuthController {
         }
         return "register";
     }
-
 }

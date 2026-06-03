@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Favorite {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // 讓 MySQL 自動產生流水號 ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     // 紀錄是哪一個使用者收藏的

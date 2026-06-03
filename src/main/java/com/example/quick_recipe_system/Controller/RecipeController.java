@@ -1,14 +1,13 @@
 package com.example.quick_recipe_system.controller;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Set;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.quick_recipe_system.entity.Recipe;
+import com.example.quick_recipe_system.service.FileStorageService;
 import com.example.quick_recipe_system.service.RecipeService;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,6 +26,11 @@ import lombok.RequiredArgsConstructor;
 public class RecipeController {
 
     private final RecipeService recipeService;
+    private final FileStorageService fileStorageService;
+
+    // 定義允許的圖片類型
+    private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of(
+            "image/jpeg", "image/png", "image/gif", "image/webp");
 
     @GetMapping("/recipe")
     public String exploreRecipes(
@@ -51,7 +56,6 @@ public class RecipeController {
     public String showRecipeDetail(@PathVariable Integer id, Model model) {
 
         // 1. 透過 Service 去資料庫把這道食譜的完整資料撈出來
-        // (假設你的 recipeService 裡面有 findById 這個方法)
         Recipe recipe = recipeService.findById(id);
 
         // 防呆機制：如果有人亂輸入網址 ID，找不到食譜，就直接踢回探索列表
@@ -62,7 +66,7 @@ public class RecipeController {
         // 2. 把撈出來的完整食譜資料裝進 Model，準備送給前端畫面
         model.addAttribute("recipe", recipe);
 
-        // 3. 導向你剛剛建立好的詳情頁面 (注意名稱要跟你剛剛改的一致，不加 .html)
+        // 3. 導向剛剛建立好的詳情頁面 (注意名稱要跟剛剛改的一致，不加 .html)
         return "recipe-list-detail";
     }
 
@@ -70,22 +74,14 @@ public class RecipeController {
     public String showDiyPage(HttpSession session, Model model) {
         String username = (String) session.getAttribute("loggedInUser");
 
-        if (username == null) {
-            return "redirect:/login";
-        }
         List<Recipe> myDiyRecipes = recipeService.findRecipesByAuthor(username);
         model.addAttribute("diyRecipes", myDiyRecipes);
         return "diy-page";
     }
 
     @GetMapping("/recipe/add")
-    public String showAddRecipe(HttpSession session, Model model) {
+    public String showAddRecipe(Model model) {
 
-        String username = (String) session.getAttribute("loggedInUser");
-
-        if (username == null) {
-            return "redirect:/login";
-        }
         model.addAttribute("recipe", new Recipe());
         return "recipe-add";
     }
@@ -94,32 +90,39 @@ public class RecipeController {
     public String addRecipe(
             @RequestParam("imageFile") MultipartFile imageFile,
             HttpSession session,
-            Recipe recipe,
+            @ModelAttribute Recipe recipe, //  建議補上 @ModelAttribute 綁定表單
             String typeString,
             RedirectAttributes redirectAttributes) {
 
         String username = (String) session.getAttribute("loggedInUser");
 
-        if (username == null) {
-            return "redirect:/login";
-        }
-
         try {
             recipe.setAuthor(username);
 
-            // 呼叫輔助方法存圖片
-            String imageUrl = saveUploadedImage(imageFile);
+            // 微調 1：先確認使用者「真的有上傳檔案」，才啟動海關檢查格式
+            if (imageFile != null && !imageFile.isEmpty()) {
+                String contentType = imageFile.getContentType();
+                if (contentType == null || !ALLOWED_IMAGE_TYPES.contains(contentType)) {
+                    // 微調 2：退回 /recipe/add (新增頁面) 比較符合使用者體驗
+                    redirectAttributes.addFlashAttribute("errorMsg", "上傳失敗！僅支援 JPG, PNG, GIF, WEBP 格式的照片喔。");
+                    return "redirect:/recipe/add";
+                }
+            }
+
+            // 呼叫輔助方法存圖片 (fileStorageService 裡面應該已經有判斷 empty 會回傳 null 的邏輯)
+            String imageUrl = fileStorageService.saveUploadedImage(imageFile);
 
             if (imageUrl != null) {
-                recipe.setImageUrl(imageUrl); // 有上傳，用新照片
+                recipe.setImageUrl(imageUrl); // 有上傳，且格式正確，用新照片
             } else {
-                // 🌟 使用者沒上傳，給予系統預設圖！
+                // 使用者沒上傳，給予系統預設圖！
                 recipe.setImageUrl("/images/Notuploaded.jpg");
             }
 
             recipeService.addRecipe(recipe, typeString);
             redirectAttributes.addFlashAttribute("successMsg", "新增食譜成功！");
             return "redirect:/diy";
+
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMsg", "新增失敗：請選擇正確的食譜分類！");
             return "redirect:/recipe/add";
@@ -131,10 +134,6 @@ public class RecipeController {
             RedirectAttributes redirectAttributes) {
 
         String username = (String) session.getAttribute("loggedInUser");
-
-        if (username == null) {
-            return "redirect:/login";
-        }
 
         Recipe findId = recipeService.findById(id);
 
@@ -155,30 +154,62 @@ public class RecipeController {
     @PostMapping("/recipe/edit/{id}")
     public String updateRecipe(
             @PathVariable Integer id,
-            Recipe updateRecipe,
+            @ModelAttribute Recipe updateRecipe, // 微調 1：補上 @ModelAttribute 讓 Spring 綁定更明確
             @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
         String username = (String) session.getAttribute("loggedInUser");
 
-        if (username == null) {
-            return "redirect:/login";
+        Recipe existingRecipe = recipeService.findById(id);
+
+        // 微調 2：防呆機制，萬一這個 ID 查不到食譜，直接擋下來
+        if (existingRecipe == null) {
+            redirectAttributes.addFlashAttribute("errorMsg", "找不到該食譜，無法修改！");
+            return "redirect:/diy";
         }
 
         // 修改時：如果有傳新照片，就覆蓋舊照片
         if (imageFile != null && !imageFile.isEmpty()) {
-            String newImageUrl = saveUploadedImage(imageFile);
+            String contentType = imageFile.getContentType();
+            if (contentType == null || !ALLOWED_IMAGE_TYPES.contains(contentType)) {
+                // 如果格式不對，掛上錯誤訊息，直接把使用者踢回 DIY 頁面，不呼叫 Service 存檔
+                redirectAttributes.addFlashAttribute("errorMsg", "上傳失敗！僅支援 JPG, PNG, GIF, WEBP 格式的照片喔。");
+                return "redirect:/diy";
+            }
+
+            fileStorageService.deleteOldImage(existingRecipe.getImageUrl());
+            String newImageUrl = fileStorageService.saveUploadedImage(imageFile);
             if (newImageUrl != null) {
                 updateRecipe.setImageUrl(newImageUrl);
             }
+        } else {
+            // 微調 3：直接在這裡把舊照片補回去！
+            updateRecipe.setImageUrl(existingRecipe.getImageUrl());
         }
-        // ⚠️ 注意：如果修改時沒傳新照片，請確保 recipeService.updateRecipe
-        // 會自動去資料庫撈出舊的 imageUrl 補上去，否則照片會被清空喔！
 
+        // 微調 4：強迫把網址上的 ID 塞給物件，確保不會更新錯人或變成新增資料
+        updateRecipe.setId(id);
+
+        // 最後才安心交給 Service 去存檔
         recipeService.updateRecipe(updateRecipe, username);
 
         redirectAttributes.addFlashAttribute("successMsg", "食譜修改成功！");
+        return "redirect:/diy";
+    }
+
+    // 攔截帶有 ID 的 GET 請求
+    @GetMapping("/recipe/delete/{id}")
+    public String deleteRecipeFallback(@PathVariable(required = false) Integer id, RedirectAttributes redirectAttributes) {
+        // 亂闖移除網址，直接踢回他的 DIY 管理清單
+        redirectAttributes.addFlashAttribute("errorMsg", "請透過正常的按鈕來移除食譜喔！");
+        return "redirect:/diy";
+    }
+
+    //  (選用)攔截連 ID 都沒打，只打一半網址的 GET 請求
+    @GetMapping("/recipe/delete")
+    public String deleteRecipeNoIdFallback(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMsg", "無效的操作路徑！");
         return "redirect:/diy";
     }
 
@@ -187,10 +218,6 @@ public class RecipeController {
 
         String username = (String) session.getAttribute("loggedInUser");
 
-        if (username == null) {
-            return "redirect:/login";
-        }
-
         try {
             recipeService.deleteRecipe(id, username);
             redirectAttributes.addFlashAttribute("successMsg", "食譜已成功刪除！");
@@ -198,35 +225,5 @@ public class RecipeController {
             redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
         }
         return "redirect:/diy";
-    }
-
-    /**
-     * 儲存已上傳的圖片
-     */
-    private String saveUploadedImage(MultipartFile imageFile) {
-        if (imageFile == null || imageFile.isEmpty()) {
-            return null; // 沒上傳檔案就回傳 null
-        }
-        try {
-            String originalFilename = imageFile.getOriginalFilename();
-            String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String newFileName = UUID.randomUUID().toString() + extension;
-
-            String projectPath = System.getProperty("user.dir");
-            String uploadDir = projectPath + "/src/main/resources/static/images/recipes/";
-
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-
-            File dest = new File(uploadDir + newFileName);
-            imageFile.transferTo(dest);
-
-            return "/images/recipes/" + newFileName;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 }

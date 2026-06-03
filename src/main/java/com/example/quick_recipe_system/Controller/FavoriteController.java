@@ -37,16 +37,21 @@ public class FavoriteController {
      */
     @GetMapping("/favorite")
     public String showFavoritesPage(HttpSession session, Model model) {
-        String username = (String) session.getAttribute("loggedInUser");
 
-        if (username == null) {
-            return "redirect:/login";
-        }
+        String username = (String) session.getAttribute("loggedInUser");
 
         List<Recipe> myFavorites = favoriteService.getFavoriteRecipe(username);
         model.addAttribute("favorites", myFavorites);
 
         return "favorite";
+    }
+
+    
+    @GetMapping("/favorite/add")
+    public String addFavoriteFallback(RedirectAttributes redirectAttributes) {
+        // 如果使用者用 GET 亂闖，給個溫馨提示，並踢回食譜列表頁
+        redirectAttributes.addFlashAttribute("errorMsg", "請透過正常的按鈕來加入收藏喔！");
+        return "redirect:/recipe"; 
     }
 
     @PostMapping("/favorite/add")
@@ -55,12 +60,7 @@ public class FavoriteController {
             RedirectAttributes redirectAttributes,
             HttpServletRequest request) { // 負責抓取使用者是從哪頁點擊的
 
-        // 1. 檢查 VIP 手環
         String username = (String) session.getAttribute("loggedInUser");
-        if (username == null) {
-            redirectAttributes.addFlashAttribute("errorMsg", "請先登入才能使用收藏功能喔！");
-            return "redirect:/login";
-        }
 
         // 2. 根據 ID 找出那道食譜
         Recipe recipe = recipeService.findById(recipeId);
@@ -83,25 +83,26 @@ public class FavoriteController {
         return "redirect:" + (referer != null ? referer : "/");
     }
 
+    @GetMapping("/favorite/remove")
+    public String removeFavoriteFallback(RedirectAttributes redirectAttributes) {
+        // 亂闖移除網址，直接踢回他的收藏清單
+        redirectAttributes.addFlashAttribute("errorMsg", "請透過正常的按鈕來移除收藏喔！");
+        return "redirect:/favorite"; 
+    }
+
     // 3. 處理「取消收藏」的動作
     @PostMapping("/favorite/remove")
     public String removeFavorite(@RequestParam Integer recipeId,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        // 1. 檢查 VIP 手環
         String username = (String) session.getAttribute("loggedInUser");
-        if (username == null) {
-            redirectAttributes.addFlashAttribute("errorMsg", "請先登入才能使用收藏功能喔！");
-            return "redirect:/login";
-        }
 
         // 2. 為了在畫面上顯示貼心的提示，我們先查出這道菜的名字
         Recipe recipe = recipeService.findById(recipeId);
         String recipeName = (recipe != null) ? recipe.getName() : "該食譜不存在";
 
         // 3. 呼叫地下室管理員 (FavoriteService)，把這道食譜從專屬置物櫃裡丟掉
-        // (這裡對應到你昨天聰明修改的，利用 ID 進行精準刪除的 removeFavorite 方法)
         favoriteService.removeFavorite(username, recipeId);
 
         // 4. 讓傳令兵帶著成功訊息，準備送到畫面上

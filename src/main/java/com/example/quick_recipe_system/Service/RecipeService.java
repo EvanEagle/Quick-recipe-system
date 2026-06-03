@@ -7,8 +7,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.quick_recipe_system.entity.Recipe;
+import com.example.quick_recipe_system.repository.FavoriteRepository;
 import com.example.quick_recipe_system.repository.RecipeRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final FileStorageService fileStorageService;
 
     /**
      * 取得所有食譜
@@ -35,7 +39,7 @@ public class RecipeService {
         // 3. 建立一個全新的 LinkedHashMap（關鍵：它會記住你 put 的先後順序！）
         Map<String, List<Recipe>> orderedMap = new LinkedHashMap<>();
 
-        // 4. 依照你指定的順序放入，同時把英文 Key 換成中文 Key
+        // 4. 依照指定的順序放入，同時把英文 Key 換成中文 Key
         // 使用 getOrDefault 是為了防呆：如果資料庫目前剛好沒有某類的菜，就給它一個空清單，畫面就不會出錯
         orderedMap.put("中式", rawMap.getOrDefault("Chinese",
                 rawMap.getOrDefault("Chinese", rawMap.getOrDefault("中式", new ArrayList<>()))));
@@ -71,7 +75,7 @@ public class RecipeService {
     /**
      * 更新食譜
      */
-   public void updateRecipe(Recipe updateRecipe, String username) {
+    public void updateRecipe(Recipe updateRecipe, String username) {
 
         Recipe existingRecipe = findById(updateRecipe.getId());
 
@@ -79,7 +83,7 @@ public class RecipeService {
 
             updateRecipe.setAuthor(username); // 將食譜的作者設定為原本的作者
             updateRecipe.setTypeString(existingRecipe.getTypeString()); // 料理類型設定原本的類型
-            
+
             // 核心防護線：如果這次修改沒有傳入新圖片（updateRecipe 裡的 imageUrl 為 null）
             // 則自動將資料庫撈出來的舊圖片路徑補回去，避免原本的圖片不小心被抹除
             if (updateRecipe.getImageUrl() == null) {
@@ -112,13 +116,26 @@ public class RecipeService {
      * 例外訊息設定為："您沒有權限刪除此食譜！"
      * }
      */
+    @Transactional // 加上這個，確保刪除收藏跟刪除食譜同進同退
     public void deleteRecipe(Integer id, String username) {
 
         Recipe targetRecipe = findById(id);
 
+        // 1. 資安防護：檢查食譜存不存在，且「現在登入的人」是不是「食譜的作者」
         if (targetRecipe != null && targetRecipe.getAuthor().equals(username)) {
+
+            // 2. 解除外鍵綁定：先無差別刪除這道菜在 Favorite 表裡的所有收藏紀錄
+            // (因為這道菜要從世界上消失了，所以不管誰收藏過，都要清掉)
+            favoriteRepository.deleteByRecipeId(id);
+
+            // 3. 在食譜從資料庫消失之前，先把硬碟裡的照片刪掉！
+            // (不用擔心刪到預設圖片，因為你在 deleteOldImage 裡已經寫好保護機制的 if 判斷了)
+            fileStorageService.deleteOldImage(targetRecipe.getImageUrl());
+            // 4. 安全刪除：相關的收藏紀錄都清空了，不會再噴 500 錯誤，安心刪除食譜！
             recipeRepository.delete(targetRecipe);
+
         } else {
+            // 防禦水平越權：如果不是作者，直接拋出權限異常！
             throw new SecurityException("您沒有權限刪除此食譜！");
         }
     }
@@ -205,4 +222,3 @@ public class RecipeService {
         return recipeRepository.findRandom4Recipes();
     }
 }
-

@@ -12,6 +12,11 @@
     <!-- 引入標題及導覽列 -->
     <div th:replace="~{layout/fragments :: header}"></div>
 
+    <div style="text-align: center; margin-bottom: 20px;">
+            <span th:if="${successMsg}" th:text="${successMsg}" style="color: #2E8B57; font-weight: bold; background-color: #e6f4ea; padding: 10px 20px; border-radius: 8px; display: inline-block;"></span>
+            <span th:if="${errorMsg}" th:text="${errorMsg}" style="color: #ba714d; font-weight: bold; background-color: #fbe9e7; padding: 10px 20px; border-radius: 8px; display: inline-block;"></span>
+    </div>
+
     <!--main主要內容-->
     <main class="main-wrapper">
         <section class="search-section">  <!--section有主題的內容區塊-->
@@ -71,13 +76,13 @@
                         </div>
                         
                         <div class="card-actions">
-                            <form th:action="@{/recipe/detail/{id}(id=${recipe.id})}" method="get"
-                            class="btn-detail" 
-                            style="text-align: center; text-decoration: none; box-sizing: border-box; font-weight: bold;">
+                            <a th:href="@{/recipe/detail/{id}(id=${recipe.id})}" class="btn-detail" 
+                            style="color: #403e3e; text-align: center; text-decoration: none; box-sizing: border-box; font-weight: bold;">
                             查看詳情
-                            </form>
+                            </a>
                             
-                            <form th:action="@{/recipe/collect/{id}(id=${recipe.id})}" method="post" style="margin: 0; flex: 1; display: flex;">
+                            <form th:action="@{/favorite/add}" method="post" style="margin: 0; flex: 1; display: flex;">
+                                <input type="hidden" name="recipeId" th:value="${recipe.id}" />
                                 <button type="submit" class="btn-collect" style="width: 100%;">加入收藏</button>
                             </form>
                         </div>
