@@ -2,16 +2,20 @@ package com.example.quick_recipe_system.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.quick_recipe_system.entity.Favorite;
 
+@Repository
 public interface FavoriteRepository extends JpaRepository<Favorite, Integer> {
     // 檢查是否重複
     boolean existsByUsernameAndRecipeId(String username, Integer recipeId);
 
     //  新增 1：找出這個人的所有收藏紀錄
+    @EntityGraph(attributePaths = {"recipe"})
     List<Favorite> findByUsername(String username);
 
     //  新增 2：根據帳號與食譜 ID 刪除收藏紀錄

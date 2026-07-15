@@ -21,18 +21,35 @@
         <nav>
             <ul name="navbar" class="nav-ul">  <!--ul表示無序列表-->
                 <li><a th:href="@{/recipe}" class="nav-link">探索食譜</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
+
                 <th:block th:if="${session.loggedInUser} == null">
                     <li><a href="#" onclick="alert('哈囉！請先登入才能查看「我的收藏」喔！'); return false;" class="nav-link">我的收藏</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
                 </th:block>
                 <th:block th:unless="${session.loggedInUser} == null">
                     <li><a th:href="@{/favorite}" class="nav-link">我的收藏</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
                 </th:block>
+
                 <th:block th:if="${session.loggedInUser} == null">
                     <li><a href="#" onclick="alert('哈囉！請先登入才能使用「DIY食譜管理」喔！'); return false;" class="nav-link">DIY食譜管理</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
                 </th:block>
                 <th:block th:unless="${session.loggedInUser} == null" >
                     <li><a th:href="@{/diy}" class="nav-link">DIY食譜管理</a></li>  <!--a表示超連結,點擊會進入另一個網頁-->
                 </th:block>
+
+                <th:block th:if="${session.loggedInUser == 'admin123'}">
+                    <li>
+                        <a th:href="@{/admin/dashboard}" class="nav-link">後台管理系統</a>
+                    </li>
+                    </th:block>
+
+                <th:block th:unless="${session.loggedInUser == 'admin123'}">
+                    <li>
+                        <a href="#" onclick="alert('哈囉！你沒有「系統管理員」權限喔！'); return false;" class="nav-link">
+                        後台管理系統
+                        </a>
+                    </li>
+                </th:block>
+                
             </ul>
         </nav>
 

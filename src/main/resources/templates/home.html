@@ -20,7 +20,7 @@
     <!--main主要內容-->
     <main class="main-wrapper">
         <section class="search-section">  <!--section有主題的內容區塊-->
-           <form th:action="@{/recipe}" method="get" id="searchForm" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+           <form th:action="@{/search}" method="get" id="searchForm" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
                 
                 <div class="search-bar-container">
                     <input type="text" name="keyword" class="search-bar-input" placeholder="搜尋食譜(支援菜名、食材、標籤)" th:value="${selectedKeyword}">

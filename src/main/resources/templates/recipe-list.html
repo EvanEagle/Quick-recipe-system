@@ -23,7 +23,7 @@
 
         <h1 class="page-title">探索美味食譜</h1>
         
-        <div th:each="entry : ${typeRecipes}" class="cuisine-section">
+        <div th:each="entry : ${recipes}" class="cuisine-section">
           
             <h2 class="cuisine-title" th:text="|🎌 ${entry.key}料理|">分類名稱</h2>
             

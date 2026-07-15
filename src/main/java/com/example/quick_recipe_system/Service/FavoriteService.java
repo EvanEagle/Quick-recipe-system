@@ -17,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class FavoriteService {
 
-    
     private final FavoriteRepository favoriteRepository;
 
     /**
@@ -29,12 +28,12 @@ public class FavoriteService {
         
         // 步驟 B：把 Favorite 裡面的 Recipe 抽出來，打包成一個新的 List 回傳給前端
         return favorites.stream()
-                .map(Favorite::getRecipe)
+                .map(favorite -> favorite.getRecipe())
                 .collect(Collectors.toList());
     }
 
     /**
-     * 2. 加入收藏
+     * 2. 加入收藏邏輯(判斷是否收藏過)
      */
     public boolean addFavorite(String username, Recipe recipe) {
         if (favoriteRepository.existsByUsernameAndRecipeId(username, recipe.getId())) {
@@ -54,7 +53,7 @@ public class FavoriteService {
      */
     @Transactional // 關鍵：在 JPA 中執行 Delete 或 Update 操作，必須掛上 Transactional 確保交易安全
     public void removeFavorite(String username, Integer recipeId) {
-        // 直接下指令請資料庫刪除該筆紀錄
+       
         favoriteRepository.deleteByUsernameAndRecipeId(username, recipeId);
     }
 }

@@ -31,10 +31,10 @@ public class AuthController {
             HttpSession session,
             Model model) {
         try {
-            // 呼叫 Service 檢查帳密
+            // 呼叫 Service 驗證帳密是否與資料庫的相同
             userService.login(username, password);
 
-            // 檢查通過！發放 VIP 手環 (Session)
+            // 驗證通過後,把使用者存進session裡,這樣一來，使用者接下來在瀏覽、新增或修改食譜時，後端都能從 Session 裡確認他是登入狀態。
             session.setAttribute("loggedInUser", username);
 
             // 登入成功，導向首頁
@@ -50,9 +50,13 @@ public class AuthController {
     // 3. 登出功能
     @GetMapping("/logout")
     public String logout(HttpSession session) {
-        // 沒收 VIP 手環
-        session.removeAttribute("loggedInUser");
-        // 也可以用 session.invalidate(); 清除所有 Session 資料
+        /**
+         * 本來用 session.removeAttribute() 來清除資料，
+         * 但我後來審視程式碼發現 Session 連線通道依然有效，有資安隱患。
+         * 因此我將它重構為直接呼叫 session.invalidate()。
+         * 當登出請求進到 Controller 後，直接在伺服器端將整條 Session 徹底銷毀並釋放記憶體，確保連線最安全的關閉。」
+         **/
+        session.invalidate();
 
         return "redirect:/home"; // 登出後回到首頁
     }

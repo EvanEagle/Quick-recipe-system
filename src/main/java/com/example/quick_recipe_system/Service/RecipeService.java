@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,31 +23,19 @@ public class RecipeService {
     private final FileStorageService fileStorageService;
 
     /**
-     * 取得所有食譜
+     * 探索食譜-按照料理類型分類好撈出的所有食譜
      */
-    public List<Recipe> getAllRecipes() {
-        return recipeRepository.findAll();
-    }
+    public Map<String, List<Recipe>> getAllRecipes() {
 
-    public Map<String, List<Recipe>> getRecipesByType() {
-        // 1. 從資料庫撈出所有食譜
-        List<Recipe> allRecipes = recipeRepository.findAll();
+        // 使用LinkedHashMap讓食譜按照我排列的順序顯示
+        Map<String, List<Recipe>> resultMap = new LinkedHashMap<>();
 
-        Map<String, List<Recipe>> rawMap = allRecipes.stream().collect(Collectors.groupingBy(Recipe::getTypeString));
+        // 希望撈出的食譜按照類型排列好,所以呼叫Repository.findByTypeString 這個方法
+        resultMap.put("中式", recipeRepository.findByTypeString("Chinese"));
+        resultMap.put("日式", recipeRepository.findByTypeString("Japanese"));
+        resultMap.put("西式", recipeRepository.findByTypeString("Western"));
 
-        // 3. 建立一個全新的 LinkedHashMap（關鍵：它會記住你 put 的先後順序！）
-        Map<String, List<Recipe>> orderedMap = new LinkedHashMap<>();
-
-        // 4. 依照指定的順序放入，同時把英文 Key 換成中文 Key
-        // 使用 getOrDefault 是為了防呆：如果資料庫目前剛好沒有某類的菜，就給它一個空清單，畫面就不會出錯
-        orderedMap.put("中式", rawMap.getOrDefault("Chinese",
-                rawMap.getOrDefault("Chinese", rawMap.getOrDefault("中式", new ArrayList<>()))));
-        orderedMap.put("日式", rawMap.getOrDefault("Japanese",
-                rawMap.getOrDefault("Japanese", rawMap.getOrDefault("日式", new ArrayList<>()))));
-        orderedMap.put("西式", rawMap.getOrDefault("Western",
-                rawMap.getOrDefault("Western", rawMap.getOrDefault("西式", new ArrayList<>()))));
-
-        return orderedMap;
+        return resultMap;
     }
 
     /**
@@ -97,7 +84,7 @@ public class RecipeService {
         }
     }
 
-    /*
+    /**
      * --- Service 層 ---
      * 方法名稱：deleteRecipe(傳入變數：要刪除的 Integer id, 傳入變數：當前登入者 String username)
      * 
@@ -142,56 +129,47 @@ public class RecipeService {
 
     /**
      * 解析首頁的烹調時間字串，並呼叫對應的 JPA 查詢
+     * 利用 Java 現代的 Switch 表達式與 Map.of 一步到位
      */
     public Map<String, List<Recipe>> searchByCookingTimeStr(String timeStr) {
-        List<Recipe> sortedRecipes;
-        String customLabel;
 
-        // 進行字串比對與翻譯
-        if ("10mins".equals(timeStr)) {
-            sortedRecipes = recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(10);
-            customLabel = "⏱️ 10分鐘快手";
-        } else if ("20mins".equals(timeStr)) {
-            sortedRecipes = recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(20);
-            customLabel = "⏱️ 20分鐘輕鬆上菜";
-        } else if ("30mins".equals(timeStr)) {
-            sortedRecipes = recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(30);
-            customLabel = "⏱️ 30分鐘經典";
-        } else if ("30mins up".equals(timeStr)) {
-            // 注意：這裡是呼叫 GreaterThan (大於)
-            sortedRecipes = recipeRepository.findByCookingTimeGreaterThanOrderByCookingTimeAsc(30);
-            customLabel = "🍳 30分鐘以上功夫菜";
-        } else {
-            // 如果選到 "time" 或是網址被亂打，預設回傳全部分類
-            return getRecipesByType();
-        }
+        return switch (timeStr) {
+            case "10mins" ->
+                Map.of("⏱️ 10分鐘快手", recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(10));
+            case "20mins" ->
+                Map.of("⏱️ 20分鐘輕鬆上菜", recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(20));
+            case "30mins" ->
+                Map.of("⏱️ 30分鐘經典", recipeRepository.findByCookingTimeLessThanEqualOrderByCookingTimeAsc(30));
+            case "30mins up" ->
+                Map.of("🍳 30分鐘以上功夫菜", recipeRepository.findByCookingTimeGreaterThanOrderByCookingTimeAsc(30));
 
-        // 把結果裝進 Map 回傳
-        Map<String, List<Recipe>> resultMap = new LinkedHashMap<>();
-        resultMap.put(customLabel, sortedRecipes);
-        return resultMap;
+            // 預設 fallback：當網址亂打或沒有匹配時
+            default -> getAllRecipes();
+        };
     }
 
-    public Map<String, List<Recipe>> masterSearch(String keyword, String cookingtime, String author,
-            String typeString) {
+    /**
+     * 搜尋食譜的共同邏輯
+     */
+    public Map<String, List<Recipe>> masterSearch(String keyword, String cookingtime, String typeString,
+            String author) {
 
         Map<String, List<Recipe>> resultMap = new LinkedHashMap<>();
 
-        // 優先權 1：關鍵字綜合搜尋 (菜名、食材、標籤)
+        // 優先權 1：關鍵字綜合搜尋 (大搜尋框：菜名、食材、標籤)
         if (keyword != null && !keyword.trim().isEmpty()) {
             List<Recipe> recipes = recipeRepository.searchByComprehensiveKeyword(keyword);
             resultMap.put("🔍 搜尋結果：'" + keyword + "'", recipes);
             return resultMap;
         }
 
-        // 優先權 2：烹調時間搜尋 (沿用昨天寫好的邏輯)
+        // 優先權 2：烹調時間搜尋
         if (cookingtime != null && !cookingtime.isEmpty()) {
             return searchByCookingTimeStr(cookingtime);
         }
 
-        // 優先權 3：料理類型搜尋
+        // 優先權 3：料理類型搜尋 (中式 / 日式 / 西式 按鈕)
         if (typeString != null && !typeString.isEmpty()) {
-            // 假設你有一個 findByTypeString 的 Repository 方法
             List<Recipe> recipes = recipeRepository.findByTypeString(typeString);
             resultMap.put(typeString, recipes);
             return resultMap;
@@ -204,12 +182,13 @@ public class RecipeService {
             return resultMap;
         }
 
-        // 預設：什麼都沒選，顯示中/日/西式大分類
-        return getRecipesByType();
+        // 預設：什麼都沒選，顯示探索食譜畫面
+        return getAllRecipes();
     }
 
     /**
-     * 獲取使用者最新 5 筆 DIY 私房食譜
+     * 首頁右側的Diy食譜列表
+     * 獲取使用者最新 5 筆 DIY 食譜
      */
     public List<Recipe> getTopLatestDiyRecipes(String username) {
         if (username == null || username.trim().isEmpty()) {
@@ -218,6 +197,9 @@ public class RecipeService {
         return recipeRepository.findTop5ByAuthorOrderByIdDesc(username);
     }
 
+    /**
+     * 首頁左側的隨機食譜列表
+     */
     public List<Recipe> getRandomRecipesForHome() {
         return recipeRepository.findRandom4Recipes();
     }

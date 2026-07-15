@@ -18,19 +18,16 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
-@RequiredArgsConstructor
+@RequiredArgsConstructor // 註解 @RequiredArgsConstructor 會自動將 final 物件注入, 不用再寫 @Autowired
 public class FavoriteController {
 
-    /**
-     * 注入 FavoriteService favoriteService 撈資料
-     * 注意: @RequiredArgsConstructor 會自動將 final 物件注入, 不用再寫 @Autowired
-     */
+    
     private final FavoriteService favoriteService;
     private final RecipeService recipeService;
 
     /**
      * 用 HttpSession 確認用戶是否有登入
-     * 使用 if判斷式 後端在驗證一次使用者是否登入, 沒有登入踢回登入畫面
+     * 未登入使用 LoginInterceptor 攔截
      * 有登入從 favoriteService 取出 使用者的收藏清單
      * 裝入 model 的箱子, 上面貼 "favorites" 標籤
      * 傳送到 favorite.html
@@ -39,7 +36,7 @@ public class FavoriteController {
     public String showFavoritesPage(HttpSession session, Model model) {
 
         String username = (String) session.getAttribute("loggedInUser");
-
+        
         List<Recipe> myFavorites = favoriteService.getFavoriteRecipe(username);
         model.addAttribute("favorites", myFavorites);
 
@@ -65,7 +62,7 @@ public class FavoriteController {
         // 2. 根據 ID 找出那道食譜
         Recipe recipe = recipeService.findById(recipeId);
 
-        // 3. 呼叫地下室管理員 (FavoriteService) 把食譜放進置物櫃
+        // 3. 呼叫 FavoriteService 把食譜存進資料庫
         if (recipe != null) {
             boolean isAdded = favoriteService.addFavorite(username, recipe);
 
@@ -78,7 +75,12 @@ public class FavoriteController {
             }
         }
 
-        // 5. 業界小超人技巧：把使用者踢回他原本點擊按鈕的那一頁！
+        /** 
+         * 5.把使用者踢回他原本點擊按鈕的那一頁！
+         * referer: 是 HTTP 請求標頭的一個欄位，用來告訴伺服器目前的請求是從哪個頁面（URL）點擊或跳轉而來的
+         * 從哪裡來，就回哪裡去
+         * 使用三元運算子檢查referer是否為null
+         */ 
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/");
     }
@@ -102,13 +104,11 @@ public class FavoriteController {
         Recipe recipe = recipeService.findById(recipeId);
         String recipeName = (recipe != null) ? recipe.getName() : "該食譜不存在";
 
-        // 3. 呼叫地下室管理員 (FavoriteService)，把這道食譜從專屬置物櫃裡丟掉
+        // 3. 呼叫 FavoriteService 把這道食譜從資料庫移除
         favoriteService.removeFavorite(username, recipeId);
 
-        // 4. 讓傳令兵帶著成功訊息，準備送到畫面上
         redirectAttributes.addFlashAttribute("successMsg", "💔 已將「" + recipeName + "」從收藏中移除！");
 
-        // 5. 將使用者踢回「我的收藏」頁面 (這會觸發 @GetMapping("/favorite")，讓畫面重新渲染)
         return "redirect:/favorite";
     }
 

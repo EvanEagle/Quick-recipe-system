@@ -28,48 +28,78 @@ public class RecipeController {
     private final RecipeService recipeService;
     private final FileStorageService fileStorageService;
 
-    // 定義允許的圖片類型
+    // 因避免使用者上傳非圖片檔的資料,所以定義允許的圖片類型
     private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of(
             "image/jpeg", "image/png", "image/gif", "image/webp");
 
+    /**
+     * 導覽列-探索食譜(取得所有食譜並按照類型排列顯示)
+     */
     @GetMapping("/recipe")
-    public String exploreRecipes(
-            @RequestParam(value = "keyword", required = false) String keyword,
-            @RequestParam(value = "cookingtime", required = false) String cookingtime,
-            @RequestParam(value = "typeString", required = false) String typeString,
-            Model model) {
+    public String findAllRecipes(Model model) {
 
-        // 呼叫昨天與今天實作的綜合搜尋核心
-        Map<String, List<Recipe>> typeRecipes = recipeService.masterSearch(keyword, cookingtime, null, typeString);
+        Map<String, List<Recipe>> allRecipesByType = recipeService.getAllRecipes();
 
-        model.addAttribute("typeRecipes", typeRecipes);
-
-        // 用來讓探索頁面的搜尋欄能維持住選取的狀態
-        model.addAttribute("selectedTime", cookingtime);
-        model.addAttribute("selectedKeyword", keyword);
-        model.addAttribute("selectedType", typeString);
-
+        model.addAttribute("recipes", allRecipesByType);
         return "recipe-list";
     }
 
+    /**
+     * 處理食譜搜尋與篩選請求
+     * 
+     * @param keyword     綜合關鍵字（對應大搜尋框）
+     * @param cookingtime 烹調時間（對應時間篩選器）
+     * @param typeString  料理類型（對應中/日/西式按鈕）
+     * @param author      作者名稱（保留此參數作為未來社群化功能基礎）
+     */
+    @GetMapping("/search")
+    public String searchRecipes(
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "cookingtime", required = false) String cookingtime,
+            @RequestParam(value = "typeString", required = false) String typeString,
+            @RequestParam(value = "author", required = false) String author,
+            Model model) {
+
+        // 1. 呼叫 Service 的萬能搜尋方法，取得篩選後的 Map 資料
+        Map<String, List<Recipe>> searchResults = recipeService.masterSearch(keyword, cookingtime, typeString, author);
+
+        // 2. 將結果放入 Model。
+        model.addAttribute("recipes", searchResults);
+
+        // 3. 與探索食譜共用同一個 HTML 模板頁面
+        return "recipe-list";
+    }
+
+    /**
+     * 查看食譜詳情
+     */
     @GetMapping("/recipe/detail/{id}")
-    public String showRecipeDetail(@PathVariable Integer id, Model model) {
+    public String showRecipeDetail(@PathVariable Integer id, RedirectAttributes redirectAttributes, Model model) {
 
         // 1. 透過 Service 去資料庫把這道食譜的完整資料撈出來
         Recipe recipe = recipeService.findById(id);
 
-        // 防呆機制：如果有人亂輸入網址 ID，找不到食譜，就直接踢回探索列表
+        // 防呆機制1 : 如果有人亂輸入網址 ID，找不到食譜，就直接踢回探索列表
         if (recipe == null) {
+            redirectAttributes.addFlashAttribute("errorMsg", "找不到該食譜");
             return "redirect:/recipe";
         }
-
         // 2. 把撈出來的完整食譜資料裝進 Model，準備送給前端畫面
         model.addAttribute("recipe", recipe);
 
-        // 3. 導向剛剛建立好的詳情頁面 (注意名稱要跟剛剛改的一致，不加 .html)
+        // 3. 導向食譜詳情頁面
         return "recipe-list-detail";
     }
 
+    /**
+     * --- DIY 頁面 ---
+     * 方法名稱：showDiyPage(傳入變數：當前登入者 String username, 傳入變數：食譜 List<Recipe>
+     * myDiyRecipes)
+     * 
+     * 1. 取得當前登入者的食譜
+     * 2. 將食譜列表裝進 Model 並呼叫前端頁面
+     * 3. 返回 DIY 頁面
+     */
     @GetMapping("/diy")
     public String showDiyPage(HttpSession session, Model model) {
         String username = (String) session.getAttribute("loggedInUser");
@@ -79,6 +109,14 @@ public class RecipeController {
         return "diy-page";
     }
 
+    /**
+     * --- 新增食譜頁面 ---
+     * 方法名稱：showAddRecipe
+     * 
+     * 1. 建立一個新的食譜物件
+     * 2. 將食譜物件裝進 Model 並呼叫前端頁面
+     * 3. 返回 新增食譜頁面
+     */
     @GetMapping("/recipe/add")
     public String showAddRecipe(Model model) {
 
@@ -86,11 +124,19 @@ public class RecipeController {
         return "recipe-add";
     }
 
+    /**
+     * --- 新增食譜頁面 ---
+     * 方法名稱：addRecipe(傳入變數：食譜 Recipe recipe, 傳入變數：類型 String typeString)
+     * 
+     * 1. 取得當前登入者的食譜
+     * 2. 將食譜列表裝進 Model 並呼叫前端頁面
+     * 3. 返回 DIY 頁面 (新增頁面)
+     */
     @PostMapping("/recipe/add")
     public String addRecipe(
             @RequestParam("imageFile") MultipartFile imageFile,
             HttpSession session,
-            @ModelAttribute Recipe recipe, //  建議補上 @ModelAttribute 綁定表單
+            @ModelAttribute Recipe recipe, // 建議補上 @ModelAttribute 綁定表單
             String typeString,
             RedirectAttributes redirectAttributes) {
 
@@ -109,7 +155,7 @@ public class RecipeController {
                 }
             }
 
-            // 呼叫輔助方法存圖片 (fileStorageService 裡面應該已經有判斷 empty 會回傳 null 的邏輯)
+            // 呼叫輔助方法存圖片 (fileStorageService 裡面已經有判斷 empty 會回傳 null 的邏輯)
             String imageUrl = fileStorageService.saveUploadedImage(imageFile);
 
             if (imageUrl != null) {
@@ -200,13 +246,14 @@ public class RecipeController {
 
     // 攔截帶有 ID 的 GET 請求
     @GetMapping("/recipe/delete/{id}")
-    public String deleteRecipeFallback(@PathVariable(required = false) Integer id, RedirectAttributes redirectAttributes) {
+    public String deleteRecipeFallback(@PathVariable(required = false) Integer id,
+            RedirectAttributes redirectAttributes) {
         // 亂闖移除網址，直接踢回他的 DIY 管理清單
         redirectAttributes.addFlashAttribute("errorMsg", "請透過正常的按鈕來移除食譜喔！");
         return "redirect:/diy";
     }
 
-    //  (選用)攔截連 ID 都沒打，只打一半網址的 GET 請求
+    // (選用)攔截連 ID 都沒打，只打一半網址的 GET 請求
     @GetMapping("/recipe/delete")
     public String deleteRecipeNoIdFallback(RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("errorMsg", "無效的操作路徑！");

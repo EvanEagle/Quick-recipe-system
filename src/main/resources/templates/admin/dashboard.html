@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>系統管理總部 - QuickCook</title>
+    
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+
+    <div th:replace="~{layout/fragments :: header}"></div>
+
+    <main class="main-wrapper dashboard-wrapper">
+        
+        <h1 class="dashboard-title">⚙️ 系統管理總部</h1>
+
+        <section class="dashboard-section">
+            <h2 class="dashboard-section-title">📊 營運核心數據</h2>
+            
+            <div class="dashboard-cards-container">
+                
+                <div class="dashboard-card">
+                    <h3 class="dashboard-card-title">總會員數</h3>
+                    <p class="dashboard-card-value" th:text="${totalUsers}">0</p>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3 class="dashboard-card-title">總食譜數</h3>
+                    <p class="dashboard-card-value" th:text="${totalRecipes}">0</p>
+                </div>
+                
+                <div class="dashboard-card">
+                    <h3 class="dashboard-card-title">本日新增食譜</h3>
+                    <p class="dashboard-card-value highlight-orange" th:text="${newRecipesToday}">0</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <div th:replace="~{layout/fragments :: footer}"></div>
+
+</body>
+</html>
