@@ -17,19 +17,20 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 
     private final AdminService adminService;
-    //admin/dashboard
+
+    // admin/dashboard
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
-        
+
         // 透過 Service 獲取打包好的數據
         Map<String, Object> dashboardData = adminService.getDashboardData();
-        
-        // 將數據拆分裝入 Model，這可以確保你原本寫好的 Thymeleaf 變數完全不用修改
+
+        // 將數據拆分裝入 Model
         model.addAttribute("totalUsers", dashboardData.get("totalUsers"));
         model.addAttribute("totalRecipes", dashboardData.get("totalRecipes"));
         model.addAttribute("newRecipesToday", dashboardData.get("newRecipesToday"));
-        
-        return "admin/dashboard"; 
+
+        return "admin/dashboard";
     }
 
 }

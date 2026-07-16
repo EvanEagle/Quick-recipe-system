@@ -26,11 +26,11 @@ public class User {
     @NotBlank
     private String password;
     
-    // 🌟 角色權限：預設註冊進來都是一般用戶
+    // 角色權限：預設註冊進來都是一般用戶
     @Column(nullable = false)
     private String role = "ROLE_USER"; 
 
-    // 🌟 帳號狀態：預設為 true (正常啟用)，若改為 false 則代表被停權
+    // 帳號狀態：預設為 true (正常啟用)，若改為 false 則代表被停權
     @Column(nullable = false)
     private Boolean isActive = true;
 }

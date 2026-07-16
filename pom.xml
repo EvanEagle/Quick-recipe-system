@@ -110,6 +110,11 @@
 			<version>3.7.1</version>
 		</dependency>
 
+		<!--starter.10 - Spring 的加密專用套件-->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-crypto</artifactId>
+		</dependency>
 		
 	</dependencies>
 

@@ -9,11 +9,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class GlobalExceptionHandler {
 
     /**
-     * 攔截LoginInterceptor 丟出來的 IllegalStateException
-     * 並利用 RedirectAttributes 封裝錯誤訊息後導向登入頁面
+     * 處理未登入例外
      */
-    @ExceptionHandler(IllegalStateException.class)
-    public String handleNotLoggedInException(IllegalStateException e, RedirectAttributes redirectAttributes) {
+    @ExceptionHandler(NoLoggedInException.class)
+    public String handleNoLoggedInException(NoLoggedInException e, RedirectAttributes redirectAttributes) {
 
         redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
 
@@ -28,6 +27,15 @@ public class GlobalExceptionHandler {
 
         // 當使用者亂輸入非數字網址時, 攔截錯誤, 並重新導向探索食譜頁面
         redirectAttributes.addFlashAttribute("errorMsg", "系統提示：網址參數格式錯誤");
+        return "redirect:/home";
+    }
+
+    /**
+     * 處理無權限的例外
+     */
+    @ExceptionHandler(NoPermissionException.class)
+    public String handleNoPermission(NoPermissionException e, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
         return "redirect:/home";
     }
 }

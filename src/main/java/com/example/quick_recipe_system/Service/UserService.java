@@ -1,5 +1,6 @@
 package com.example.quick_recipe_system.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
@@ -16,6 +17,7 @@ public class UserService {
 
     // 嚴格遵守三層架構：Service 負責呼叫 Repository
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // 註冊功能
     public boolean register(@NotBlank String username, @NotBlank String password) throws IllegalArgumentException {
@@ -28,11 +30,13 @@ public class UserService {
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("此帳號已被註冊過囉！");
         }
+        //通過上面檢查程序後, 在寫入資料庫的前一刻，將密碼進行 BCrypt 加密
+        String encodedPassword = passwordEncoder.encode(password);
 
         // 4. 存入真實的 MySQL 資料庫
         User newUser = new User();
         newUser.setUsername(username);
-        newUser.setPassword(password);
+        newUser.setPassword(encodedPassword);
         userRepository.save(newUser);
 
         return true;
@@ -52,20 +56,13 @@ public class UserService {
     }
 
     // 登入邏輯
-    public void login(@NotBlank String username, @NotBlank String password) throws IllegalArgumentException {
+    public User login(@NotBlank String username, @NotBlank String password) throws IllegalArgumentException {
         // 1. 先去資料庫把這個使用者撈出來
         User user = userRepository.findByUsername(username);
 
-        // 2. 檢查使用者輸入的帳號是否存在
-        if (user == null) {
-            // 如果不存在，拋出:輸入參數不合法異常，並顯示提示
-            throw new IllegalArgumentException("找不到此帳號，請先完成註冊！");
-        }
-
-        // 3. 帳號存在，核對使用者輸入的密碼是否與資料庫裡的密碼相符
-        if (!user.getPassword().equals(password)) {
-            // 如果不相符，拋出:輸入參數不合法異常，並顯示提示
-            throw new IllegalArgumentException("密碼輸入錯誤，請重新確認。");
-        }
+        if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("帳號或密碼錯誤。如果您尚未加入，請先前往註冊喔！");
+    }
+        return user;
     }
 }

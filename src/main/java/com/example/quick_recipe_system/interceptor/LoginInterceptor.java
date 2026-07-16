@@ -3,6 +3,8 @@ package com.example.quick_recipe_system.interceptor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.example.quick_recipe_system.exception.NoLoggedInException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -21,10 +23,10 @@ public class LoginInterceptor implements HandlerInterceptor {
         String username = (String) session.getAttribute("loggedInUser");
 
         if (username == null) {
-            //未登入狀態時直接拋出 IllegalStateException , 隨後由GlobalExceptionHandler 統一攔截這個例外
-            throw new IllegalStateException("請先登入才能使用此功能喔！");
+            //未登入狀態時直接拋出 NoLoggedInException , 隨後由GlobalExceptionHandler 統一攔截這個例外
+            throw new NoLoggedInException("請先登入才能使用此功能喔！");
         }
 
-        return true; // 已登入，放行
+        return true; 
     }
 }
