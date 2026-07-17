@@ -1,0 +1,138 @@
+/*=============== 運儀表板 ================*/
+
+/* 限制後台主要內容區塊的最大寬度並置中 */
+.dashboard-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.title {
+    color: var(--primary-color);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+/* 數據區塊外框 */
+.dashboard-section {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 40px;
+}
+
+.dashboard-section-title {
+    color: var(--primary-color);
+    margin-top: 0;
+    border-bottom: 2px solid var(--nav-bg);
+    padding-bottom: 10px;
+}
+
+/* 卡片排版容器 (Flexbox) */
+.dashboard-cards-container {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+    text-align: center;
+}
+
+/* 單一數據卡片 */
+.dashboard-card {
+    flex: 1;
+    background-color: var(--nav-bg);
+    padding: 20px;
+    border-radius: 15px;
+    transition: transform 0.3s; /* 加入你擅長的微動畫 */
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px); /* 滑鼠移入時微微浮起 */
+}
+
+.dashboard-card-title {
+    margin: 0 0 10px 0;
+    color: var(--text-color);
+}
+
+.dashboard-card-value {
+    font-size: 32px;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+/* 特別高亮的橘色數字 */
+.highlight-orange {
+    color: var(--accent-orange);
+}
+
+/*============== 會員管理 ==============*/
+.admin-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+
+.admin-section {
+    background-color: var(--card-bg);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+/* 表格樣式優化，使其與卡片風格統一 */
+.admin-table {
+    width: 100%;
+    border-collapse: separate; /* 配合圓角設定 */
+    border-spacing: 0;
+    margin-top: 20px;
+}
+
+.admin-table th, 
+.admin-table td {
+    padding: 18px;
+    text-align: center;
+    border-bottom: 1px solid var(--nav-bg);
+}
+
+.admin-table th {
+    background-color: var(--nav-bg);
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+/* 狀態標籤美化 */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.status-active {
+    background-color: rgba(46, 204, 113, 0.1);
+    color: #27ae60;
+}
+
+.status-suspended {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #c0392b;
+}
+
+/* 按鈕樣式 (與儀表板按鈕一致) */
+.btn-toggle {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-toggle:hover {
+    background-color: var(--accent-orange);
+    transform: scale(1.05);
+}

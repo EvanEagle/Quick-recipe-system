@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>會員管理系統</title>
+
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+</head>
+<body>
+    <!-- 這裡引入你之前的導覽列 -->
+    <div th:replace="~{layout/fragments :: header}"></div>
+
+    <main class="title">
+        <h1>會員管理清單</h1>
+
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>帳號名稱</th>
+                    <th>目前狀態</th>
+                    <th>管理操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 使用 th:each 迴圈渲染 Controller 傳來的 members 清單 -->
+                <tr th:each="member : ${members}">
+                    <td th:text="${member.username}">使用者帳號</td>
+                    
+                    <!-- 狀態標籤：根據 isActive 欄位顯示 -->
+                    <td>
+                        <span th:if="${member.isActive}" style="color: green; font-weight: bold;">正常啟用</span>
+                        <span th:unless="${member.isActive}" style="color: red; font-weight: bold;">已停權</span>
+                    </td>
+
+                    <!-- 管理操作區 (之後會在這裡放按鈕) -->
+                    <td>
+                        <form th:action="@{/admin/members/{id}/toggle-status(id=${member.id})}" method="post">
+                            <button type="submit" class="btn-toggle">切換狀態</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+
+    <div th:replace="~{layout/fragments :: footer}"></div>
+</body>
+</html>

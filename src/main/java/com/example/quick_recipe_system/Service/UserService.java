@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import com.example.quick_recipe_system.entity.User;
+import com.example.quick_recipe_system.exception.UserStopException;
 import com.example.quick_recipe_system.repository.UserRepository;
 
 import jakarta.validation.constraints.NotBlank;
@@ -62,7 +63,11 @@ public class UserService {
 
         if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
             throw new IllegalArgumentException("帳號或密碼錯誤。如果您尚未加入，請先前往註冊喔！");
-    }
+        }
+
+        if (user.getIsActive()== null || !user.getIsActive()) {
+            throw new UserStopException("您的帳號已被停權，請聯繫系統管理員！");
+        }
         return user;
     }
 }

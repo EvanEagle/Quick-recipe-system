@@ -9,7 +9,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.quick_recipe_system.entity.Recipe;
+import com.example.quick_recipe_system.entity.User;
 import com.example.quick_recipe_system.repository.RecipeRepository;
 import com.example.quick_recipe_system.repository.UserRepository;
 
@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true) // 唯讀事務，能優化資料庫查詢效能
 @RequiredArgsConstructor
 public class AdminService {
-    
+
     private final UserRepository userRepository;
 
     private final RecipeRepository recipeRepository;
@@ -32,10 +32,10 @@ public class AdminService {
 
         // 1. 獲取總會員數
         long totalUsers = userRepository.count();
-        
+
         // 2. 獲取總食譜數
         long totalRecipes = recipeRepository.count();
-        
+
         // 3. 計算今日新增食譜數 (商業邏輯封裝在 Service)
         LocalDateTime startOfToday = LocalDate.now().atStartOfDay();
         long newRecipesToday = recipeRepository.countByCreatedAtAfter(startOfToday);
@@ -46,5 +46,22 @@ public class AdminService {
         stats.put("newRecipesToday", newRecipesToday);
 
         return stats;
+    }
+
+    // 會員管理-所有一般使用者
+    public List<User> getAllMembers() {
+        return userRepository.findByRole("ROLE_USER");
+    }
+
+    @Transactional
+    public void toggleMemberStatus(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("找不到此會員！"));
+
+        // 狀態反轉：如果是 true 就變 false，反之亦然
+        user.setIsActive(!user.getIsActive());
+
+        userRepository.save(user);
     }
 }

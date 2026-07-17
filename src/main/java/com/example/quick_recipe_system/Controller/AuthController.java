@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.quick_recipe_system.entity.User;
 import com.example.quick_recipe_system.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
@@ -31,19 +32,23 @@ public class AuthController {
             HttpSession session,
             Model model) {
         try {
-            // 呼叫 Service 驗證帳密是否與資料庫的相同
-            userService.login(username, password);
 
-            // 驗證通過後,把使用者存進session裡,這樣一來，使用者接下來在瀏覽、新增或修改食譜時，後端都能從 Session 裡確認他是登入狀態。
+            User user = userService.login(username, password);
+
             session.setAttribute("loggedInUser", username);
+            session.setAttribute("loggedInUserRole", user.getRole());
 
-            // 登入成功，導向首頁
-            return "redirect:/home";
+            // 管理員直接進後台，一般人去前台首頁
+            if ("ROLE_ADMIN".equals(user.getRole())) {
+                return "redirect:/admin/dashboard";
+            } else {
+                return "redirect:/home";
+            }
 
         } catch (IllegalArgumentException e) {
             // 捕捉到在 Service 拋出的錯誤訊息，傳回前端顯示
             model.addAttribute("errorMsg", e.getMessage());
-            return "login"; // 停留在登入頁
+            return "login";
         }
     }
 

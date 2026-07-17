@@ -68,13 +68,19 @@ public class Recipe {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
-    // 🌟 專業做法：在寫入資料庫前，自動把時間填入 (這叫 JPA 生命週期回呼)
+    // 在寫入資料庫前，自動把時間填入 (這叫 JPA 生命週期回呼)
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
 
-    // 🌟 新增：紀錄這篇食譜被收藏的次數，預設為 0
+    // 紀錄這篇食譜被收藏的次數，預設為 0
     @Column(name = "favorite_count", nullable = false)
     private Integer favoriteCount = 0;
+
+    /**
+     * 食譜類型：true 為官方系統食譜，false 為一般會員 DIY 食譜
+     */
+    @Column(name = "is_system_recipe", nullable = false)
+    private Boolean isSystemRecipe = false;
 }

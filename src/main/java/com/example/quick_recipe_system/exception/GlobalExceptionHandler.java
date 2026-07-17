@@ -38,4 +38,13 @@ public class GlobalExceptionHandler {
         redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
         return "redirect:/home";
     }
+
+    /**
+     * 處理停權的例外
+     */
+    @ExceptionHandler(UserStopException.class)
+    public String handleUserStopException(UserStopException e, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
+        return "redirect:/login";
+    }
 }
