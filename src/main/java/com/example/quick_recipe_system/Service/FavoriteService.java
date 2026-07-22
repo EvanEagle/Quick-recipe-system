@@ -52,7 +52,7 @@ public class FavoriteService {
      * 3. 移除收藏
      */
     @Transactional // 關鍵：在 JPA 中執行 Delete 或 Update 操作，必須掛上 Transactional 確保交易安全
-    public void removeFavorite(String username, Integer recipeId) {
+    public void removeFavorite(String username, Long recipeId) {
        
         favoriteRepository.deleteByUsernameAndRecipeId(username, recipeId);
     }

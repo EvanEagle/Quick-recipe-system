@@ -52,7 +52,7 @@ public class FavoriteController {
     }
 
     @PostMapping("/favorite/add")
-    public String addFavorite(@RequestParam Integer recipeId,
+    public String addFavorite(@RequestParam Long recipeId,
             HttpSession session,
             RedirectAttributes redirectAttributes,
             HttpServletRequest request) { // 負責抓取使用者是從哪頁點擊的
@@ -94,7 +94,7 @@ public class FavoriteController {
 
     // 3. 處理「取消收藏」的動作
     @PostMapping("/favorite/remove")
-    public String removeFavorite(@RequestParam Integer recipeId,
+    public String removeFavorite(@RequestParam Long recipeId,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
 

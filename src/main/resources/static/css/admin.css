@@ -136,3 +136,27 @@
     background-color: var(--accent-orange);
     transform: scale(1.05);
 }
+
+/* --- 食譜管理專屬標籤顏色 --- */
+
+/* 官方食譜：使用品牌橘色系 */
+.type-system {
+    background-color: rgba(255, 153, 0, 0.1); /* 微透明橘底 */
+    color: var(--accent-orange); /* 橘字 */
+}
+
+/* 會員 DIY 食譜：使用藍色系區隔 */
+.type-diy {
+    background-color: rgba(52, 152, 219, 0.1);
+    color: #2980b9;
+}
+
+/* --- 警告型按鈕 (刪除/下架) --- */
+.btn-danger {
+    background-color: #e74c3c; /* 警告紅 */
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}

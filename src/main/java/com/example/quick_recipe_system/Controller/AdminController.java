@@ -5,14 +5,19 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.example.quick_recipe_system.repository.RecipeRepository;
-import com.example.quick_recipe_system.repository.UserRepository;
+import com.example.quick_recipe_system.entity.Recipe;
+import com.example.quick_recipe_system.entity.User;
 import com.example.quick_recipe_system.service.AdminService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -21,8 +26,6 @@ import lombok.RequiredArgsConstructor;
 public class AdminController {
 
     private final AdminService adminService;
-    private final UserRepository userRepository;
-    private final RecipeRepository recipeRepository;
 
     // admin/dashboard
     @GetMapping("/dashboard")
@@ -46,19 +49,47 @@ public class AdminController {
         return "admin/members";
     }
 
-    // 食譜管理
-    @GetMapping("/recipes")
-    public String showRecipes(Model model) {
-        model.addAttribute("recipes", recipeRepository.findAll().toString());
-        return "admin/recipes";
-    }
-
     // 會員狀態切換
     @PostMapping("/members/{id}/toggle-status")
     public String toggleStatus(@PathVariable Long id) {
-        System.out.println("===> 收到切換會員狀態請求，Target User ID: " + id);
         adminService.toggleMemberStatus(id);
-        
         return "redirect:/admin/members";
     }
+
+    // 食譜管理
+    @GetMapping("/recipes")
+    public String showRecipes(Model model) {
+        model.addAttribute("recipes", adminService.getAllRccipes());
+        return "admin/recipes";
+    }
+
+    @GetMapping("/recipes/add")
+    public String showAddRecipe(Model model) {
+
+        model.addAttribute("recipe", new Recipe());
+        return "admin/recipe-add";
+    }
+
+   @PostMapping("/recipes/add")
+    public String addOfficialRecipe(
+            @RequestParam("imageFile") MultipartFile imageFile,
+            HttpSession session,
+            @ModelAttribute Recipe recipe,
+            String typeString,
+            RedirectAttributes redirectAttributes) {
+
+        String adminUsername = (String) session.getAttribute("loggedInUser");
+
+        try {
+            adminService.addOfficialRecipe(recipe, typeString, imageFile, adminUsername);
+            
+            redirectAttributes.addFlashAttribute("successMsg", "官方食譜發布成功！");
+            return "redirect:/admin/recipes"; // 成功則回到後台食譜列表
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
+            return "redirect:/admin/recipes-add"; // 失敗則回到新增官方食譜表單
+        }
+    }
+    
 }

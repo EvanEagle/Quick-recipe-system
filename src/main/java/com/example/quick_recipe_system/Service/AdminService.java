@@ -8,7 +8,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.example.quick_recipe_system.entity.Recipe;
 import com.example.quick_recipe_system.entity.User;
 import com.example.quick_recipe_system.repository.RecipeRepository;
 import com.example.quick_recipe_system.repository.UserRepository;
@@ -20,8 +22,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AdminService {
 
+    private final FileStorageService fileStorageService;
     private final UserRepository userRepository;
-
     private final RecipeRepository recipeRepository;
 
     /**
@@ -63,5 +65,40 @@ public class AdminService {
         user.setIsActive(!user.getIsActive());
 
         userRepository.save(user);
+    }
+
+    /**
+     * 食譜管理: 取得所有食譜
+     */
+    public List<Recipe> getAllRccipes() {
+        return recipeRepository.findAllByOrderByIdDesc();
+    }
+
+    /**
+     * 新增官方食譜
+     */
+    @Transactional
+    public void addOfficialRecipe(Recipe recipe, String typeString, MultipartFile imageFile, String authorName) {
+
+        // 食譜寫入作者名稱(官方帳號)並標記為官方食譜
+        recipe.setAuthor(authorName);
+        recipe.setIsSystemRecipe(true);
+
+        // 圖片驗證與上傳
+        fileStorageService.validateImage(imageFile);
+
+        String imageUrl = fileStorageService.saveUploadedImage(imageFile);
+        if (imageUrl != null) {
+            recipe.setImageUrl(imageUrl);
+        } else {
+            recipe.setImageUrl("/images/Notuploaded.jpg");
+        }
+
+        if (typeString == null || typeString.isEmpty()) {
+            throw new IllegalArgumentException("請選擇食譜分類！");
+        }
+        recipe.setTypeString(typeString);
+
+        recipeRepository.save(recipe);
     }
 }

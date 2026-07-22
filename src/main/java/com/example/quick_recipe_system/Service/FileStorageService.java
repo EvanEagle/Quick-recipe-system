@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +12,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileStorageService {
+
+    // 因避免使用者上傳非圖片檔的資料,所以定義允許的圖片類型
+    private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of(
+            "image/jpeg", "image/png", "image/gif", "image/webp");
 
     public String saveUploadedImage(MultipartFile imageFile) {
         if (imageFile == null || imageFile.isEmpty()) {
@@ -78,6 +83,19 @@ public class FileStorageService {
         } catch (Exception e) {
             // 如果刪除失敗，印出錯誤訊息，但不中斷整個修改食譜的流程
             System.out.println("舊照片刪除失敗：" + e.getMessage());
+        }
+    }
+
+    /**
+     * 處理圖片驗證與上傳
+     */
+    public void validateImage(MultipartFile imageFile) {
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String contentType = imageFile.getContentType();
+            if (contentType == null || !ALLOWED_IMAGE_TYPES.contains(contentType)) {
+                // 如果格式錯誤，直接拋出例外交給 Controller 處理
+                throw new IllegalArgumentException("上傳失敗！僅支援 JPG, PNG, GIF, WEBP 格式的照片喔。");
+            }
         }
     }
 }

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>食譜管理系統</title>
+    <!-- 引入共用 CSS -->
+    <link rel="stylesheet" th:href="@{/css/home.css}">
+    <link rel="stylesheet" th:href="@{/css/admin.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/favicon.ico?v=1}">
+</head>
+<body>
+
+    <!-- 引入後台共用導覽列 -->
+    <div th:replace="~{layout/fragments :: header}"></div>
+
+    <main class="admin-container">
+        <h1 class="admin-header">食譜管理清單</h1>
+
+        <!-- 功能列：新增官方食譜按鈕 -->
+        <div style="text-align: right; margin-bottom: 20px;">
+            <a th:href="@{/admin/recipes/add}" class="btn-toggle" style="background-color: var(--accent-orange); text-decoration: none;">
+                + 新增官方食譜
+            </a>
+        </div>
+
+        <!-- 數據表格區塊 -->
+        <div class="admin-section">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>食譜 ID</th>
+                        <th>食譜名稱</th>
+                        <th>建立者</th>
+                        <th>食譜類型</th>
+                        <th>管理操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 展開食譜清單 -->
+                <tr th:each="recipe : ${recipes}">
+                    <td th:text="${recipe.id}">1</td>
+                    
+                    <!-- 🟢 修正 1：將 title 改為 name -->
+                    <td th:text="${recipe.name}">美味炒飯</td>
+                    
+                    <!-- 🟢 修正 2：因為你的 author 是 String 型別，直接印出即可 -->
+                    <td th:text="${recipe.author}">Arden</td>
+                    
+                    <!-- 狀態標籤：根據 isSystemRecipe 欄位顯示不同顏色 -->
+                    <td>
+                        <span class="status-badge" 
+                            th:classappend="${recipe.isSystemRecipe} ? 'type-system' : 'type-diy'"
+                            th:text="${recipe.isSystemRecipe} ? '官方食譜' : '會員 DIY'">
+                        </span>
+                    </td>
+
+                    <!-- 強制下架/刪除按鈕 -->
+                    <td>
+                        <form th:action="@{/admin/recipes/{id}/delete(id=${recipe.id})}" method="post" onsubmit="return confirm('確定要強制下架這筆食譜嗎？此動作無法復原！');">
+                            <button type="submit" class="btn-toggle btn-danger">強制下架</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div th:replace="~{layout/fragments :: footer}"></div>
+</body>
+</html>

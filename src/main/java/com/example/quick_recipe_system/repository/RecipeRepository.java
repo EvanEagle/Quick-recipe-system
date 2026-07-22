@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.example.quick_recipe_system.entity.Recipe;
 
 @Repository
-public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
+public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
 
     /**
@@ -56,11 +56,14 @@ public interface RecipeRepository extends JpaRepository<Recipe, Integer> {
     List<Recipe> findRandom4Recipes();
 
     /**
-     * 📊 儀表板數據 1：查詢「某個時間點之後」新增了多少食譜
-     * 我們之後會在 Controller 傳入「今天的凌晨 00:00:00」給這個參數，
+     * 儀表板數據 1：查詢「某個時間點之後」新增了多少食譜
+     * 之後會在 Controller 傳入「今天的凌晨 00:00:00」給這個參數，
      * 就能輕鬆算出「本日新增食譜數」。
      */
     long countByCreatedAtAfter(LocalDateTime time);
 
-
+    /**
+     * 撈取所有食譜最新的在最上面: 供食譜管理頁面使用
+     */
+    List<Recipe> findAllByOrderByIdDesc();
 }

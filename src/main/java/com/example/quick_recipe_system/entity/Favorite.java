@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     // 紀錄是哪一個使用者收藏的
     @Column(name = "username", nullable = false)
