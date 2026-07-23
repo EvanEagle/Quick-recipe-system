@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.quick_recipe_system.entity.Recipe;
 import com.example.quick_recipe_system.entity.User;
+import com.example.quick_recipe_system.repository.FavoriteRepository;
 import com.example.quick_recipe_system.repository.RecipeRepository;
 import com.example.quick_recipe_system.repository.UserRepository;
 
@@ -25,6 +26,8 @@ public class AdminService {
     private final FileStorageService fileStorageService;
     private final UserRepository userRepository;
     private final RecipeRepository recipeRepository;
+    private final RecipeService recipeService;
+    private final FavoriteRepository favoriteRepository;
 
     /**
      * 彙整儀表板所需的所有營運數據
@@ -100,5 +103,21 @@ public class AdminService {
         recipe.setTypeString(typeString);
 
         recipeRepository.save(recipe);
+    }
+
+    /**
+     * 官方強制下架食譜
+     */
+    @Transactional
+    public void officialDeleteRecipe(Long id, String username) {
+        Recipe targetRecipe = recipeService.findById(id);
+
+        if (targetRecipe != null) { 
+            favoriteRepository.deleteByRecipeId(id);
+            fileStorageService.deleteOldImage(targetRecipe.getImageUrl());
+            recipeRepository.delete(targetRecipe);
+        } else {
+            throw new SecurityException("該食譜不存在！");
+        }
     }
 }

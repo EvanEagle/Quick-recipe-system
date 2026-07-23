@@ -13,8 +13,13 @@
     <!-- 引入後台共用導覽列 -->
     <div th:replace="~{layout/fragments :: header}"></div>
 
+     <div class="message-block">
+            <span th:if="${successMsg}" th:text="${successMsg}" class="msg-success"></span>
+            <span th:if="${errorMsg}" th:text="${errorMsg}" class="msg-error"></span>
+    </div>
+
     <main class="admin-container">
-        <h1 class="admin-header">食譜管理清單</h1>
+        <h1 class="title">食譜管理清單</h1>
 
         <!-- 功能列：新增官方食譜按鈕 -->
         <div style="text-align: right; margin-bottom: 20px;">
@@ -39,11 +44,7 @@
                     <!-- 展開食譜清單 -->
                 <tr th:each="recipe : ${recipes}">
                     <td th:text="${recipe.id}">1</td>
-                    
-                    <!-- 🟢 修正 1：將 title 改為 name -->
                     <td th:text="${recipe.name}">美味炒飯</td>
-                    
-                    <!-- 🟢 修正 2：因為你的 author 是 String 型別，直接印出即可 -->
                     <td th:text="${recipe.author}">Arden</td>
                     
                     <!-- 狀態標籤：根據 isSystemRecipe 欄位顯示不同顏色 -->
@@ -56,7 +57,7 @@
 
                     <!-- 強制下架/刪除按鈕 -->
                     <td>
-                        <form th:action="@{/admin/recipes/{id}/delete(id=${recipe.id})}" method="post" onsubmit="return confirm('確定要強制下架這筆食譜嗎？此動作無法復原！');">
+                        <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post" onsubmit="return confirm('確定要強制下架這筆食譜嗎？此動作無法復原！');">
                             <button type="submit" class="btn-toggle btn-danger">強制下架</button>
                         </form>
                     </td>

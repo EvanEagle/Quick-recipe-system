@@ -20,7 +20,9 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    // 註冊功能
+    /**
+     * 註冊功能-1.檢查帳號及密碼格式 2.確認是否重複帳號 3.通過檢查程序將密碼進行 BCrypt 加密 4.存入真實的 MySQL 資料庫
+     */
     public boolean register(@NotBlank String username, @NotBlank String password) throws IllegalArgumentException {
         // 1. 檢查帳號格式
         validateFormat(username, "帳號");
@@ -43,7 +45,9 @@ public class UserService {
         return true;
     }
 
-    // 檢查方法
+    /**
+     * 檢查帳號密碼格式方法-1.長度需要大於 5 2.包含英文與數字
+     */
     private void validateFormat(String input, String label) throws IllegalArgumentException {
 
         if (input == null || input.length() < 5) {
@@ -56,7 +60,9 @@ public class UserService {
         }
     }
 
-    // 登入邏輯
+    /**
+     * 登入邏輯
+     */
     public User login(@NotBlank String username, @NotBlank String password) throws IllegalArgumentException {
         // 1. 先去資料庫把這個使用者撈出來
         User user = userRepository.findByUsername(username);

@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.quick_recipe_system.entity.Recipe;
-import com.example.quick_recipe_system.entity.User;
 import com.example.quick_recipe_system.service.AdminService;
 
 import jakarta.servlet.http.HttpSession;
@@ -65,12 +64,11 @@ public class AdminController {
 
     @GetMapping("/recipes/add")
     public String showAddRecipe(Model model) {
-
         model.addAttribute("recipe", new Recipe());
         return "admin/recipe-add";
     }
 
-   @PostMapping("/recipes/add")
+    @PostMapping("/recipes/add")
     public String addOfficialRecipe(
             @RequestParam("imageFile") MultipartFile imageFile,
             HttpSession session,
@@ -82,7 +80,7 @@ public class AdminController {
 
         try {
             adminService.addOfficialRecipe(recipe, typeString, imageFile, adminUsername);
-            
+
             redirectAttributes.addFlashAttribute("successMsg", "官方食譜發布成功！");
             return "redirect:/admin/recipes"; // 成功則回到後台食譜列表
 
@@ -91,5 +89,19 @@ public class AdminController {
             return "redirect:/admin/recipes-add"; // 失敗則回到新增官方食譜表單
         }
     }
-    
+
+    @PostMapping("/recipes/delete/{id}")
+    public String OfficialdeleteRecipe(@PathVariable Long id, HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        String username = (String) session.getAttribute("loggedInUser");
+
+        try {
+            adminService.officialDeleteRecipe(id, username);
+            redirectAttributes.addFlashAttribute("successMsg", "已將食譜強制下架！");
+        } catch (SecurityException e) {
+            redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
+        }
+        return "redirect:/admin/recipes";
+    }
 }

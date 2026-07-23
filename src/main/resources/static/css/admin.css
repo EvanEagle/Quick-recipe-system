@@ -139,6 +139,29 @@
 
 /* --- 食譜管理專屬標籤顏色 --- */
 
+/* 提示訊息外框 */
+.message-block {
+    text-align: center; 
+    margin-bottom: 25px; 
+}
+.msg-success { 
+    color: #2E8B57; 
+    background-color: #e6f4ea; 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    font-weight: bold; 
+    display: inline-block; 
+}
+
+.msg-error { 
+    color: #ba714d; 
+    background-color: #fbe9e7; 
+    padding: 10px 20px; 
+    border-radius: 8px; 
+    font-weight: bold; 
+    display: inline-block; 
+}
+
 /* 官方食譜：使用品牌橘色系 */
 .type-system {
     background-color: rgba(255, 153, 0, 0.1); /* 微透明橘底 */

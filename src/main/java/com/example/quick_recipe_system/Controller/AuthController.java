@@ -18,14 +18,18 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
 
     private final UserService userService;
-
-    // 1. 導向登入/註冊畫面
+//================= 登入 / 登出 =================
+    /**
+     * 1. 導向登入/註冊畫面
+     */
     @GetMapping("/login")
     public String showLoginPage() {
         return "login";
     }
 
-    // 2. 接收前端表單送來的帳號密碼進行登入
+    /**
+     * 2. 接收前端表單送來的帳號密碼進行登入
+     */
     @PostMapping("/login")
     public String doLogin(@RequestParam String username,
             @RequestParam String password,
@@ -52,7 +56,9 @@ public class AuthController {
         }
     }
 
-    // 3. 登出功能
+    /** 
+     * 3. 登出功能
+     */
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         /**
@@ -66,20 +72,26 @@ public class AuthController {
         return "redirect:/home"; // 登出後回到首頁
     }
 
-    // 1. 導向註冊畫面
+//================== 註冊 =====================
+
+    /**
+     * 1. 導向註冊畫面
+     */
     @GetMapping("/register")
     public String showRegisterPage() {
         return "register";
     }
 
-    // 2. 接收前端表單送來的帳號密碼進行註冊
+    /**
+     * 2. 接收前端表單送來的帳號密碼進行註冊
+     */
     @PostMapping("/register")
     public String doRegister(@RequestParam String username,
             @RequestParam String password,
             Model model,
-            RedirectAttributes redirectAttributes) { // redirectAttributes = 傳令兵
+            RedirectAttributes redirectAttributes) { 
         try {
-            userService.register(username, password); // 呼叫 UserService 的 register方法
+            userService.register(username, password); 
 
             // 註冊成功！讓redirectAttributes帶著成功訊息前往登入頁面
             redirectAttributes.addFlashAttribute("successMsg", "🎉 註冊成功！請使用新帳號登入。");
