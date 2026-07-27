@@ -7,28 +7,36 @@ import java.time.format.DateTimeFormatter;
 import java.util.Set;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileStorageService {
 
+    @Value("${upload.path}")
+    private String uploadPath;
+
     // 因避免使用者上傳非圖片檔的資料,所以定義允許的圖片類型
     private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of(
             "image/jpeg", "image/png", "image/gif", "image/webp");
 
     public String saveUploadedImage(MultipartFile imageFile) {
+
         if (imageFile == null || imageFile.isEmpty()) {
             return null; // 沒上傳檔案就回傳 null
         }
         try {
+
             String originalFilename = imageFile.getOriginalFilename();
 
             // 1. 精準切割主檔名與副檔名
             // 找出最後一個點點的位置
             int dotIndex = originalFilename.lastIndexOf(".");
+
             // 切出主檔名 (例如 "my_lunch.jpg" 切出 "my_lunch")
             String original = originalFilename.substring(0, dotIndex);
+            
             // 切出副檔名 (例如 "my_lunch.jpg" 切出 ".jpg")
             String ext = originalFilename.substring(dotIndex);
 
@@ -40,19 +48,21 @@ public class FileStorageService {
             String newFileName = original + "_" + timestamp + "_" +
                     UUID.randomUUID().toString().substring(0, 8) + ext;
 
-            // 4. 準備寫入硬碟的路徑邏輯 (維持你原本正確的寫法)
-            String projectPath = System.getProperty("user.dir");
-            String uploadDir = projectPath + "/src/main/resources/static/images/recipes/";
-
-            File dir = new File(uploadDir);
-            if (!dir.exists()) {
-                dir.mkdirs();
+            // 4.確保資料夾存在 (例如 yml 設定的 /app/images/)
+            File directory = new File(uploadPath);
+            if (!directory.exists()) {
+                directory.mkdirs();
             }
 
-            File dest = new File(uploadDir + newFileName);
+            // 5. 組合完整的存檔路徑 (例如：/app/images/my_lunch_20260602_110815_a1b2c3d4.jpg)
+            File dest = new File(uploadPath + newFileName);
+
+            // 6. 真正執行存檔動作
             imageFile.transferTo(dest);
 
-            return "/images/recipes/" + newFileName;
+            // 注意：因為WebConfig 設定是攔截 "/images/**"
+            // 7. 所以只要回傳 "/images/" 加上檔名就可以了。
+            return "/images/" + newFileName;
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # 注意這裡的資料庫名稱我改成了 recipe_test_db
+    # 這樣測試資料跟開發資料就能完全分開！
+    url: jdbc:mysql://localhost:3306/recipe_test_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD} 
+
+upload:
+  # 測試專用的圖片存檔路徑，避免跟 dev 的圖片混在一起
+  path: C:/app/test_images/

@@ -14,7 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.quick_recipe_system.entity.Recipe;
 import com.example.quick_recipe_system.service.RecipeService;
 
-
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -23,7 +22,6 @@ public class RecipeController {
 
     private final RecipeService recipeService;
 
-   
     /**
      * 導覽列-探索食譜(取得所有食譜並按照類型排列顯示)
      */
@@ -83,5 +81,4 @@ public class RecipeController {
         return "recipe-list-detail";
     }
 
-    
 }

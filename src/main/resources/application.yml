@@ -4,9 +4,9 @@ spring:
       quick-recipe-system
   datasource:
     # 資料庫連線網址 (指派到本機的 recipe_db，並設定台北時區與 UTF-8 防亂碼)
-    url: jdbc:mysql://localhost:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-    username: root  # MySQL 帳號 (預設通常是 root)
-    password: P@ssword123  # MySQL 密碼 
+    url: jdbc:mysql://127.0.0.1:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -25,6 +25,10 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
+      
+  profiles:
+    # 預設啟動開發環境
+    active: dev
   thymeleaf:
     prefix: classpath:/templates/ # 視圖前綴
     suffix: .html # 視圖後綴
@@ -37,8 +41,12 @@ spring:
         enabled: true # 啟用HiddenHttpMethodFilter,支援 PUT/DELETE 表單請求
     pathmatch:
       matching-strategy: ant_path_matcher
+  
 
 server:
   port: 8080
   servlet:
     context-path: /quick-cook
+
+upload:
+  path: /app/images/

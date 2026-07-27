@@ -1,0 +1,14 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # 注意：這裡指向 Docker 裡面的 db
+    url: jdbc:mysql://db:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    # 這裡呼叫寫在 .env 裡的變數，保護密碼安全
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+upload:
+  # Linux (Docker) 裡面的圖片路徑
+  path: /app/images/

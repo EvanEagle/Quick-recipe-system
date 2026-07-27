@@ -1,10 +1,12 @@
 package com.example.quick_recipe_system.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.example.quick_recipe_system.interceptor.AdminInterceptor;
@@ -15,6 +17,9 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
+
+        @Value("${upload.path}")
+        private String uploadPath;
 
         private final LoginInterceptor loginInterceptor;
         private final AdminInterceptor adminInterceptor;
@@ -48,7 +53,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
                                 .addPathPatterns("/admin/**");
         }
 
-        // arden123 - a12345
-        // admin123 - a12345
-        // evan123 - a12345
+        // 將圖片上傳的路徑攔截到 ResourceHandler 中
+        @Override
+        public void addResourceHandlers(ResourceHandlerRegistry registry) {
+                registry.addResourceHandler("/images/**")
+                                .addResourceLocations("file:" + uploadPath);
+        }
 }

@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    # 這是連到你電腦自己裝的 MySQL
+    url: jdbc:mysql://localhost:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD} # 你本機的資料庫密碼
+
+upload:
+  # 你在 Windows 本機開發時的圖片路徑
+  path: C:/app/images/

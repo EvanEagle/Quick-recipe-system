@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.4.7
+    container_name: recipe-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}    # 資料庫密碼
+      MYSQL_DATABASE: recipe_db              # 資料庫名稱
+    ports:
+      - "3306:3306"
+    volumes:
+      # 將資料庫檔案掛載到實體硬碟，確保重啟後食譜資料不會消失
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: recipe-springboot
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # 注意：強制告訴 Spring Boot，在 Docker 裡請用 prod 環境設定！
+      SPRING_PROFILES_ACTIVE: prod
+      # 注意：這裡的 URL 網址把原本的 localhost 改成了 db (也就是上面資料庫服務的名稱)
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      # 將容器內的圖片資料夾，掛載到實體主機的 ./images 資料夾，避免圖片遺失
+      - ./images:/app/images
+    depends_on:
+      - db
+
+volumes:
+  mysql_data:
