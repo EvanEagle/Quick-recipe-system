@@ -6,13 +6,15 @@ services:
     container_name: recipe-mysql
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}    # 資料庫密碼
-      MYSQL_DATABASE: recipe_db              # 資料庫名稱
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}    # 資料庫root密碼
+      MYSQL_DATABASE: recipe_db                   # 資料庫名稱
+      MYSQL_USER: ${DB_USERNAME}                  # 建立 arden_me 帳號
+      MYSQL_PASSWORD: ${DB_PASSWORD}              # 設定 arden_me 的密碼
     ports:
-      - "3306:3306"
+      - "3307:3306"
+    command: --mysql-native-password=ON
     volumes:
-      # 將資料庫檔案掛載到實體硬碟，確保重啟後食譜資料不會消失
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql  # 將資料庫檔案掛載到實體硬碟，確保重啟後食譜資料不會消失
 
   app:
     build: .
@@ -32,6 +34,6 @@ services:
       - ./images:/app/images
     depends_on:
       - db
-
+    
 volumes:
   mysql_data:
