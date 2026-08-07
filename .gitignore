@@ -34,3 +34,14 @@ build/
 
 ### Docker ###
 .env
+
+### Uploaded images
+images/recipes/
+
+### Logs
+*.log
+logs/
+
+### OS
+.DS_Store
+Thumbs.db

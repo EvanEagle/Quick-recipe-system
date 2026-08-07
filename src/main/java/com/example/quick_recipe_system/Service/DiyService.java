@@ -36,7 +36,7 @@ public class DiyService {
         if (imageUrl != null) {
             recipe.setImageUrl(imageUrl);
         } else {
-            recipe.setImageUrl("/images/Notuploaded.jpg"); // 預設圖
+            recipe.setImageUrl("/images/system/not-uploaded.jpg"); // 預設圖
         }
         if (typeString == null || typeString.isEmpty()) {
             throw new IllegalArgumentException("新增失敗：請選擇正確的食譜分類！");
@@ -69,7 +69,7 @@ public class DiyService {
 
                 if (newImageUrl != null) {
                     if (existingRecipe.getImageUrl() != null
-                            && !existingRecipe.getImageUrl().equals("/images/Notuploaded.jpg")) {
+                            && !existingRecipe.getImageUrl().equals("/images/system/not-uploaded.jpg")) {
                         fileStorageService.deleteOldImage(existingRecipe.getImageUrl());
                     }
                     existingRecipe.setImageUrl(newImageUrl);
@@ -81,47 +81,29 @@ public class DiyService {
         }
     }
 
-    /**
-     * --- Service 層 ---
-     * 方法名稱：deleteRecipe(傳入變數： 要刪除的 Integer id, 傳入變數：當前登入者 String username)
-     * 
-     * 1. 尋找目標：
-     * 呼叫 findById(id) 找出那道準備被刪除的食譜 (假設命名為 targetRecipe)
-     * 
-     * 2. 權限防護罩：
-     * IF (targetRecipe 確實存在 AND targetRecipe 的作者名稱 和 username 一模一樣) {
-     * 
-     * // 3. 執行移除動作
-     * 呼叫recipeRepository內的delete 直接連同副表裡面的食材、步驟一起完美刪除乾淨
-     * 
-     * } ELSE {
-     * // 4. 越權處理
-     * 拋出一個新的例外 (例如 SecurityException)
-     * 例外訊息設定為："您沒有權限刪除此食譜！"
-     * }
-     */
-    @Transactional // 加上這個，確保刪除收藏跟刪除食譜同進同退
+    
+    @Transactional
     public void deleteDiyRecipe(Long id, String username) {
 
         Recipe targetRecipe = recipeService.findById(id);
 
-        // 1. 資安防護：檢查食譜存不存在，且「現在登入的人」是不是「食譜的作者」
+        // 1. 檢查食譜存在，而且登入者是作者
         if (targetRecipe != null && targetRecipe.getAuthor().equals(username)) {
 
-            // 2. 解除外鍵綁定：先無差別刪除這道菜在 Favorite 表裡的所有收藏紀錄
-            // (因為這道菜要從世界上消失了，所以不管誰收藏過，都要清掉)
+            // 2. 先記住圖片網址
+            String imageUrl = targetRecipe.getImageUrl();
+
+            // 3. 先刪除收藏資料，解除外鍵關聯
             favoriteRepository.deleteByRecipeId(id);
 
-            // 3. 在食譜從資料庫消失之前，先把硬碟裡的照片刪掉！
-            // (不用擔心刪到預設圖片，因為你在 deleteOldImage 裡已經寫好保護機制的 if 判斷了)
-            fileStorageService.deleteOldImage(targetRecipe.getImageUrl());
-            // 4. 安全刪除：相關的收藏紀錄都清空了，不會再噴 500 錯誤，安心刪除食譜！
+            // 4. 刪除食譜資料
             recipeRepository.delete(targetRecipe);
 
+            // 5. 再刪除實體圖片
+            fileStorageService.deleteOldImage(imageUrl);
+
         } else {
-            // 防禦水平越權：如果不是作者，直接拋出權限異常！
             throw new SecurityException("您沒有權限刪除此食譜！");
         }
     }
-
 }

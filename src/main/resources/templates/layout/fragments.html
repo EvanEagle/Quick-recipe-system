@@ -10,7 +10,7 @@
     <!--header標題區塊-->
     <header th:fragment="header" class="navbar">
         <a th:href="@{/home}" class="logo" style="text-decoration: none; color: inherit">  <!--div表示一個區塊-->
-            <img th:src="@{/images/logo.png}" alt="網頁logo" class="logo-img-placeholder">  <!--img表示圖片-->
+            <img th:src="@{/images/system/logo.png}" alt="網頁logo" class="logo-img-placeholder">  <!--img表示圖片-->
             <div class="logo-text"> <!--另一個區塊-->
                 <span class="brand-en">QuickCook</span>  <!--span表示行內元素-->
                 <span class="brand-zh">快速料理小幫手</span>   <!--span表示行內元素-->
@@ -50,7 +50,7 @@
 
         <div class="user-area">
             <th:block th:if="${session.loggedInUser == null}">
-                <img th:src="@{/images/user.png}" alt="登入小人頭圖示" class="user-img"> 
+                <img th:src="@{/images/system/user.png}" alt="登入小人頭圖示" class="user-img"> 
                 <a th:href="@{/login}" class="user-login">登錄 / 註冊</a> 
             </th:block>
 

@@ -1,7 +1,9 @@
 package com.example.quick_recipe_system.service;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Set;
@@ -14,8 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileStorageService {
 
-    @Value("${upload.path}")
-    private String uploadPath;
+    @Value("${app.image.recipe-directory}")
+    private String recipeImageDirectory;
 
     // 因避免使用者上傳非圖片檔的資料,所以定義允許的圖片類型
     private static final Set<String> ALLOWED_IMAGE_TYPES = Set.of(
@@ -30,43 +32,48 @@ public class FileStorageService {
 
             String originalFilename = imageFile.getOriginalFilename();
 
+            if (originalFilename == null || originalFilename.isBlank()) {
+                throw new IllegalArgumentException("無法取得上傳檔案名稱");
+            }
+
             // 1. 精準切割主檔名與副檔名
             // 找出最後一個點點的位置
             int dotIndex = originalFilename.lastIndexOf(".");
 
+            if (dotIndex <= 0 || dotIndex == originalFilename.length() - 1) {
+                throw new IllegalArgumentException("圖片檔案名稱或副檔名不正確");
+            }
+
             // 切出主檔名 (例如 "my_lunch.jpg" 切出 "my_lunch")
             String original = originalFilename.substring(0, dotIndex);
-            
+
             // 切出副檔名 (例如 "my_lunch.jpg" 切出 ".jpg")
             String ext = originalFilename.substring(dotIndex);
 
             // 2. 建立時間戳記格式 (例如: 20260602_110815)
-            DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
-            String timestamp = LocalDateTime.now().format(FMT);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss");
+            String timestamp = LocalDateTime.now().format(formatter);
 
             // 3. 套用老師的命名公式：原檔名_時間_8碼亂數.副檔名
             String newFileName = original + "_" + timestamp + "_" +
                     UUID.randomUUID().toString().substring(0, 8) + ext;
 
-            // 4.確保資料夾存在 (例如 yml 設定的 /app/images/)
-            File directory = new File(uploadPath);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
+            Path directory = Paths.get(recipeImageDirectory)
+                    .toAbsolutePath()
+                    .normalize();
 
-            // 5. 組合完整的存檔路徑 (例如：/app/images/my_lunch_20260602_110815_a1b2c3d4.jpg)
-            File dest = new File(uploadPath + newFileName);
+            Files.createDirectories(directory);
 
-            // 6. 真正執行存檔動作
-            imageFile.transferTo(dest);
+            Path destination = directory
+                    .resolve(newFileName)
+                    .normalize();
 
-            // 注意：因為WebConfig 設定是攔截 "/images/**"
-            // 7. 所以只要回傳 "/images/" 加上檔名就可以了。
-            return "/images/" + newFileName;
+            imageFile.transferTo(destination);
+
+            return "/images/recipes/" + newFileName;
 
         } catch (IOException e) {
-            e.printStackTrace();
-            return null;
+            throw new RuntimeException("圖片儲存失敗", e);
         }
     }
 
@@ -74,28 +81,67 @@ public class FileStorageService {
      * 清除硬碟中的舊照片檔案
      */
     public void deleteOldImage(String imageUrl) {
-        // 1. 如果沒有舊圖片，或者舊圖片是系統預設圖片 (例如 /images/Notuploaded.jpg)，就絕對不要刪除！
-        if (imageUrl == null || imageUrl.isEmpty() || imageUrl.equals("/images/Notuploaded.jpg")) {
+        // 1. 如果沒有舊圖片，或者舊圖片是系統預設圖片，就絕對不要刪除！
+        if (imageUrl == null || imageUrl.isBlank()) {
             return;
         }
 
-        try {
-            // 2. 組合出舊檔案在硬碟中的絕對路徑
-            String projectPath = System.getProperty("user.dir");
-            // 注意：imageUrl 本身已經帶有 "/images/..."，所以直接拼接即可
-            String filePath = projectPath + "/src/main/resources/static" + imageUrl;
+        /*
+     * 只有 /images/recipes/ 底下的圖片才能刪除。
+     *
+     * 系統圖片例如：
+     * /images/system/not-uploaded.jpg
+     * /images/system/logo.png
+     *
+     * 都會直接略過。
+     */
+    String recipeUrlPrefix = "/images/recipes/";
 
-            // 3. 找到檔案並執行刪除
-            File oldFile = new File(filePath);
-            if (oldFile.exists()) {
-                oldFile.delete(); // 真正把硬碟裡的檔案刪除的關鍵指令
-            }
-        } catch (Exception e) {
-            // 如果刪除失敗，印出錯誤訊息，但不中斷整個修改食譜的流程
-            System.out.println("舊照片刪除失敗：" + e.getMessage());
-        }
+    if (!imageUrl.startsWith(recipeUrlPrefix)) {
+        return;
     }
 
+    try {
+        /*
+         * /images/recipes/三杯雞.jpg
+         * 取出：
+         * 三杯雞.jpg
+         */
+        String fileName = imageUrl.substring(recipeUrlPrefix.length());
+
+        Path recipeDirectory = Paths.get(recipeImageDirectory)
+                .toAbsolutePath()
+                .normalize();
+
+        Path targetFile = recipeDirectory
+                .resolve(fileName)
+                .normalize();
+
+        /*
+         * 防止路徑跳脫。
+         *
+         * 例如惡意路徑：
+         * /images/recipes/../../system/logo.png
+         */
+        if (!targetFile.startsWith(recipeDirectory)) {
+            throw new SecurityException("不合法的圖片路徑：" + imageUrl);
+        }
+
+        boolean deleted = Files.deleteIfExists(targetFile);
+
+        if (deleted) {
+            System.out.println("舊食譜圖片刪除成功：" + targetFile);
+        } else {
+            System.out.println("找不到要刪除的舊圖片：" + targetFile);
+        }
+
+    } catch (IOException e) {
+        /*
+         * 暫時保留不中斷食譜修改流程的設計。
+         */
+        System.out.println("舊照片刪除失敗：" + e.getMessage());
+    }
+}
     /**
      * 處理圖片驗證與上傳
      */

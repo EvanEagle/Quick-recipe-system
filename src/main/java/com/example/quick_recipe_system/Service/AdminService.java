@@ -94,7 +94,7 @@ public class AdminService {
         if (imageUrl != null) {
             recipe.setImageUrl(imageUrl);
         } else {
-            recipe.setImageUrl("/images/Notuploaded.jpg");
+            recipe.setImageUrl("/images/system/not-uploaded.jpg");
         }
 
         if (typeString == null || typeString.isEmpty()) {

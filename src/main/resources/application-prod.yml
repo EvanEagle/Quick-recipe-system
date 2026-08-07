@@ -3,12 +3,17 @@ server:
 
 spring:
   datasource:
-    # 注意：這裡指向 Docker 裡面的 db
+    # Docker 內透過服務名稱 db 連接 MySQL
     url: jdbc:mysql://db:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
     # 這裡呼叫寫在 .env 裡的變數，保護密碼安全
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
+app:
+  image:
+    # 專門用於食譜圖片的新增、刪除
+    recipe-directory: ${APP_RECIPE_IMAGE_DIR:/app/images/recipes}
+
 upload:
-  # Linux (Docker) 裡面的圖片路徑
-  path: /app/images/
+   # 舊有的圖片根目錄設定，暫時保留
+  path: /app/images
