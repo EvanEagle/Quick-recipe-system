@@ -109,7 +109,7 @@ images/
 ### 1. Clone 專案
 
 ```bash
-git clone <你的 GitHub Repository URL>
+git clone <https://github.com/EvanEagle/Quick-recipe-system>
 cd quick-cook
 ```
 
