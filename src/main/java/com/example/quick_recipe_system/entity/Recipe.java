@@ -82,5 +82,5 @@ public class Recipe {
      * 食譜類型：true 為官方系統食譜，false 為一般會員 DIY 食譜
      */
     @Column(name = "is_system_recipe", nullable = false)
-    private Boolean isSystemRecipe = false;
+    private boolean systemRecipe = false;
 }

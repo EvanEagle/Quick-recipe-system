@@ -1,7 +1,5 @@
 package com.example.quick_recipe_system.controller;
 
-import java.util.Map;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,13 +28,7 @@ public class AdminController {
     @GetMapping("/dashboard")
     public String dashboard(Model model) {
 
-        // 透過 Service 獲取打包好的數據
-        Map<String, Object> dashboardData = adminService.getDashboardData();
-
-        // 將數據拆分裝入 Model
-        model.addAttribute("totalUsers", dashboardData.get("totalUsers"));
-        model.addAttribute("totalRecipes", dashboardData.get("totalRecipes"));
-        model.addAttribute("newRecipesToday", dashboardData.get("newRecipesToday"));
+        model.addAllAttributes(adminService.getDashboardData());
 
         return "admin/dashboard";
     }
@@ -58,7 +50,7 @@ public class AdminController {
     // 食譜管理
     @GetMapping("/recipes")
     public String showRecipes(Model model) {
-        model.addAttribute("recipes", adminService.getAllRccipes());
+        model.addAttribute("recipes", adminService.getAllRecipes());
         return "admin/recipes";
     }
 
@@ -69,39 +61,81 @@ public class AdminController {
     }
 
     @PostMapping("/recipes/add")
-    public String addOfficialRecipe(
-            @RequestParam("imageFile") MultipartFile imageFile,
-            HttpSession session,
-            @ModelAttribute Recipe recipe,
-            String typeString,
+    public String addOfficialRecipe(@RequestParam("imageFile") MultipartFile imageFile,
+            HttpSession session, @ModelAttribute Recipe recipe, String typeString,
             RedirectAttributes redirectAttributes) {
 
-        String adminUsername = (String) session.getAttribute("loggedInUser");
+        String username = (String) session.getAttribute("loggedInUser");
+        String role = (String) session.getAttribute("loggedInUserRole");
 
         try {
-            adminService.addOfficialRecipe(recipe, typeString, imageFile, adminUsername);
+            adminService.addOfficialRecipe(recipe, typeString, imageFile, username, role);
 
             redirectAttributes.addFlashAttribute("successMsg", "官方食譜發布成功！");
             return "redirect:/admin/recipes"; // 成功則回到後台食譜列表
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
-            return "redirect:/admin/recipes-add"; // 失敗則回到新增官方食譜表單
+            return "redirect:/admin/recipes/add"; // 失敗則回到新增官方食譜表單
         }
     }
 
     @PostMapping("/recipes/delete/{id}")
-    public String OfficialdeleteRecipe(@PathVariable Long id, HttpSession session,
+    public String deleteOfficialRecipe(@PathVariable Long id, HttpSession session,
             RedirectAttributes redirectAttributes) {
 
-        String username = (String) session.getAttribute("loggedInUser");
+        String role = (String) session.getAttribute("loggedInUserRole");
 
         try {
-            adminService.officialDeleteRecipe(id, username);
+            adminService.deleteOfficialRecipe(id, role);
             redirectAttributes.addFlashAttribute("successMsg", "已將食譜強制下架！");
-        } catch (SecurityException e) {
+        } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
         }
         return "redirect:/admin/recipes";
+    }
+
+    @GetMapping("/recipes/edit/{id}")
+    public String editOfficialRecipe(@PathVariable Long id, HttpSession session,
+            Model model, RedirectAttributes redirectAttributes) {
+
+        String role = (String) session.getAttribute("loggedInUserRole");
+
+        try {
+            Recipe recipe = adminService.getOfficialRecipeForEdit(id, role);
+
+            model.addAttribute("recipe", recipe);
+
+            return "recipe-edit";
+
+        } catch (IllegalArgumentException e) {
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMsg",
+                    e.getMessage());
+
+            return "redirect:/admin/recipes";
+        }
+    }
+
+    @PostMapping("/recipes/edit/{id}")
+    public String editOfficialRecipe(@PathVariable Long id, HttpSession session, @ModelAttribute Recipe recipe,
+            @RequestParam("imageFile") MultipartFile imageFile, RedirectAttributes redirectAttributes) {
+
+        String role = (String) session.getAttribute("loggedInUserRole");
+
+        try {
+            adminService.editOfficialRecipe(recipe, id, role, imageFile);
+
+            redirectAttributes.addFlashAttribute("successMsg", "官方食譜編輯成功！");
+
+            return "redirect:/admin/recipes";
+
+        } catch (IllegalArgumentException e) {
+
+            redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
+
+            return "redirect:/admin/recipes/edit/" + id;
+        }
     }
 }

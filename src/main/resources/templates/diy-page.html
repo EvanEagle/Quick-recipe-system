@@ -37,7 +37,7 @@
                 <div th:each="recipe : ${diyRecipes}" class="diy-summary-card">
                     
                     <div class="card-img-wrapper">
-                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/Notuploaded.jpg'}}" 
+                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/system/not-uploaded.jpg'}}" 
                              alt="食譜圖片" class="card-img">
                     </div>
 

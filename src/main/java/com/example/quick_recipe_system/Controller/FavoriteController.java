@@ -21,7 +21,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor // 註解 @RequiredArgsConstructor 會自動將 final 物件注入, 不用再寫 @Autowired
 public class FavoriteController {
 
-    
     private final FavoriteService favoriteService;
     private final RecipeService recipeService;
 
@@ -36,19 +35,18 @@ public class FavoriteController {
     public String showFavoritesPage(HttpSession session, Model model) {
 
         String username = (String) session.getAttribute("loggedInUser");
-        
+
         List<Recipe> myFavorites = favoriteService.getFavoriteRecipe(username);
         model.addAttribute("favorites", myFavorites);
 
         return "favorite";
     }
 
-    
     @GetMapping("/favorite/add")
     public String addFavoriteFallback(RedirectAttributes redirectAttributes) {
         // 如果使用者用 GET 亂闖，給個溫馨提示，並踢回食譜列表頁
         redirectAttributes.addFlashAttribute("errorMsg", "請透過正常的按鈕來加入收藏喔！");
-        return "redirect:/recipe"; 
+        return "redirect:/recipe";
     }
 
     @PostMapping("/favorite/add")
@@ -58,6 +56,13 @@ public class FavoriteController {
             HttpServletRequest request) { // 負責抓取使用者是從哪頁點擊的
 
         String username = (String) session.getAttribute("loggedInUser");
+
+        String role = (String) session.getAttribute("loggedInUserRole");
+
+        // 管理員沒有收藏功能
+        if ("ROLE_ADMIN".equals(role)) {
+            return "redirect:/home";
+        }
 
         // 2. 根據 ID 找出那道食譜
         Recipe recipe = recipeService.findById(recipeId);
@@ -75,12 +80,12 @@ public class FavoriteController {
             }
         }
 
-        /** 
+        /**
          * 5.把使用者踢回他原本點擊按鈕的那一頁！
          * referer: 是 HTTP 請求標頭的一個欄位，用來告訴伺服器目前的請求是從哪個頁面（URL）點擊或跳轉而來的
          * 從哪裡來，就回哪裡去
          * 使用三元運算子檢查referer是否為null
-         */ 
+         */
         String referer = request.getHeader("Referer");
         return "redirect:" + (referer != null ? referer : "/");
     }
@@ -89,7 +94,7 @@ public class FavoriteController {
     public String removeFavoriteFallback(RedirectAttributes redirectAttributes) {
         // 亂闖移除網址，直接踢回他的收藏清單
         redirectAttributes.addFlashAttribute("errorMsg", "請透過正常的按鈕來移除收藏喔！");
-        return "redirect:/favorite"; 
+        return "redirect:/favorite";
     }
 
     // 3. 處理「取消收藏」的動作

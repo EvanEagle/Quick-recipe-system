@@ -20,18 +20,14 @@ public class HomeController {
 
     @GetMapping("/home")
     public String home(HttpSession session, Model model) {
-        // 1. 從 Session 安全撈取目前登入的使用者帳號
-        String currentUsername = (String) session.getAttribute("loggedInUser");
 
-        if (currentUsername != null) {
+        String username = (String) session.getAttribute("loggedInUser");
+        String role = (String) session.getAttribute("loggedInUserRole");
 
-            // 2. (右側的使用者專屬DIY小面板)
-            List<Recipe> diyRecipes = recipeService.getTopLatestDiyRecipes(currentUsername);
-
-            // 3. 投遞給前端畫面
-            model.addAttribute("diyRecipes", diyRecipes);
+        if (username != null) {
+            model.addAttribute("manageRecipes", recipeService.getHomeManageRecipes(username, role));
         }
-        //不管有沒有登入,都會顯示左側隨機資料
+        // 不管有沒有登入,都會顯示左側隨機資料
         List<Recipe> randomRecipes = recipeService.getRandomRecipesForHome();
 
         model.addAttribute("randomRecipes", randomRecipes);

@@ -21,7 +21,10 @@
         <h1 class="page-title">✏️ 修改專屬食譜</h1>
 
         <div class="recipe-form-card">
-           <form th:action="@{/recipe/edit/{id}(id=${recipe.id})}" method="post" th:object="${recipe}" enctype="multipart/form-data">
+           <form th:action="${session.loggedInUserRole == 'ROLE_ADMIN'}
+                            ? @{/admin/recipes/edit/{id}(id=${recipe.id})}
+                            : @{/recipe/edit/{id}(id=${recipe.id})}" 
+                            method="post" th:object="${recipe}" enctype="multipart/form-data">
                 
                 <div class="form-row">
                     <div class="form-group half-width">

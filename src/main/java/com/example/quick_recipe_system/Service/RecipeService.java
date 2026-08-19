@@ -17,8 +17,8 @@ import lombok.RequiredArgsConstructor;
 public class RecipeService {
 
     private final RecipeRepository recipeRepository;
-    
-     /**
+
+    /**
      * 根據 ID 尋找特定的食譜
      */
     public Recipe findById(Long id) {
@@ -33,7 +33,6 @@ public class RecipeService {
 
         return recipeRepository.findByAuthor(username);
     }
-
 
     /**
      * 探索食譜-按照料理類型分類好撈出的所有食譜
@@ -51,7 +50,6 @@ public class RecipeService {
         return resultMap;
     }
 
-    
     /**
      * 解析首頁的烹調時間字串，並呼叫對應的 JPA 查詢
      * 利用 Java 現代的 Switch 表達式與 Map.of 一步到位
@@ -77,7 +75,7 @@ public class RecipeService {
      * 搜尋食譜的共同邏輯
      */
     public Map<String, List<Recipe>> masterSearch(String keyword, String cookingtime, String typeString,
-            String author) {
+            String source) {
 
         Map<String, List<Recipe>> resultMap = new LinkedHashMap<>();
 
@@ -100,10 +98,11 @@ public class RecipeService {
             return resultMap;
         }
 
-        // 優先權 4：作者搜尋
-        if (author != null && !author.isEmpty()) {
-            List<Recipe> recipes = recipeRepository.findByAuthor(author);
-            resultMap.put("👨‍🍳 " + author + " 的專屬食譜", recipes);
+        // 優先權 4：食譜來源搜尋
+        // 官方食譜應依 isSystemRecipe 判斷，不綁定特定管理員帳號。
+        if ("official".equals(source)) {
+            List<Recipe> recipes = recipeRepository.findBySystemRecipeTrueOrderByIdDesc();
+            resultMap.put("官方食譜", recipes);
             return resultMap;
         }
 
@@ -112,13 +111,18 @@ public class RecipeService {
     }
 
     /**
-     * 首頁右側的Diy食譜列表
-     * 獲取使用者最新 5 筆 DIY 食譜
+     * 首頁右側的DIY食譜列表(分類系統管理員或會員)
      */
-    public List<Recipe> getTopLatestDiyRecipes(String username) {
-        if (username == null || username.trim().isEmpty()) {
-            return new ArrayList<>(); // 防呆：沒登入就給空籃子
+    public List<Recipe> getHomeManageRecipes(String username, String role) {
+
+        if ("ROLE_ADMIN".equals(role)) {
+            return recipeRepository.findTop5BySystemRecipeTrueOrderByIdDesc();
         }
+
+        if (username == null || username.trim().isEmpty()) {
+            return new ArrayList<>();
+        }
+
         return recipeRepository.findTop5ByAuthorOrderByIdDesc(username);
     }
 

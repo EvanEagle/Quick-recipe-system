@@ -1,19 +1,18 @@
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 spring:
   datasource:
-    # Docker 內透過服務名稱 db 連接 MySQL
-    url: jdbc:mysql://db:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-    # 這裡呼叫寫在 .env 裡的變數，保護密碼安全
+    # 本機 Docker Compose 可使用 db；雲端則用 SPRING_DATASOURCE_URL 覆寫。
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://db:3306/recipe_db?useSSL=false&serverTimezone=Asia/Taipei&characterEncoding=UTF-8&allowPublicKeyRetrieval=true}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
 app:
   image:
-    # 專門用於食譜圖片的新增、刪除
+    # Railway / Docker Volume 建議掛載到 /app/images，食譜圖片放 recipes 子目錄。
     recipe-directory: ${APP_RECIPE_IMAGE_DIR:/app/images/recipes}
 
 upload:
-   # 舊有的圖片根目錄設定，暫時保留
-  path: /app/images
+  # 舊設定保留相容性；目前 WebMvcConfig 已只映射食譜上傳目錄。
+  path: ${APP_IMAGE_ROOT:/app/images}

@@ -38,14 +38,13 @@
                         <option value="30mins up" th:selected="${selectedTime == '30mins up'}">30分鐘以上</option>
                     </select>
                     
-                    <select name="author" class="tag-btn" onchange="this.form.submit()">
-                        <option value="">作者</option>
-                        <option value="QuickCook官方" th:selected="${selectedAuthor == 'QuickCook官方'}">官方嚴選</option>
-                        <option value="Arden" th:selected="${selectedAuthor == 'Arden'}">Arden</option>
+                    <select name="source" class="tag-btn" onchange="this.form.submit()">
+                        <option value="">食譜來源</option>
+                        <option value="official">官方食譜</option>
                     </select>
                     
-                    <button type="submit" name="typeString" value="chinese" class="tag-btn" 
-                            th:style="${selectedType == 'chinese' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">中式料理</button>
+                    <button type="submit" name="typeString" value="Chinese" class="tag-btn" 
+                            th:style="${selectedType == 'Chinese' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">中式料理</button>
                     <button type="submit" name="typeString" value="Japanese" class="tag-btn"
                             th:style="${selectedType == 'Japanese' ? 'background-color:#E2E8D5; font-weight:bold;' : ''}">日式料理</button>
                     <button type="submit" name="typeString" value="Western" class="tag-btn"
@@ -63,13 +62,13 @@
                 <div th:each="recipe : ${randomRecipes}" class="recipe-card">
                     
                     <div class="card-img-container">
-                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/Notuploaded.jpg'}}" alt="美食圖片" class="card-img">
+                        <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/system/not-uploaded.jpg'}}" alt="美食圖片" class="card-img">
                     </div>
                     
                     <div class="card-info">
                         <div>
                             <h3 class="recipe-title" th:text="${recipe.name}">動態食譜名稱</h3>
-                            <p class="recipe-author" th:text="|👨‍🍳 作者：${recipe.author}|">作者名稱</p>
+                            <p class="recipe-author" th:text="${recipe.systemRecipe} ? '👨‍🍳 官方食譜' : |👨‍🍳 作者：${recipe.author}|">作者名稱</p>
                         <p class="recipe-time">⏱️ 烹調時間：<span th:text="${recipe.cookingTime}"></span> 分鐘</p>
                         
                         
@@ -81,10 +80,12 @@
                             查看詳情
                             </a>
                             
-                            <form th:action="@{/favorite/add}" method="post" style="margin: 0; flex: 1; display: flex;">
+                            <form th:if="${session.loggedInUserRole != 'ROLE_ADMIN'}" 
+                                    th:action="@{/favorite/add}" method="post" style="margin: 0; flex: 1; display: flex;">
                                 <input type="hidden" name="recipeId" th:value="${recipe.id}" />
                                 <button type="submit" class="btn-collect" style="width: 100%;">加入收藏</button>
                             </form>
+                            
                         </div>
                     </div>
                     
@@ -94,19 +95,28 @@
 
             <aside class="diy-sidebar">
                 <div>
-                    <h2 class="diy-title">我的DIY食譜</h2> 
-                    
-                    <ul th:if="${not #lists.isEmpty(diyRecipes)}" class="diy-list">
-                        <li th:each="recipe : ${diyRecipes}" class="diy-item">
+                    <h2 class="diy-title"
+                        th:text="${session.loggedInUserRole == 'ROLE_ADMIN'} ? '官方食譜管理' : '我的DIY食譜'">
+                        我的DIY食譜
+                    </h2>
+
+                    <!-- 有食譜時 -->
+                    <ul th:if="${not #lists.isEmpty(manageRecipes)}" class="diy-list">
+                        <li th:each="recipe : ${manageRecipes}" class="diy-item">
                             
                             <span class="recipe-name" th:text="${recipe.name}">動態食譜名稱</span>
                             
                             <div class="action-group">
-                                <a th:href="@{/recipe/edit/{id}(id=${recipe.id})}" class="btn-action edit">
+                                <a th:href="${session.loggedInUserRole == 'ROLE_ADMIN'}
+                                    ? @{/admin/recipes/edit/{id}(id=${recipe.id})}
+                                    : @{/recipe/edit/{id}(id=${recipe.id})}" class="btn-action edit">
                                     <i class="fa-solid fa-pen-to-square"></i> 修改
                                 </a>
                                 
-                                <form th:action="@{/recipe/delete/{id}(id=${recipe.id})}" method="post" style="margin: 0; display: inline-flex;">
+                                <form th:action="${session.loggedInUserRole == 'ROLE_ADMIN'}? 
+                                    @{/admin/recipes/delete/{id}(id=${recipe.id})}
+                                    : @{/recipe/delete/{id}(id=${recipe.id})}" 
+                                    method="post" style="margin: 0; display: inline-flex;">
     
                                     <button type="submit" 
                                             class="btn-action delete" 
@@ -117,27 +127,34 @@
                                     </button>
                                     
                                 </form>
+
                             </div>
                         </li>
                     </ul>
 
-                    <div th:if="${#lists.isEmpty(diyRecipes)}" class="empty-state">
+                    <!-- 沒有食譜時 -->
+                    <div th:if="${#lists.isEmpty(manageRecipes)}" class="empty-state">
                         <p>目前還沒有創立食譜唷！</p>
                         <p>點擊下方新增第一道私房菜吧 👇</p>
                     </div>
                 </div>
                 
+               
                 <div class="diy-add-container">
                     <span class="diy-add-text">新增食譜</span>
                     
                     <a th:if="${session.loggedInUser == null}" 
-                    href="#" 
-                    onclick="alert('哈囉！請先登入才能「新增食譜」喔！'); return false;" 
-                    class="btn-diy-add">+</a>
+                        href="#" 
+                        onclick="alert('哈囉！請先登入才能「新增食譜」喔！'); return false;" 
+                        class="btn-diy-add">
+                        +
+                    </a>
                     
                     <a th:unless="${session.loggedInUser == null}" 
-                    th:href="@{/recipe/add}" 
-                    class="btn-diy-add">+</a>
+                        th:href="${session.loggedInUserRole == 'ROLE_ADMIN'} ? @{/admin/recipes/add} : @{/recipe/add}" 
+                        class="btn-diy-add">
+                        +
+                    </a>
                 </div>
             </aside>
         </div>

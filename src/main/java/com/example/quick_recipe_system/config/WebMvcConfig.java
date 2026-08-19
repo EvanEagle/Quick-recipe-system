@@ -18,8 +18,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
 
-        @Value("${upload.path}")
-        private String uploadPath;
+        @Value("${app.image.recipe-directory}")
+        private String recipeImageDirectory;
 
         private final LoginInterceptor loginInterceptor;
         private final AdminInterceptor adminInterceptor;
@@ -53,10 +53,16 @@ public class WebMvcConfig implements WebMvcConfigurer {
                                 .addPathPatterns("/admin/**");
         }
 
-        // 將圖片上傳的路徑攔截到 ResourceHandler 中
+        // 只有「使用者上傳的食譜圖片」走外部檔案系統。
+        // logo、預設圖、使用者圖示等系統圖片仍由 classpath:/static/images/ 提供，
+        // 避免雲端掛載空白 Volume 後把系統圖片一起遮掉。
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                registry.addResourceHandler("/images/**")
-                                .addResourceLocations("file:" + uploadPath + "/");
+                String location = recipeImageDirectory.endsWith("/")
+                                ? recipeImageDirectory
+                                : recipeImageDirectory + "/";
+
+                registry.addResourceHandler("/images/recipes/**")
+                                .addResourceLocations("file:" + location);
         }
 }

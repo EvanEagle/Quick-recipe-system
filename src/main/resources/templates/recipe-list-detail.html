@@ -21,7 +21,7 @@
         <article class="detail-card">
             
             <div class="hero-image-wrapper">
-                <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/Notuploaded.jpg'}}" alt="食譜圖片" class="hero-image">
+                <img th:src="@{${recipe.imageUrl != null ? recipe.imageUrl : '/images/system/not-uploaded.jpg'}}" alt="食譜圖片" class="hero-image">
             </div>
 
             <div class="detail-header">
@@ -41,7 +41,7 @@
             <div class="detail-actions">
                 <button onclick="history.back()" class="btn-action btn-back"><i class="fa-solid fa-arrow-left"></i> 返回列表</button>
                 
-                <form th:action="@{/favorite/add}" method="post" class="favorite-form">
+                <form th:if="${session.loggedInUserRole != 'ROLE_ADMIN'}" th:action="@{/favorite/add}" method="post" class="favorite-form">
                     <input type="hidden" name="recipeId" th:value="${recipe.id}" />
                     <button type="submit" class="btn-action btn-collect"><i class="fa-solid fa-heart"></i> 加入收藏</button>
                 </form>

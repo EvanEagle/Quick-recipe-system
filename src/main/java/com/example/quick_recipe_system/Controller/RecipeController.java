@@ -40,18 +40,18 @@ public class RecipeController {
      * @param keyword     綜合關鍵字（對應大搜尋框）
      * @param cookingtime 烹調時間（對應時間篩選器）
      * @param typeString  料理類型（對應中/日/西式按鈕）
-     * @param author      作者名稱（保留此參數作為未來社群化功能基礎）
+     * @param source      食譜來源（目前支援 official 官方食譜）
      */
     @GetMapping("/search")
     public String searchRecipes(
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "cookingtime", required = false) String cookingtime,
             @RequestParam(value = "typeString", required = false) String typeString,
-            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "source", required = false) String source,
             Model model) {
 
         // 1. 呼叫 Service 的萬能搜尋方法，取得篩選後的 Map 資料
-        Map<String, List<Recipe>> searchResults = recipeService.masterSearch(keyword, cookingtime, typeString, author);
+        Map<String, List<Recipe>> searchResults = recipeService.masterSearch(keyword, cookingtime, typeString, source);
 
         // 2. 將結果放入 Model。
         model.addAttribute("recipes", searchResults);

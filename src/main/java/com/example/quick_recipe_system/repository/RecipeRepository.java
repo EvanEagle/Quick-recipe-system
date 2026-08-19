@@ -13,14 +13,23 @@ import com.example.quick_recipe_system.entity.Recipe;
 @Repository
 public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
-
     /**
      * 供 DIY 面板使用：找出特定作者的食譜
      */
     List<Recipe> findByAuthor(String author);
 
     /**
-     * 1.供探索食譜使用 
+     * 供官方食譜搜尋使用
+     */
+    List<Recipe> findBySystemRecipeTrueOrderByIdDesc();
+
+    /**
+     * 供管理員首頁右側面板使用：取得最新5筆官方食譜
+     */
+    List<Recipe> findTop5BySystemRecipeTrueOrderByIdDesc();
+
+    /**
+     * 1.供探索食譜使用
      * 2.供利用料理類型(中/日/西式)搜尋使用
      */
     List<Recipe> findByTypeString(String typeString);
@@ -37,20 +46,19 @@ public interface RecipeRepository extends JpaRepository<Recipe, Long> {
     List<Recipe> findByCookingTimeGreaterThanOrderByCookingTimeAsc(Integer time);
 
     /**
-     * 4. 使用 JPQL 進行關聯表的模糊搜尋 (LIKE)
-     * 這行會同時去比對 Recipe 的名字，以及關聯的 ingredients 和 keywords 表格！
+     * 4. 因同時需比對食譜名稱,食材,關鍵字所以使用 JPQL 進行關聯表的模糊搜尋 (LIKE)
      */
     @Query("SELECT DISTINCT r FROM Recipe r LEFT JOIN r.ingredients i LEFT JOIN r.keywords k " +
             "WHERE r.name LIKE %:keyword% OR i LIKE %:keyword% OR k LIKE %:keyword%")
     List<Recipe> searchByComprehensiveKeyword(@Param("keyword") String keyword);
 
     /**
-     * 供首頁使用: 取得最新5筆DIY食譜
+     * 供會員首頁使用: 取得最新5筆DIY食譜
      */
     List<Recipe> findTop5ByAuthorOrderByIdDesc(String author);
 
     /**
-     * 供首頁使用: 取得隨機4筆食譜 
+     * 供首頁使用: 取得隨機4筆食譜
      */
     @Query(value = "SELECT * FROM recipe ORDER BY RAND() LIMIT 4", nativeQuery = true)
     List<Recipe> findRandom4Recipes();
