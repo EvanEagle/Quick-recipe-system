@@ -1,5 +1,8 @@
 package com.example.quick_recipe_system.config;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,11 +61,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // 避免雲端掛載空白 Volume 後把系統圖片一起遮掉。
         @Override
         public void addResourceHandlers(ResourceHandlerRegistry registry) {
-                String location = recipeImageDirectory.endsWith("/")
-                                ? recipeImageDirectory
-                                : recipeImageDirectory + "/";
+
+                Path recipeDirectory = Paths.get(recipeImageDirectory)
+                                .toAbsolutePath()
+                                .normalize();
+
+                String location = recipeDirectory.toUri().toString();
 
                 registry.addResourceHandler("/images/recipes/**")
-                                .addResourceLocations("file:" + location);
+                                .addResourceLocations(location);
         }
 }

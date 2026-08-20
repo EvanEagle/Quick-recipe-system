@@ -111,13 +111,14 @@ public class AdminService {
     }
 
     /**
-     * 刪除官方食譜
+     * 管理食譜 : 刪除食譜 / 強制下架
      */
-    public void deleteOfficialRecipe(Long id, String role) {
+    public void deleteRecipeByAdmin(Long id, String role) {
 
         validateAdmin(role);
 
-        Recipe targetRecipe = getOfficialRecipe(id);
+        Recipe targetRecipe = recipeRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("此食譜不存在！"));
 
         recipeManagementService.deleteRecipe(targetRecipe);
     }

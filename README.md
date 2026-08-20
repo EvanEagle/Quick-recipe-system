@@ -85,7 +85,7 @@ images/
 └── recipes/
 ```
 
-- `images/system/`：系統固定圖片
+- `src/main/resources/static/images/system/`：系統固定圖片
 - `images/recipes/`：使用者上傳的食譜圖片
 
 刪除食譜時只允許刪除 `recipes` 目錄下的圖片，避免誤刪系統圖片。

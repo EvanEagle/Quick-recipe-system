@@ -21,11 +21,16 @@
             <span th:if="${errorMsg}" th:text="${errorMsg}" style="color: #ba714d; font-weight: bold; background-color: #fbe9e7; padding: 10px 20px; border-radius: 8px; display: inline-block;"></span>
         </div>
 
-        <h1 class="page-title">📝 新增專屬食譜</h1>
+        <h1 th:text="${session.loggedInUserRole == 'ROLE_ADMIN'} ? '📝 新增官方食譜' : '📝 新增專屬食譜'" class="page-title">新增食譜</h1>
 
         <!-- 表單卡片區塊，綁定 recipe 物件 -->
         <div class="recipe-form-card">
-            <form th:action="@{/recipe/add}" method="post" th:object="${recipe}" enctype="multipart/form-data"> 
+            <form th:action="${session.loggedInUserRole == 'ROLE_ADMIN'}
+                    ? @{/admin/recipes/add}
+                    : @{/recipe/add}"
+                    method="post"
+                    th:object="${recipe}"
+                    enctype="multipart/form-data">
                 
                 <!-- 1. 分類選擇 (不屬於 Recipe 物件，使用 name 屬性) -->
                 <div class="form-group">
@@ -81,8 +86,8 @@
 
                 <!-- 送出按鈕 -->
                 <div class="form-actions">
-                    <button type="submit" class="btn-submit">💾 儲存食譜</button>
-                    <a th:href="@{/recipe}" class="btn-cancel">取消返回</a>
+                    <button th:href="${session.loggedInUserRole == 'ROLE_ADMIN'} ? @{/admin/recipes} : @{/diy}" type="submit" class="btn-submit">💾 儲存食譜</button>
+                    <a th:href="${session.loggedInUserRole == 'ROLE_ADMIN'} ? @{/admin/recipes} : @{/diy}" class="btn-cancel">取消返回</a>
                 </div>
             </form>
         </div>

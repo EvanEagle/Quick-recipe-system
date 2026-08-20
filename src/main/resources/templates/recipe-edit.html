@@ -18,7 +18,7 @@
             <span th:if="${errorMsg}" th:text="${errorMsg}" class="msg-error"></span>
         </div>
 
-        <h1 class="page-title">✏️ 修改專屬食譜</h1>
+        <h1 th:text="${recipe.systemRecipe} ? '✏️ 修改官方食譜' : '✏️ 修改專屬食譜'" class="page-title">✏️ 修改專屬食譜</h1>
 
         <div class="recipe-form-card">
            <form th:action="${session.loggedInUserRole == 'ROLE_ADMIN'}
@@ -65,7 +65,7 @@
 
                 <div class="form-actions">
                     <button type="submit" class="btn-submit">💾 完成修改</button>
-                    <a th:href="@{/diy}" class="btn-cancel">放棄修改</a>
+                    <a th:href="${session.loggedInUserRole == 'ROLE_ADMIN'} ? @{/admin/recipes} : @{/diy}" class="btn-cancel">放棄修改</a>
                 </div>
 
             </form>

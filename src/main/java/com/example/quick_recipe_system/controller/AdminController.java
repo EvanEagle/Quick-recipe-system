@@ -57,7 +57,7 @@ public class AdminController {
     @GetMapping("/recipes/add")
     public String showAddRecipe(Model model) {
         model.addAttribute("recipe", new Recipe());
-        return "admin/recipe-add";
+        return "recipe-add";
     }
 
     @PostMapping("/recipes/add")
@@ -81,17 +81,23 @@ public class AdminController {
     }
 
     @PostMapping("/recipes/delete/{id}")
-    public String deleteOfficialRecipe(@PathVariable Long id, HttpSession session,
+    public String deleteRecipeByAdmin(@PathVariable Long id, HttpSession session,
             RedirectAttributes redirectAttributes) {
 
         String role = (String) session.getAttribute("loggedInUserRole");
 
         try {
-            adminService.deleteOfficialRecipe(id, role);
-            redirectAttributes.addFlashAttribute("successMsg", "已將食譜強制下架！");
+            adminService.deleteRecipeByAdmin(id, role);
+
+            redirectAttributes.addFlashAttribute(
+                    "successMsg", "食譜刪除成功！");
+
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("errorMsg", e.getMessage());
+
+            redirectAttributes.addFlashAttribute(
+                    "errorMsg", e.getMessage());
         }
+
         return "redirect:/admin/recipes";
     }
 

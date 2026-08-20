@@ -164,7 +164,7 @@ main {
     margin-left: 15px; 
     padding-left: 15px; 
     border-left: 2px solid #ccc; 
-    transition: color 0.3s; /* 小訣竅：明確指定 transition 的屬性(color)效能會更好 */
+    transition: color 0.3s;
 }
 
 .user-logout:hover {

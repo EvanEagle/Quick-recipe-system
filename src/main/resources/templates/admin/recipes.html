@@ -43,24 +43,50 @@
                 <tbody>
                     <!-- 展開食譜清單 -->
                 <tr th:each="recipe : ${recipes}">
-                    <td th:text="${recipe.id}">1</td>
-                    <td th:text="${recipe.name}">美味炒飯</td>
-                    <td th:text="${recipe.author}">Arden</td>
+                    <td th:text="${recipe.id}">食譜ID</td>
+                    <td><a th:href="@{/recipe/detail/{id}(id=${recipe.id})}"
+                        class="recipe-name-link" th:text="${recipe.name}">
+                            食譜名稱
+                        </a>
+                    </td>
+                    <td th:text="${recipe.author}">建立者</td>
                     
-                    <!-- 狀態標籤：根據 isSystemRecipe 欄位顯示不同顏色 -->
+                    <!-- 食譜類型 -->
                     <td>
                         <span class="status-badge" 
-                            th:classappend="${recipe.isSystemRecipe} ? 'type-system' : 'type-diy'"
-                            th:text="${recipe.isSystemRecipe} ? '官方食譜' : '會員 DIY'">
+                            th:classappend="${recipe.systemRecipe} ? 'type-system' : 'type-diy'"
+                            th:text="${recipe.systemRecipe} ? '官方食譜' : '會員 DIY'">
                         </span>
                     </td>
 
-                    <!-- 強制下架/刪除按鈕 -->
+                    <!-- 管理操作 -->
                     <td>
-                        <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}" method="post" onsubmit="return confirm('確定要強制下架這筆食譜嗎？此動作無法復原！');">
-                            <button type="submit" class="btn-toggle btn-danger">強制下架</button>
-                        </form>
+                        <div class="recipe-actions">
+
+                            <!-- 強制下架 / 刪除 -->
+                            <form th:action="@{/admin/recipes/delete/{id}(id=${recipe.id})}"
+                                method="post"
+                                onsubmit="return confirm('確定要執行此操作嗎？此動作無法復原！');">
+
+                                <button type="submit"
+                                        class="btn-toggle btn-danger"
+                                        th:text="${recipe.systemRecipe} ? '刪除食譜' : '強制下架'">
+                                    刪除
+                                </button>
+                            </form>
+
+                            <!-- 官方食譜才可以修改 -->
+                            <a th:if="${recipe.systemRecipe}"
+                            th:href="@{/admin/recipes/edit/{id}(id=${recipe.id})}"
+                            class="btn-action edit">
+
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                修改
+                            </a>
+
+                        </div>
                     </td>
+
                 </tr>
                 </tbody>
             </table>
