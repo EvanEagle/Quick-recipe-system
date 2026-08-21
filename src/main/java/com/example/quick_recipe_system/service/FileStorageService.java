@@ -36,6 +36,11 @@ public class FileStorageService {
                 throw new IllegalArgumentException("無法取得上傳檔案名稱");
             }
 
+            // 只保留真正的檔案名稱，避免 ../ 或資料夾路徑造成路徑跳脫
+            originalFilename = Paths.get(originalFilename)
+                    .getFileName()
+                    .toString();
+
             // 1. 精準切割主檔名與副檔名
             // 找出最後一個點點的位置
             int dotIndex = originalFilename.lastIndexOf(".");
@@ -68,6 +73,9 @@ public class FileStorageService {
                     .resolve(newFileName)
                     .normalize();
 
+            if (!destination.startsWith(directory)) {
+                throw new SecurityException("不合法的圖片儲存路徑");
+            }
             imageFile.transferTo(destination);
 
             return "/images/recipes/" + newFileName;
@@ -87,61 +95,62 @@ public class FileStorageService {
         }
 
         /*
-     * 只有 /images/recipes/ 底下的圖片才能刪除。
-     *
-     * 系統圖片例如：
-     * /images/system/not-uploaded.jpg
-     * /images/system/logo.png
-     *
-     * 都會直接略過。
-     */
-    String recipeUrlPrefix = "/images/recipes/";
-
-    if (!imageUrl.startsWith(recipeUrlPrefix)) {
-        return;
-    }
-
-    try {
-        /*
-         * /images/recipes/三杯雞.jpg
-         * 取出：
-         * 三杯雞.jpg
-         */
-        String fileName = imageUrl.substring(recipeUrlPrefix.length());
-
-        Path recipeDirectory = Paths.get(recipeImageDirectory)
-                .toAbsolutePath()
-                .normalize();
-
-        Path targetFile = recipeDirectory
-                .resolve(fileName)
-                .normalize();
-
-        /*
-         * 防止路徑跳脫。
+         * 只有 /images/recipes/ 底下的圖片才能刪除。
          *
-         * 例如惡意路徑：
-         * /images/recipes/../../system/logo.png
+         * 系統圖片例如：
+         * /images/system/not-uploaded.jpg
+         * /images/system/logo.png
+         *
+         * 都會直接略過。
          */
-        if (!targetFile.startsWith(recipeDirectory)) {
-            throw new SecurityException("不合法的圖片路徑：" + imageUrl);
+        String recipeUrlPrefix = "/images/recipes/";
+
+        if (!imageUrl.startsWith(recipeUrlPrefix)) {
+            return;
         }
 
-        boolean deleted = Files.deleteIfExists(targetFile);
+        try {
+            /*
+             * /images/recipes/三杯雞.jpg
+             * 取出：
+             * 三杯雞.jpg
+             */
+            String fileName = imageUrl.substring(recipeUrlPrefix.length());
 
-        if (deleted) {
-            System.out.println("舊食譜圖片刪除成功：" + targetFile);
-        } else {
-            System.out.println("找不到要刪除的舊圖片：" + targetFile);
+            Path recipeDirectory = Paths.get(recipeImageDirectory)
+                    .toAbsolutePath()
+                    .normalize();
+
+            Path targetFile = recipeDirectory
+                    .resolve(fileName)
+                    .normalize();
+
+            /*
+             * 防止路徑跳脫。
+             *
+             * 例如惡意路徑：
+             * /images/recipes/../../system/logo.png
+             */
+            if (!targetFile.startsWith(recipeDirectory)) {
+                throw new SecurityException("不合法的圖片路徑：" + imageUrl);
+            }
+
+            boolean deleted = Files.deleteIfExists(targetFile);
+
+            if (deleted) {
+                System.out.println("舊食譜圖片刪除成功：" + targetFile);
+            } else {
+                System.out.println("找不到要刪除的舊圖片：" + targetFile);
+            }
+
+        } catch (IOException e) {
+            /*
+             * 暫時保留不中斷食譜修改流程的設計。
+             */
+            System.out.println("舊照片刪除失敗：" + e.getMessage());
         }
-
-    } catch (IOException e) {
-        /*
-         * 暫時保留不中斷食譜修改流程的設計。
-         */
-        System.out.println("舊照片刪除失敗：" + e.getMessage());
     }
-}
+
     /**
      * 處理圖片驗證與上傳
      */
